@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    <title>Time over WebSocket</title>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script src="/js/angular.js"></script>
+    <script src="/js/moment.min.js"></script>
+    <script src="/js/application.js"></script>
+    <script src="/js/flow.js"></script>
+    <script src="/js/sockjs-0.3.4.js"></script>
+    <script type="text/javascript">
+//        var sock = new SockJS('/messages');
+//        sock.onopen = function () {
+//            addMessage('Connected')
+//        };
+//        sock.onmessage = function (e) {
+//            addMessage(JSON.parse(e.data))
+//        };
+//        sock.onclose = function () {
+//            addMessage("Server closed connection or hasn't been started")
+//        };
+//        function addMessage(event) {
+//            var response = document.getElementById('response');
+//            var p = document.createElement('p');
+//            p.style.wordWrap = 'break-word';
+//            p.appendChild(document.createTextNode(event.message));
+//            response.appendChild(p);
+//        }
+    </script>
+</head>
+<body>
+<div id="App1" ng-app="flow" ng-controller="flowController">
+    <div class="container">
+        <div class="fill">
+            <div>
+                <div ng-repeat="log in items | reverse | filter:search | filter: byLevel"
+                     class="bs-callout
+                        {{log.level == 'ERROR' ? 'bs-callout-danger' : ''}}
+                        {{log.level == 'WARN' ? 'bs-callout-warning' : ''}}
+                        {{log.level == 'INFO' ? 'bs-callout-info' : ''}}
+                        ">
+                        <span>
+                            {{log.date}}&nbsp;&nbsp;
+                            {{log.level}}&nbsp;
+                            {{log.thread}}&nbsp;
+                            {{log.user}}&nbsp;
+                            {{log.class.className}}:{{log.method}}:{{log.lineNumber}}&nbsp;
+                            {{log.message}}&nbsp;
+                        </span>
+                    <div>
+                        <div ng-repeat="part in log.msgParts track by $index">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{part}}
+                        </div>
+                    </div>
+                    <div ng-if="log.throwable_rps">
+                        Throwable:
+                        <div ng-repeat="rp in log.throwable_rps track by $index">
+                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{rp}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="padding-top: 70px">
+        <div class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+            <div class="container">
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <form action="/Stub-0.1/gateToShop/index" method="post" class="navbar-form navbar-left" role="search">
+                                <div class="form-group">
+                                    <input ng-model="search.message" class="form-control">
+                                </div>
+                                <div class="btn-group">
+                                    <button type="button"
+                                            class="btn btn-sm btn-success {{showDebug == true ? 'active' : ''}}"
+                                            ng-click="changeShowDebug();">
+                                        DEBUG</button>
+                                    <button type="button"
+                                            class="btn btn-sm btn-info {{showInfo == true ? 'active' : ''}}"
+                                            ng-click="changeShowInfo();">
+                                        INFO</button>
+                                    <button type="button"
+                                            class="btn btn-sm btn-warning {{showWarn == true ? 'active' : ''}}"
+                                            ng-click="changeShowWarn();">
+                                        WARN</button>
+                                    <button type="button"
+                                            class="btn btn-sm btn-danger {{showError == true ? 'active' : ''}}"
+                                            ng-click="changeShowDanger();">
+                                        ERROR</button>
+                                </div>
+                            </form>
+                        </li>
+                        <li></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            Всего событий: {{items.length}}
+                        </li>
+                        <li>
+                            <form class="navbar-form navbar-left">
+                                <button type="button" class="btn btn-warning {{isStopApply == true ? 'active' : ''}}" ng-click="stopApply();">STOP <span class="badge">{{waitToApply}}</span></button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
