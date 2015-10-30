@@ -85,10 +85,7 @@ flowModule.controller("flowController", function($scope, mySocket) {
         }
         mySocket.setHandler('message', function addMessage(event) {
             var data = $.parseJSON(event.data);
-            //var data = $.parseJSON(response.responseBody);
-            if (data.level == "ERROR") {
-                data.level
-            }
+            data.level = data.level.levelStr
             var date = moment(new Date(data.timeStamp)).format("YYYY-MM-DD HH:mm:ss")
             data.date = date
             var user = data.properties ? '('+data.properties.userLogin+','+data.properties.sessionId+')' : ""
