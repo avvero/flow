@@ -1,4 +1,4 @@
-.entry-log.level-ERROR {}
+.entry-log.level-ERROR,
 .entry-log .log-level.level-ERROR {
     color: red;
 }
@@ -24,7 +24,7 @@
 }
 
 .entry-log {
-    display: none
+    display: none;
     word-wrap: break-word;
 }
 

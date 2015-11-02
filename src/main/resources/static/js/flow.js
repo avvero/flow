@@ -25,21 +25,6 @@ flowModule.controller("flowController", function($scope, mySocket) {
         $scope.showWarn = true;
         $scope.showError = true;
         $scope.showTrace = true;
-        $scope.changeShowDebug = function () {
-            $scope.showDebug = !$scope.showDebug;
-        }
-        $scope.changeShowInfo = function () {
-            $scope.showInfo = !$scope.showInfo;
-        }
-        $scope.changeShowWarn = function () {
-            $scope.showWarn = !$scope.showWarn;
-        }
-        $scope.changeShowDanger = function () {
-            $scope.showError = !$scope.showError;
-        }
-        $scope.changeShowTrace = function () {
-            $scope.showTrace = !$scope.showTrace;
-        }
         // События
         $scope.items = [];
         $scope.remove = function(index) {
