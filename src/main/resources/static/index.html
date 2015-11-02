@@ -49,7 +49,7 @@
                         <span class="log-level level-{{log.level}}">{{log.level}}</span>&nbsp;
                         <!--<span class="log-thread">{{log.threadName}}</span>&nbsp;-->
                         {{log.user}}
-                        <span ng-if="log.level != 'ERROR' && log.throwableProxy.className">
+                        <span ng-if="log.level != 'ERROR'">
                             <!--<span ng-repeat="part in log.callerData track by $index" ng-if="$index == 0">-->
                                 <!--{{part.className}}:{{part.methodName}}:{{part.lineNumber}}-->
                                 <!--&nbsp;-->
@@ -57,7 +57,12 @@
                             {{log.formattedMessage}}
                         </span>
                         <span class="log-msg-error" ng-if="log.level == 'ERROR'">
-                            {{log.throwableProxy.className}}: {{log.throwableProxy.message}}
+                            <span ng-if="log.throwableProxy">
+                                {{log.throwableProxy.className}}: {{log.throwableProxy.message}}
+                            </span>
+                            <span ng-if="!log.throwableProxy">
+                                {{log.formattedMessage}}
+                            </span>
                         </span>
                     </span>
                     <div class="log-msg-error-stack" ng-if="log.level == 'ERROR'">
@@ -125,7 +130,7 @@
                         <li>
                             <form class="navbar-form navbar-right">
                                 <div class="btn-group">
-                                    <button type="button" class="btn btn-sm btn-warning {{isStopApply == true ? 'active' : ''}}" ng-click="stopApply();">STOP <span class="badge">{{waitToApply}}</span></button>
+                                    <button type="button" class="btn btn-sm btn-warning {{isStoped == true ? 'active' : ''}}" ng-click="isStopped = !isStopped">STOP <span class="badge">{{queue.length}}</span></button>
                                     <button type="button" class="btn btn-sm" ng-click="clear();">CLEAR <span class="badge">{{items.length}}</span></button>
                                 </div>
                             </form>
