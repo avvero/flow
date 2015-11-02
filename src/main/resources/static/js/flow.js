@@ -1,5 +1,5 @@
 
-var logPerPage = 1000
+var logPerPage = 10000
 var waitBeforeNextApplyTimeout = 100
 var applyRemainsTimeout = 1000
 
@@ -78,6 +78,9 @@ flowModule.controller("flowController", function($scope, mySocket) {
         };
         $scope.stopApply = function () {
             $scope.isStopApply = !$scope.isStopApply;
+        }
+        $scope.clear = function () {
+            $scope.items = [];
         }
         mySocket.setHandler('message', function addMessage(event) {
             var data = $.parseJSON(event.data);

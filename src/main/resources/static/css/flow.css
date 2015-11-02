@@ -1,22 +1,31 @@
-.entry-log.level-ERROR,
+.entry-log.level-ERROR {}
 .entry-log .log-level.level-ERROR {
     color: red;
 }
 
+.entry-log .log-level.level-ERROR {
+    font-weight: bold;
+}
+
 .entry-log .log-level.level-WARN {
     color: darkorange;
+    font-weight: bold;
 }
 
 .entry-log .log-level.level-INFO {
-    color: darkblue;
+    color: blue;
+    font-weight: bold;
 }
 
 .entry-log .log-level.level-DEBUG {
-    color: darkgreen;
+    color: green;
+    font-weight: bold;
+    font-weight: bold;
 }
 
 .entry-log {
     display: none
+    word-wrap: break-word;
 }
 
 .show-level-ERROR .entry-log.level-ERROR {
@@ -59,4 +68,8 @@
 
 .entry-log .log-msg-error-stack div {
     padding-left: 50px;
+}
+
+.flow .logs {
+    word-wrap: break-word;
 }
