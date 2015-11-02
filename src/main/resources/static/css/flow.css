@@ -1,0 +1,62 @@
+.entry-log.level-ERROR,
+.entry-log .log-level.level-ERROR {
+    color: red;
+}
+
+.entry-log .log-level.level-WARN {
+    color: darkorange;
+}
+
+.entry-log .log-level.level-INFO {
+    color: darkblue;
+}
+
+.entry-log .log-level.level-DEBUG {
+    color: darkgreen;
+}
+
+.entry-log {
+    display: none
+}
+
+.show-level-ERROR .entry-log.level-ERROR {
+    display: block
+}
+
+.show-level-WARN .entry-log.level-WARN {
+    display: block
+}
+
+.show-level-INFO .entry-log.level-INFO {
+    display: block
+}
+
+.show-level-DEBUG .entry-log.level-DEBUG {
+    display: block
+}
+
+.show-level-TRACE .entry-log.level-TRACE {
+    display: block
+}
+
+.entry-log span.log-level {
+    width: 47px;
+    display: inline-block;
+}
+
+.entry-log span.log-thread {
+    min-width: 150px;
+    display: inline-block;
+}
+
+.entry-log div.log-msg-parts {
+    /*background-color: lightgrey;*/
+}
+
+.logs {
+    font-size: 12px;
+}
+
+.entry-log .log-msg-error-stack div {
+    padding-left: 50px;
+}

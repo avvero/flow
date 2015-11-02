@@ -108,7 +108,6 @@ public class Application {
 
     @ServiceActivator(inputChannel = "tcpChannel")
     public void echo(Object object) throws IOException, ClassNotFoundException {
-        System.out.println(++i + " -tcp- "+ object.toString());
         requestChannel().send(MessageBuilder.withPayload(object).build());
     }
 

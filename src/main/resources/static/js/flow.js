@@ -24,6 +24,7 @@ flowModule.controller("flowController", function($scope, mySocket) {
         $scope.showInfo = true;
         $scope.showWarn = true;
         $scope.showError = true;
+        $scope.showTrace = true;
         $scope.changeShowDebug = function () {
             $scope.showDebug = !$scope.showDebug;
         }
@@ -36,16 +37,11 @@ flowModule.controller("flowController", function($scope, mySocket) {
         $scope.changeShowDanger = function () {
             $scope.showError = !$scope.showError;
         }
-        $scope.byLevel = function(log){
-            if ($scope.showDebug && (log.level == 'DEBUG' || log.level == 'TRACE')) return true
-            if ($scope.showInfo && log.level == 'INFO') return true
-            if ($scope.showWarn && log.level == 'WARN') return true
-            if ($scope.showError && log.level == 'ERROR') return true
-            return false;
-        };
+        $scope.changeShowTrace = function () {
+            $scope.showTrace = !$scope.showTrace;
+        }
         // События
         $scope.items = [];
-        $scope.items.push({level: "ERROR"})
         $scope.remove = function(index) {
             $scope.items.splice(index, 1);
         }
@@ -90,50 +86,15 @@ flowModule.controller("flowController", function($scope, mySocket) {
             data.date = date
             var user = data.properties ? '('+data.properties.userLogin+','+data.properties.sessionId+')' : ""
             data.user = user
-            var message = data.message
+            var formattedMessage = data.formattedMessage
             // XXX Нормально парсить в строку нужно нам
-            if ((message + " ").indexOf('\n')!= -1) {
-                message = safeTags(message)
-                var msgParts = message.split('\n')
-                data.message = ""
+            if ((formattedMessage + " ").indexOf('\n')!= -1) {
+                formattedMessage = safeTags(formattedMessage)
+                var msgParts = formattedMessage.split('\n')
+                data.formattedMessage = ""
                 data.msgParts = msgParts
             }
             $scope.addLimitLogEntry(data)
         })
-        //------------------
-        $scope.LogFlow = {
-            init : function(){
-                var sock = new SockJS('/messages');
-                sock.onopen = function () {
-                    addMessage('Connected')
-                };
-                sock.onmessage = function (e) {
-                    addMessage(JSON.parse(e.data))
-                };
-                sock.onclose = function () {
-                    addMessage("Server closed connection or hasn't been started")
-                };
-                function addMessage(data) {
-                    //var data = $.parseJSON(response.responseBody);
-                    if (data.level == "ERROR") {
-                        data.level
-                    }
-                    var date = moment(new Date(data.timeStamp)).format("YYYY-MM-DD HH:mm:ss")
-                    data.date = date
-                    var user = data.properties ? '('+data.properties.userLogin+','+data.properties.sessionId+')' : ""
-                    data.user = user
-                    var message = data.message
-                    // XXX Нормально парсить в строку нужно нам
-                    if ((message + " ").indexOf('\n')!= -1) {
-                        message = safeTags(message)
-                        var msgParts = message.split('\n')
-                        data.message = ""
-                        data.msgParts = msgParts
-                    }
-                    $scope.addLimitLogEntry(data)
-                }
-            }
-        };
-        //$scope.LogFlow.init()
     }
 );

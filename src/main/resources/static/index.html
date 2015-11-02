@@ -4,6 +4,7 @@
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
     <title>Time over WebSocket</title>
     <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/flow.css">
     <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/sockjs-0.3.4.js"></script>
     <script src="js/angular.js"></script>
@@ -33,24 +34,44 @@
 </head>
 <body>
 <div id="App1" ng-app="flow" ng-controller="flowController">
-    <div class="container">
+    <div class="container1">
         <div class="fill">
-            <div>
-                <div ng-repeat="log in items | reverse | filter:search | filter: byLevel"
-                     class="bs-callout
-                        {{log.level == 'ERROR' ? 'bs-callout-danger' : ''}}
-                        {{log.level == 'WARN' ? 'bs-callout-warning' : ''}}
-                        {{log.level == 'INFO' ? 'bs-callout-info' : ''}}
-                        ">
-                        <span>
-                            {{log.date}}&nbsp;&nbsp;
-                            {{log.level}}&nbsp;
-                            {{log.thread}}&nbsp;
-                            {{log.user}}&nbsp;
-                            {{log.class.className}}:{{log.method}}:{{log.lineNumber}}&nbsp;
-                            {{log.message}}&nbsp;
+            <div class="logs
+                {{showTrace == true ? 'show-level-TRACE' : ''}}
+                {{showDebug == true ? 'show-level-ERROR' : ''}}
+                {{showInfo == true ? 'show-level-INFO' : ''}}
+                {{showWarn == true ? 'show-level-WARN' : ''}}
+                {{showError == true ? 'show-level-ERROR' : ''}}
+            ">
+                <div ng-repeat="log in items | reverse | filter:search" class="entry-log level-{{log.level}}">
+                    <span>
+                        {{log.date}}&nbsp;&nbsp;
+                        <span class="log-level level-{{log.level}}">{{log.level}}</span>
+                        &nbsp;
+                        <span class="log-thread">{{log.threadName}}</span>&nbsp;
+                        {{log.user}}
+                        <span ng-if="log.level != 'ERROR'">
+                            <span ng-repeat="part in log.callerData track by $index" ng-if="$index == 0">
+                                {{part.className}}:{{part.methodName}}:{{part.lineNumber}}
+                            </span>
+                            &nbsp;
+                            {{log.formattedMessage}}
                         </span>
-                    <div>
+                        <span class="log-msg-error" ng-if="log.level == 'ERROR'">
+                            {{log.throwableProxy.className}}: {{log.throwableProxy.message}}
+                        </span>
+                    </span>
+                    <div class="log-msg-error-stack" ng-if="log.level == 'ERROR'">
+                        <div ng-repeat="part in log.throwableProxy.stackTraceElementProxyArray track by $index">
+                            {{part.stackTraceElement.className}}:{{part.stackTraceElement.methodName}}:{{part.stackTraceElement.lineNumber}}
+                        </div>
+                    </div>
+                    <!--<div class="log-caller-data">-->
+                        <!--<div ng-repeat="part in log.callerData track by $index">-->
+                            <!--{{part.className}}:{{part.methodName}}:{{part.lineNumber}}-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <div class="log-msg-parts">
                         <div ng-repeat="part in log.msgParts track by $index">
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{part}}
                         </div>
@@ -76,6 +97,10 @@
                                     <input ng-model="search.message" class="form-control">
                                 </div>
                                 <div class="btn-group">
+                                    <button type="button"
+                                            class="btn btn-sm {{showTrace == true ? 'active' : ''}}"
+                                            ng-click="changeShowTrace();">
+                                        TRACE</button>
                                     <button type="button"
                                             class="btn btn-sm btn-success {{showDebug == true ? 'active' : ''}}"
                                             ng-click="changeShowDebug();">
