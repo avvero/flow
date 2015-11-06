@@ -1,10 +1,5 @@
-
-var logPerPage = 10000
-var waitBeforeNextApplyTimeout = 10
-var applyRemainsTimeout = 1000
-
 // ########################################################################
-var flowModule = angular.module("flow", ['bd.sockjs'])
+var flowModule = angular.module("flow", ['bd.sockjs', 'infinite-scroll'])
 flowModule.filter('reverse', function() {
     return function(items) {
         return items.slice().reverse();
@@ -16,7 +11,12 @@ flowModule.factory('mySocket', function (socketFactory) {
     });
 });
 flowModule.controller("flowController", function($scope, mySocket, $timeout) {
+        $scope.visibleLogsCapacity = 50
+        $scope.visibleLogsLoadCount = 10
+        $scope.waitBeforeNextApplyTimeout = 10
+
         $scope.isStopped = false; // остановили обновление страницы
+        $scope.pageLogLimit = $scope.visibleLogsCapacity;
         // Уровни событий
         $scope.showDebug = true;
         $scope.showInfo = true;
@@ -32,6 +32,9 @@ flowModule.controller("flowController", function($scope, mySocket, $timeout) {
         $scope.addToQueue = function(logEntry) {
             $scope.queue.push(logEntry)
         }
+        $scope.changePageLogLimit = function() {
+            $scope.pageLogLimit += $scope.visibleLogsLoadCount
+        }
         $scope.removeFromQueue = function() {
             $timeout(function() {
                 if ($scope.queue.length != 0 && !$scope.isStopped)  {
@@ -39,7 +42,7 @@ flowModule.controller("flowController", function($scope, mySocket, $timeout) {
                     $scope.items.push(logEntry)
                 }
                 $scope.removeFromQueue()
-            }, waitBeforeNextApplyTimeout);
+            }, $scope.waitBeforeNextApplyTimeout);
         }
         $scope.removeFromQueue()
         $scope.clear = function () {
@@ -62,5 +65,13 @@ flowModule.controller("flowController", function($scope, mySocket, $timeout) {
             }
             $scope.addToQueue(data)
         })
+        $scope.byLevel = function(log){
+            if ($scope.showTrace && log.level == 'TRACE') return true
+            if ($scope.showDebug && log.level == 'DEBUG') return true
+            if ($scope.showInfo && log.level == 'INFO') return true
+            if ($scope.showWarn && log.level == 'WARN') return true
+            if ($scope.showError && log.level == 'ERROR') return true
+            return false;
+        };
     }
 );

@@ -1,4 +1,4 @@
-package hello;
+package com.avvero.flow;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -31,8 +31,6 @@ import java.util.stream.Collectors;
 @EnableAutoConfiguration
 @RestController
 public class Application {
-
-    int i;
 
     public static void main(String args[]) throws Throwable {
         SpringApplication.run(Application.class, args);
