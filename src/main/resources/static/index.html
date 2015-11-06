@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-    <title>Log flow</title>
+    <title>Flow</title>
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/flow.css">
     <script src="js/jquery-1.11.1.min.js"></script>
@@ -123,7 +123,6 @@
                         <li>
                             <form class="navbar-form navbar-right">
                                 <div class="btn-group">
-                                    {{visibleItems.length}}
                                     <button type="button" class="btn btn-sm btn-warning {{isStoped == true ? 'active' : ''}}" ng-click="isStopped = !isStopped">STOP <span class="badge">{{queue.length}}</span></button>
                                     <button type="button" class="btn btn-sm" ng-click="clear();">CLEAR <span class="badge">{{items.length}}</span></button>
                                     <button type="button" class="btn btn-sm btn-info" ng-click="pageLogLimit = visibleLogsCapacity">ON PAGE <span class="badge">{{pageLogLimit}}</span></button>
