@@ -62,14 +62,12 @@
     /*background-color: lightgrey;*/
 }
 
-.logs {
-    font-size: 12px;
-}
-
 .entry-log .log-msg-error-stack div {
     padding-left: 50px;
 }
 
-.flow .logs {
+.flow {
+    font-size: 12px;
     word-wrap: break-word;
+    padding-left: 3px;
 }

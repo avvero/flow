@@ -36,52 +36,48 @@
 <body>
 <div id="App1" ng-app="flow" ng-controller="flowController">
     <div class="flow">
-        <div class="fill">
-            <div class="logs">
-                <div infinite-scroll='changePageLogLimit()' infinite-scroll-distance='0'>
-                    <div ng-repeat="log in items | reverse | filter:search | filter: byLevel | limitTo:pageLogLimit" class="entry-log level-{{log.level}}">
-                        <span>
-                            {{log.date}}&nbsp;&nbsp;
-                            <span class="log-level level-{{log.level}}">{{log.level}}</span>&nbsp;
-                            <!--<span class="log-thread">{{log.threadName}}</span>&nbsp;-->
-                            {{log.user}}
-                            <span ng-if="log.level != 'ERROR'">
-                                <!--<span ng-repeat="part in log.callerData track by $index" ng-if="$index == 0">-->
-                                    <!--{{part.className}}:{{part.methodName}}:{{part.lineNumber}}-->
-                                    <!--&nbsp;-->
-                                <!--</span>-->
-                                {{log.formattedMessage}}
-                            </span>
-                            <span class="log-msg-error" ng-if="log.level == 'ERROR'">
-                                <span ng-if="log.throwableProxy">
-                                    {{log.throwableProxy.className}}: {{log.throwableProxy.message}}
-                                </span>
-                                <span ng-if="!log.throwableProxy">
-                                    {{log.formattedMessage}}
-                                </span>
-                            </span>
+        <div infinite-scroll='changePageLogLimit()' infinite-scroll-distance='0'>
+            <div ng-repeat="log in items | reverse | filter:search | filter: byLevel | limitTo:pageLogLimit" class="entry-log level-{{log.level}}">
+                <span>
+                    {{log.date}}&nbsp;&nbsp;
+                    <span class="log-level level-{{log.level}}">{{log.level}}</span>&nbsp;
+                    <!--<span class="log-thread">{{log.threadName}}</span>&nbsp;-->
+                    {{log.user}}
+                    <span ng-if="log.level != 'ERROR'">
+                        <!--<span ng-repeat="part in log.callerData track by $index" ng-if="$index == 0">-->
+                            <!--{{part.className}}:{{part.methodName}}:{{part.lineNumber}}-->
+                            <!--&nbsp;-->
+                        <!--</span>-->
+                        {{log.formattedMessage}}
+                    </span>
+                    <span class="log-msg-error" ng-if="log.level == 'ERROR'">
+                        <span ng-if="log.throwableProxy">
+                            {{log.throwableProxy.className}}: {{log.throwableProxy.message}}
                         </span>
-                        <div class="log-msg-error-stack" ng-if="log.level == 'ERROR'">
-                            <div ng-repeat="part in log.throwableProxy.stackTraceElementProxyArray track by $index">
-                                {{part.stackTraceElement.className}}:{{part.stackTraceElement.methodName}}:{{part.stackTraceElement.lineNumber}}
-                            </div>
-                        </div>
-                        <!--<div class="log-caller-data">-->
-                            <!--<div ng-repeat="part in log.callerData track by $index">-->
-                                <!--{{part.className}}:{{part.methodName}}:{{part.lineNumber}}-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <div class="log-msg-parts">
-                            <div ng-repeat="part in log.msgParts track by $index">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{part}}
-                            </div>
-                        </div>
-                        <div ng-if="log.throwable_rps">
-                            Throwable:
-                            <div ng-repeat="rp in log.throwable_rps track by $index">
-                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{rp}}</span>
-                            </div>
-                        </div>
+                        <span ng-if="!log.throwableProxy">
+                            {{log.formattedMessage}}
+                        </span>
+                    </span>
+                </span>
+                <div class="log-msg-error-stack" ng-if="log.level == 'ERROR'">
+                    <div ng-repeat="part in log.throwableProxy.stackTraceElementProxyArray track by $index">
+                        {{part.stackTraceElement.className}}:{{part.stackTraceElement.methodName}}:{{part.stackTraceElement.lineNumber}}
+                    </div>
+                </div>
+                <!--<div class="log-caller-data">-->
+                    <!--<div ng-repeat="part in log.callerData track by $index">-->
+                        <!--{{part.className}}:{{part.methodName}}:{{part.lineNumber}}-->
+                    <!--</div>-->
+                <!--</div>-->
+                <div class="log-msg-parts">
+                    <div ng-repeat="part in log.msgParts track by $index">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{part}}
+                    </div>
+                </div>
+                <div ng-if="log.throwable_rps">
+                    Throwable:
+                    <div ng-repeat="rp in log.throwable_rps track by $index">
+                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{rp}}</span>
                     </div>
                 </div>
             </div>
@@ -89,14 +85,11 @@
     </div>
     <div class="container" style="padding-top: 70px">
         <div class="navbar navbar-default navbar-fixed-bottom" role="navigation">
-            <div class="container">
+            <div class="">
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
                         <li>
                             <form action="/Stub-0.1/gateToShop/index" method="post" class="navbar-form navbar-left" role="search">
-                                <div class="form-group">
-                                    <input ng-model="search.message" class="form-control">
-                                </div>
                                 <div class="btn-group">
                                     <button type="button"
                                             class="btn btn-sm {{showTrace == true ? 'active' : ''}}"
@@ -118,6 +111,9 @@
                                             class="btn btn-sm btn-danger {{showError == true ? 'active' : ''}}"
                                             ng-click="showError = !showError">
                                         E</button>
+                                </div>
+                                <div class="form-group">
+                                    <input ng-model="search.message" class="form-control">
                                 </div>
                             </form>
                         </li>
