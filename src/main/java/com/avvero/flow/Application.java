@@ -23,8 +23,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
- * @author Artem Bilan
- * @author Josh Long
+ * @author avvero
  */
 @Configuration
 @ComponentScan
@@ -32,13 +31,24 @@ import java.util.stream.Collectors;
 @RestController
 public class Application {
 
+    public static int count;
+
+    public static synchronized int incCount() {
+        return ++count;
+    };
+    public static int succesed;
+
+    public static synchronized int incSuccesed() {
+        return ++succesed;
+    };
+
     public static void main(String args[]) throws Throwable {
         SpringApplication.run(Application.class, args);
     }
 
     @Bean
     ServerWebSocketContainer serverWebSocketContainer() {
-        return new ServerWebSocketContainer("/messages").withSockJs();
+        return new ServerWebSocketContainer("/flow").withSockJs();
     }
 
     @Bean
@@ -68,18 +78,12 @@ public class Application {
         };
     }
 
-    @RequestMapping("/hi/{name}")
-    public void send(@PathVariable String name) throws InterruptedException {
-        requestChannel().send(MessageBuilder.withPayload(name).build());
-    }
-
     @Bean
     TcpNetServerConnectionFactory cf () {
         TcpNetServerConnectionFactory factory = new TcpNetServerConnectionFactory(4561);
-        factory.setDeserializer(new DefaultDeserializer());
+        factory.setDeserializer(new DefaultDeserializerStub());
         factory.setSerializer(new DefaultSerializer());
-        factory.setSingleUse(false);
-//        factory.setSoTimeout(0);
+//        factory.setSingleUse(true);
         return factory;
     }
 

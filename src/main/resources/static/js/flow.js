@@ -5,12 +5,17 @@ flowModule.filter('reverse', function() {
         return items.slice().reverse();
     };
 });
-flowModule.factory('mySocket', function (socketFactory) {
+flowModule.factory('logFlow', function (socketFactory) {
     return socketFactory({
-        url: '/messages'
+        url: '/flow'
     });
 });
-flowModule.controller("flowController", function($scope, mySocket, $timeout) {
+flowModule.filter('trusted', ['$sce', function($sce){
+    return function(text) {
+        return $sce.trustAsHtml(text);
+    };
+}]);
+flowModule.controller("flowController", function($scope, logFlow, $timeout) {
         $scope.visibleLogsCapacity = 50
         $scope.visibleLogsLoadCount = 10
         $scope.waitBeforeNextApplyTimeout = 10
@@ -38,17 +43,28 @@ flowModule.controller("flowController", function($scope, mySocket, $timeout) {
         $scope.removeFromQueue = function() {
             $timeout(function() {
                 if ($scope.queue.length != 0 && !$scope.isStopped)  {
-                    var logEntry = $scope.queue.shift();
-                    $scope.items.push(logEntry)
+                    // Возможно нужно добавлять порциями
+                    var times = $scope.getTimes($scope.queue)
+                    for (var t = 0; t < times; t++) {
+                        var logEntry = $scope.queue.shift();
+                        $scope.items.push(logEntry)
+                    }
                 }
                 $scope.removeFromQueue()
             }, $scope.waitBeforeNextApplyTimeout);
         }
+        //XXX
+        $scope.getTimes = function (queue) {
+            if (queue.length > 1000) return 1000;
+            if (queue.length > 100) return 100;
+            if (queue.length > 10) return 10;
+            return 1;
+        };
         $scope.removeFromQueue()
         $scope.clear = function () {
             $scope.items = [];
         }
-        mySocket.setHandler('message', function addMessage(event) {
+        logFlow.setHandler('message', function addMessage(event) {
             var data = $.parseJSON(event.data);
             data.level = data.level.levelStr
             var date = moment(new Date(data.timeStamp)).format("YYYY-MM-DD HH:mm:ss")
@@ -59,9 +75,10 @@ flowModule.controller("flowController", function($scope, mySocket, $timeout) {
             // XXX Нормально парсить в строку нужно нам
             if ((formattedMessage + " ").indexOf('\n')!= -1) {
                 formattedMessage = safeTags(formattedMessage)
-                var msgParts = formattedMessage.split('\n')
-                data.formattedMessage = ""
-                data.msgParts = msgParts
+                if (formattedMessage.split('\n').length > 1) {
+                    data.formattedMessage = ""
+                    data.formattedMultiLineMessage = formattedMessage.replaceAll('\n', '<br/>')
+                }
             }
             $scope.addToQueue(data)
         })
@@ -73,5 +90,14 @@ flowModule.controller("flowController", function($scope, mySocket, $timeout) {
             if ($scope.showError && log.level == 'ERROR') return true
             return false;
         };
+
+        /**
+         * VIEW
+         */
+        $scope.getButtonItemLengthClass = function(length, d1, d2){
+            if (length <= d1) return 'btn-success'
+            if (length > d1 && length < d2) return 'btn-warning'
+            if (length >= d2) return 'btn-danger'
+        }
     }
 );

@@ -58,16 +58,22 @@
     display: inline-block;
 }
 
-.entry-log div.log-msg-parts {
-    /*background-color: lightgrey;*/
+.entry-log div.log-msg-multiline {
+    margin-left:50px;
+    padding-left: 5px;
 }
 
-.entry-log .log-msg-error-stack div {
-    padding-left: 50px;
+.entry-log .log-msg-error-stack {
+    margin-left:50px;
+    padding-left: 5px;
 }
 
 .flow {
     font-size: 12px;
     word-wrap: break-word;
     padding-left: 3px;
+}
+
+.log-msg-error-stack.bs-callout.bs-callout-danger {
+    background-color: white;
 }
