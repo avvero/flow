@@ -74,14 +74,34 @@ flowModule.controller("flowController", function($scope, logFlow, $timeout) {
             var formattedMessage = data.formattedMessage
             // XXX Нормально парсить в строку нужно нам
             if ((formattedMessage + " ").indexOf('\n')!= -1) {
-                formattedMessage = safeTags(formattedMessage)
+                //formattedMessage = safeTags(formattedMessage)
+                formattedMessage = $scope.fxPostProcess(formattedMessage)
+
                 if (formattedMessage.split('\n').length > 1) {
-                    data.formattedMessage = ""
-                    data.formattedMultiLineMessage = formattedMessage.replaceAll('\n', '<br/>')
+                    // 1 строка идет в основной лог
+                    var firstLine = formattedMessage.split('\n')[0]
+
+                    var multiLineMessage = formattedMessage.replace(firstLine + '\n','')
+                    multiLineMessage = vkbeautify.xml(multiLineMessage);
+                    multiLineMessage = safeTags(multiLineMessage);
+                    multiLineMessage = multiLineMessage.replaceAll('\n', '<br/>')
+
+                    data.formattedMessage = firstLine
+                    data.formattedMultiLineMessage = multiLineMessage
                 }
             }
             $scope.addToQueue(data)
         })
+        $scope.fxPostProcess = function(text) {
+            return text
+                .replaceAll("******* ******** ********** *******", '')
+                .replaceAll("----------------------------", '')
+                .replaceAll("---------------------------", '')
+                .replaceAll("-----------", '')
+                .replaceAll("----------", '')
+                //.replaceAll("******* ********", '')
+                //.replaceAll("********** *******", '')
+        }
         $scope.byLevel = function(log){
             if ($scope.showTrace && log.level == 'TRACE') return true
             if ($scope.showDebug && log.level == 'DEBUG') return true

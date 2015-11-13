@@ -82,8 +82,6 @@ public class Application {
     TcpNetServerConnectionFactory cf () {
         TcpNetServerConnectionFactory factory = new TcpNetServerConnectionFactory(4561);
         factory.setDeserializer(new DefaultDeserializerStub());
-        factory.setSerializer(new DefaultSerializer());
-//        factory.setSingleUse(true);
         return factory;
     }
 

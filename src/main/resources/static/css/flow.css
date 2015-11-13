@@ -1,6 +1,6 @@
 .entry-log.level-ERROR,
 .entry-log .log-level.level-ERROR {
-    color: red;
+    color: #AC2925;
 }
 
 .entry-log .log-level.level-ERROR {

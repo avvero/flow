@@ -29,5 +29,5 @@ String.prototype.replaceAll = function( token, newToken, ignoreCase ) {
 };
 
 function safeTags(str) {
-    return str.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;') ;
+    return str.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll(' ','&nbsp;') ;
 }
