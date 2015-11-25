@@ -77,3 +77,67 @@
 .log-msg-error-stack.bs-callout.bs-callout-danger {
     background-color: white;
 }
+
+@-webkit-keyframes pulse
+{
+    0% {-webkit-transform: scale(0); opacity: 0;}
+    8% {-webkit-transform: scale(0); opacity: 0;}
+    15% {-webkit-transform: scale(0.1); opacity: 1;}
+    30% {-webkit-transform: scale(0.5); opacity: 1;}
+    100% {opacity: 0; -webkit-transform: scale(1);}
+}
+
+@-moz-keyframes pulse
+{
+    0% {-moz-transform: scale(0); opacity: 0;}
+    8% {-moz-transform: scale(0); opacity: 0;}
+    15% {-moz-transform: scale(0.1); opacity: 1;}
+    30% {-moz-transform: scale(0.5); opacity: 1;}
+    100% {opacity: 0; -moz-transform: scale(1);}
+}
+
+.pulse_holder {
+    display: block;
+    z-index: 100;
+    position: fixed;
+    right: 24px;
+    top: 24px;
+}
+
+.pulse_holder .pulse_marker {
+    width: 16px;
+    height: 16px;
+    background: #969099;
+    border-radius: 28px;
+}
+
+.pulse_holder.connected .pulse_marker {
+    background: #099;
+}
+
+.pulse_holder .pulse_rays {
+    margin: 0 auto;
+    border-radius: 100px;
+    position: absolute;
+    right: -24px;
+    top: -24px;
+    z-index: 10;
+    background-color: transparent;
+    opacity: 0.1;
+    width: 64px;
+    height: 64px;
+    border: 2px solid rgb(128, 123, 122);
+    -webkit-border-radius: 100px;
+    -moz-border-radius: 100px;
+    -o-border-radius: 100px;
+    -ms-border-radius: 100px;
+    border-radius: 100px;
+    /* Giving Animation Function */
+    -webkit-animation: pulse 2s linear infinite;
+    -moz-animation: pulse 2s linear infinite;
+    border-image: initial;
+}
+
+.pulse_holder.connected .pulse_rays {
+    border: 2px solid rgba(0, 128, 64, 1);
+}

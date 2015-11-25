@@ -1,0 +1,115 @@
+<div class="pulse_holder {{stompClient.connected ? 'connected' : ''}}"
+     tooltip-placement="left"
+     uib-tooltip="{{stompClient.connected ? 'Connection is established' : 'Connection is lost'}}">
+    <div class="pulse_marker" >
+        <div class="pulse_rays"></div>
+    </div>
+</div>
+<div class="flow">
+    <div infinite-scroll='changePageLogLimit()' infinite-scroll-distance='0'>
+        <div ng-repeat="log in items | reverse | filter:search | filter: byLevel | limitTo:pageLogLimit"
+             class="entry-log level-{{log.level}}">
+                <span>
+                    <span class="log-date">{{log.date}}</span>
+                    <span class="log-level level-{{log.level}}">{{log.level}}</span>&nbsp;
+                    <!--<span class="log-thread">{{log.threadName}}</span>&nbsp;-->
+                    <span class="log-user">{{log.user}}</span>
+                    <span>
+                        <!--<span ng-repeat="part in log.callerData track by $index" ng-if="$index == 0">-->
+                            <!--{{part.className}}:{{part.methodName}}:{{part.lineNumber}}-->
+                            <!--&nbsp;-->
+                        <!--</span>-->
+                        {{log.formattedMessage}}
+                    </span>
+                </span>
+
+            <div class="log-msg-multiline bs-callout bs-callout-info" ng-if="log.formattedMultiLineMessage">
+                <div ng-bind-html="log.formattedMultiLineMessage | trusted"></div>
+            </div>
+            <div class="log-msg-error" ng-if="log.throwableProxy">
+                {{log.throwableProxy.className}}: {{log.throwableProxy.message}}
+            </div>
+            <div class="log-msg-error-stack bs-callout bs-callout-danger" ng-if="log.level == 'ERROR'">
+                <div ng-repeat="part in log.throwableProxy.stackTraceElementProxyArray track by $index">
+                    {{part.steasString}}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container" style="padding-top: 70px">
+    <div class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+        <div class="">
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <div class="navbar-form navbar-left">
+                            <div class="btn-group">
+                                <button type="button"
+                                        class="btn btn-sm {{showTrace == true ? 'active' : ''}}"
+                                        ng-click="showTrace = !showTrace" title="Show/hide trace logs">
+                                    T
+                                </button>
+                                <button type="button"
+                                        class="btn btn-sm {{showDebug == true ? 'btn-success active' : ''}}"
+                                        ng-click="showDebug = !showDebug" title="Show/hide debug logs">
+                                    D
+                                </button>
+                                <button type="button"
+                                        class="btn btn-sm {{showInfo == true ? 'active btn-info' : ''}}"
+                                        ng-click="showInfo = !showInfo" title="Show/hide info logs">
+                                    I
+                                </button>
+                                <button type="button"
+                                        class="btn btn-sm {{showWarn == true ? 'active btn-warning' : ''}}"
+                                        ng-click="showWarn = !showWarn" title="Show/hide warn logs">
+                                    W
+                                </button>
+                                <button type="button"
+                                        class="btn btn-sm {{showError == true ? 'active btn-danger' : ''}}"
+                                        ng-click="showError = !showError" title="Show/hide error logs">
+                                    E
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <input ng-model="search.message" class="form-control"
+                                       placeholder="Search by log message">
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm" ng-click="search.message = ''">X</button>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <form class="navbar-form navbar-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm
+                                            {{getButtonItemLengthClass(queue.length, 100, 1000)}}
+                                            {{isStopped == true ? 'active' : ''}}"
+                                        ng-click="isStopped = !isStopped" title="Stop/Start">
+                                    QUEUE <span class="badge">{{queue.length}}</span></button>
+                                <button type="button" class="btn btn-sm
+                                            {{getButtonItemLengthClass(items.length, 5000, 50000)}}"
+                                        ng-click="clear();" title="Clear all">
+                                    TOTAL <span class="badge">{{items.length}}</span></button>
+                                <button type="button" class="btn btn-sm
+                                            {{getButtonItemLengthClass(pageLogLimit, 500, 1000)}}"
+                                        ng-click="pageLogLimit = visibleLogsCapacity"
+                                        title="Reduce page limit to {{visibleLogsCapacity}}">
+                                    PAGE <span class="badge">{{pageLogLimit}}</span></button>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
