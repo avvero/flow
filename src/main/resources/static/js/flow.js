@@ -85,8 +85,8 @@ function flowController($scope, $stompie, $timeout, $stateParams) {
     /**
      * При закрытии делаем disconnect
      */
-    $scope.$on('$destroy', function iVeBeenDismissed() {
-        $scope.saveLesson(false)
+    $scope.$on('$destroy', function() {
+        // TODO когда-нибудь будем делать, но не сейчас
     })
 
 

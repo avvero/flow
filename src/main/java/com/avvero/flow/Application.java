@@ -25,9 +25,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.socket.messaging.SessionSubscribeEvent;
-import org.springframework.web.socket.messaging.StompSubProtocolHandler;
-import org.springframework.web.socket.messaging.SubProtocolHandler;
+import org.springframework.web.socket.messaging.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -113,6 +111,40 @@ public class Application {
         };
     }
 
+    @Bean
+    ApplicationListener sessionUnsubscribeEventListener() {
+        return new ApplicationListener<SessionUnsubscribeEvent>(){
+            @Override
+            public void onApplicationEvent(SessionUnsubscribeEvent event) {
+                String simpSessionId = (String) event.getMessage().getHeaders().get(SESSION_ID_HEADER);
+                String simpSubscriptionId = (String) event.getMessage().getHeaders().get(SUBSCRIPTION_ID_HEADER);
+                String marker = (String) event.getMessage().getHeaders().get(DESTINATION_HEADER);
+                markerSessions().get(marker).remove(new Tuple(simpSessionId, simpSubscriptionId, marker));
+            }
+        };
+    }
+
+    @Bean
+    ApplicationListener sessionDisconnectEventListener() {
+        return new ApplicationListener<SessionDisconnectEvent>(){
+            @Override
+            public void onApplicationEvent(SessionDisconnectEvent event) {
+                String simpSessionId = (String) event.getMessage().getHeaders().get(SESSION_ID_HEADER);
+                synchronized (markerSessions()) {
+                    for(List<Tuple> list : markerSessions().values()) {
+                        Iterator<Tuple> iterator = list.iterator();
+                        while(iterator.hasNext()) {
+                            Tuple tuple = iterator.next();
+                            if (simpSessionId.equals(tuple.get(0))) {
+                                iterator.remove();
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
+
     @Bean(name = "webSocketFlow.input")
     MessageChannel sendMessage() {
         return new DirectChannel();
@@ -170,7 +202,7 @@ public class Application {
     @ServiceActivator(inputChannel = "tcpChannel")
     public void sendLog(LoggingEventVO event) throws IOException, ClassNotFoundException {
         String marker = event.getMarker() != null ? event.getMarker().getName() : ALL_MARKER_HEADER;
-        //TODO ??????????
+        //TODO переделать
         if (!markerSessions().containsKey(marker)) {
             markerSessions().put(marker, Collections.synchronizedList(new ArrayList<>()));
         }
