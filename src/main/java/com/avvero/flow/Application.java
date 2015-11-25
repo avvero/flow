@@ -203,8 +203,10 @@ public class Application {
     public void sendLog(LoggingEventVO event) throws IOException, ClassNotFoundException {
         String marker = event.getMarker() != null ? event.getMarker().getName() : ALL_MARKER_HEADER;
         //TODO переделать
-        if (!markerSessions().containsKey(marker)) {
-            markerSessions().put(marker, Collections.synchronizedList(new ArrayList<>()));
+        synchronized (markerSessions()) {
+            if (!markerSessions().containsKey(marker)) {
+                markerSessions().put(marker, Collections.synchronizedList(new ArrayList<>()));
+            }
         }
         sendMessage().send(MessageBuilder
                 .withPayload(event)

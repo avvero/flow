@@ -141,3 +141,11 @@
 .pulse_holder.connected .pulse_rays {
     border: 2px solid rgba(0, 128, 64, 1);
 }
+
+.markers_container {
+    width: auto;
+    margin-right: auto;
+    margin-left: auto;
+    max-width: 680px;
+    padding: 0 15px;
+}
