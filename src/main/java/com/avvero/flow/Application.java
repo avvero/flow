@@ -64,7 +64,10 @@ public class Application {
 
     @Bean
     ServerWebSocketContainer serverWebSocketContainer() {
-        return new ServerWebSocketContainer("/messages/flow").withSockJs();
+        ServerWebSocketContainer container = new ServerWebSocketContainer("/messages/flow").withSockJs();
+        container.setSendBufferSizeLimit(Integer.MAX_VALUE);
+        container.setSendTimeLimit(10 * 1000);
+        return container;
     }
 
     @Bean
