@@ -12,7 +12,8 @@ angular.module('stompie', [])
         var _stompie = {},
             _endpoint = null,
             _init_callbacks = [],
-            _socket = {};
+            _socket = {},
+            count=0;
 
         _stompie.connected = false;
 
@@ -101,6 +102,7 @@ angular.module('stompie', [])
          */
         _stompie.subscribe = function (channel, callback) {
             return _socket.stomp.subscribe(channel, function (data) {
+                //console.info("Has come "+ ++count)
                 var payload = null;
                 try {
                     payload = JSON.parse(data.body);
