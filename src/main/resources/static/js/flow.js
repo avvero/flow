@@ -1,9 +1,9 @@
 function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
     $scope.visibleLogsCapacity = 50
     $scope.visibleLogsLoadCount = 10
-    $scope.waitBeforeNextApplyTimeout = 1
-    $scope.stored = 0
-    $scope.reccived = 0
+    $scope.REMOVE_FROM_QUEUE_IDLE = 10
+    $scope.REMOVE_FROM_STORE_QUEUE_IDLE = 3000
+    $scope.idx = 0
 
     $scope.isStopped = false; // остановили обновление страницы
     $scope.pageLogLimit = $scope.visibleLogsCapacity;
@@ -16,53 +16,9 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
     // События
     $scope.items = [];
     $scope.queue = [];
+    $scope.toStoreQueue = [];
     $scope.remove = function (index) {
         $scope.items.splice(index, 1);
-    }
-    $scope.loadMore = function() {
-        var firstElement = $scope.items[0]
-        if (!firstElement) return
-
-        var list = $scope.getFromStore(firstElement.id, 10)
-        //$scope.items = list.concat($scope.items)
-    }
-    $scope.getFromStore = function(before, count){
-        $indexedDB.openStore('log', function(store){
-            var start = before-101
-            var find = store.query();
-            find = find.$between(start, before, true, false);
-            // update scope
-            store.eachWhere(find).then(function(storedItems){
-                if (storedItems.length > 0) {
-                    var lastIdx = before
-                    for(var i = storedItems.length-1; i >= 0; i--){
-                        //storedItems[i]['id'] = --lastIdx
-                        storedItems[i]= $scope.parseMessage(storedItems[i]);
-                    }
-                    $scope.items = storedItems.concat($scope.items)
-                }
-            });
-        });
-    }
-    $scope.addToStoreQueue = function (logEntry) {
-        $timeout(function () {
-            if ($scope.items.length > 200) {
-                console.info("Length " +  $scope.items.length)
-                var toStore = $scope.items.splice(0, 100-1)
-                console.info("Will store " + toStore.length)
-                $indexedDB.openStore('log', function (store) {
-                    console.info("Start store " + toStore.length)
-                    store.insert(toStore).then(function (e) {
-                        console.info("Inserted " + e.length)
-                        //message['id'] = e[0]-1 //TODO
-                        //$scope.addMessage(message)
-                    });
-                })
-                //$scope.items = $scope.items.splice(20, $scope.items.length-1)
-                console.info("Will pass " + $scope.items.length)
-            }
-            $scope.items.push(logEntry)
-        }, $scope.waitBeforeNextApplyTimeout);
     }
     $scope.addToQueue = function (logEntry) {
         $scope.queue.push(logEntry)
@@ -75,14 +31,39 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
             if ($scope.queue.length != 0 && !$scope.isStopped) {
                 // Возможно нужно добавлять порциями
                 var times = $scope.getTimes($scope.queue)
+                var toStore = []
                 for (var t = 0; t < times; t++) {
                     var logEntry = $scope.queue.shift();
                     $scope.items.push(logEntry)
+                    $scope.toStoreQueue.push(logEntry)
                 }
             }
             $scope.removeFromQueue()
-        }, $scope.waitBeforeNextApplyTimeout);
+        }, $scope.REMOVE_FROM_QUEUE_IDLE);
     }
+    $scope.removeFromQueue()
+    $scope.removeFromStoreQueue = function () {
+        $timeout(function () {
+            if ($scope.toStoreQueue.length != 0) {
+                // Возможно нужно добавлять порциями
+                var toStore = []
+                var length = $scope.toStoreQueue.length
+                for (var t = 0; t < length; t++) {
+                    var logEntry = $scope.toStoreQueue.shift();
+                    toStore.push(logEntry)
+                }
+                if (toStore.length > 0) {
+                    $indexedDB.openStore('log', function (store) {
+                        store.insert(toStore).then(function (e) {
+                            console.info("Inserted " + e.length)
+                        });
+                    })
+                }
+            }
+            $scope.removeFromStoreQueue()
+        }, $scope.REMOVE_FROM_STORE_QUEUE_IDLE);
+    }
+    $scope.removeFromStoreQueue()
     //XXX
     $scope.getTimes = function (queue) {
         if (queue.length > 1000) return 1000;
@@ -90,12 +71,12 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
         if (queue.length > 10) return 10;
         return 1;
     };
-    $scope.removeFromQueue()
     $scope.clear = function () {
         $scope.items = [];
     }
-    $scope.addMessage = function (event) {
-        var data = $scope.parseMessage(event);
+    $scope.onMessageReceive = function (event) {
+        var data = $scope.parseMessage(event)
+        data['idx'] = $scope.idx++
         $scope.addToQueue(data)
     }
     $scope.parseMessage = function (event) {
@@ -124,13 +105,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
                 data.formattedMultiLineMessage = multiLineMessage
             }
         }
-        return data
-    }
-    $scope.idx = 0
-    $scope.onMessageReceive = function (message) {
-        console.info("Reccived " + ++$scope.reccived)
-        message['id'] = $scope.idx++
-        $scope.addMessage(message)
+        return data;
     }
     /***
      * STOMP
