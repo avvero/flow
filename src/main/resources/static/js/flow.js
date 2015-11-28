@@ -44,7 +44,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
             });
         });
     }
-    $scope.addToQueue = function (logEntry) {
+    $scope.addToStoreQueue = function (logEntry) {
         $timeout(function () {
             if ($scope.items.length > 200) {
                 console.info("Length " +  $scope.items.length)
@@ -63,6 +63,9 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
             }
             $scope.items.push(logEntry)
         }, $scope.waitBeforeNextApplyTimeout);
+    }
+    $scope.addToQueue = function (logEntry) {
+        $scope.queue.push(logEntry)
     }
     $scope.changePageLogLimit = function () {
         $scope.pageLogLimit += $scope.visibleLogsLoadCount
