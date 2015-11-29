@@ -140,22 +140,33 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
         var list = $scope.getFromStore(firstElement.idx, 10)
         //$scope.items = list.concat($scope.items)
     }
+    $scope.getFromStoreLock = false;
     $scope.getFromStore = function(before, count){
+        if ($scope.getFromStoreLock) return;
+        $scope.getFromStoreLock = true;
+
         $indexedDB.openStore('log', function(store){
-            var start = before-101
-            var find = store.query();
-            find = find.$between(start, before, true, false);
-            // update scope
-            store.eachWhere(find).then(function(storedItems){
-                if (storedItems.length > 0) {
-                    //var lastIdx = before
-                    //for(var i = storedItems.length-1; i >= 0; i--){
-                    //    //storedItems[i]['id'] = --lastIdx
-                    //    storedItems[i]= $scope.parseMessage(storedItems[i]);
-                    //}
-                    $scope.items = storedItems.concat($scope.items)
+            var result = []
+            var count = 100;
+            store.store.openCursor(null, "prev").onsuccess = function(event) {
+                var cursor = event.target.result;
+                if (cursor) {
+                    if(cursor.value.idx < before && result.length <= count ) {
+                        var entry = cursor.value
+                        if ($scope.newFilter.check(entry)) {
+                            result.unshift(entry)
+                        }
+                    }
+                    cursor.continue();
+                } else {
+                    //alert("No more entries!");
+                    console.info("Fetched" + result.length)
+                    if (result.length > 0) {
+                        $scope.items = result.concat($scope.items)
+                    }
+                    $scope.getFromStoreLock = false
                 }
-            });
+            }
         });
     }
     /**

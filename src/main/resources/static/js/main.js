@@ -38,10 +38,24 @@ var flow = angular.module("flow", [
             });
 
             elm.bind('scroll', function() {
+                console.info("scrollTop "+raw.scrollTop)
+                console.info("scrollHeight "+raw.scrollHeight)
+
+                console.info("clientHeight "+raw.clientHeight)
+                console.info("clientTop "+raw.clientTop)
+
+                console.info("bottom "+ (raw.scrollHeight - raw.clientHeight - raw.scrollTop))
                 if (raw.scrollTop < 100) { // load more items before you hit the top
                     var sh = raw.scrollHeight
                     scope.$apply(attr.whenScrolledUp);
                     raw.scrollTop = raw.scrollHeight - sh;
+                    console.info("scrolled to top")
+                }
+                if ((raw.scrollHeight - raw.scrollTop) < 100) { // load more items before you hit the top
+                    var sh = raw.scrollHeight
+                    scope.$apply(attr.whenScrolledUp);
+                    raw.scrollTop = raw.scrollHeight - sh;
+                    console.info("scrolled to bottom")
                 }
             });
         };
