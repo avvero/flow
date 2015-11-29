@@ -6,7 +6,7 @@ var flow = angular.module("flow", [
     'stompie',
     'ui.bootstrap',
     'indexedDB'
-])
+    ])
     .filter('reverse', function () {
         return function (items) {
             return items.slice().reverse();
@@ -16,8 +16,36 @@ var flow = angular.module("flow", [
         return function (text) {
             return $sce.trustAsHtml(text);
         };
-    }]);
+    }])
+    .directive('onFinishRender', function ($timeout) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attr) {
+                if (scope.$last === true) {
+                    $timeout(function () {
+                        scope.$emit('ngRepeatFinished');
+                    });
+                }
+            }
+        }
+    })
+    .directive('whenScrolledUp', ['$timeout', function($timeout) {
+        return function(scope, elm, attr) {
+            var raw = elm[0];
 
+            $timeout(function() {
+                raw.scrollTop = raw.scrollHeight;
+            });
+
+            elm.bind('scroll', function() {
+                if (raw.scrollTop < 100) { // load more items before you hit the top
+                    var sh = raw.scrollHeight
+                    scope.$apply(attr.whenScrolledUp);
+                    raw.scrollTop = raw.scrollHeight - sh;
+                }
+            });
+        };
+    }]);
 // configure our routes
 flow.config(function ($routeProvider, $stateProvider, $urlRouterProvider, $indexedDBProvider) {
 
@@ -45,10 +73,11 @@ flow.config(function ($routeProvider, $stateProvider, $urlRouterProvider, $index
         })
 
     $indexedDBProvider
-        .connection('com.avvero.flow.log.'+makeid())
-        .upgradeDatabase(1, function(event, db, tx){
+        .connection('com.avvero.flow.log.' + makeid())
+        .upgradeDatabase(1, function (event, db, tx) {
             var objStore = db.createObjectStore('log', {autoIncrement: true});
-            objStore.createIndex('id_idx', 'id', {unique: true});
+            objStore.createIndex('idx', 'idx', {unique: true});
+            objStore.createIndex('level', 'level', {unique: false});
         });
 });
 

@@ -5,11 +5,12 @@
         <div class="pulse_rays"></div>
     </div>
 </div>
-<div class="flow">
+<div class="flow" when-scrolled-up="whenScrolledUp()">
     <div infinite-scroll='changePageLogLimit()' infinite-scroll-distance='0'>
-        <div ng-repeat="log in items | reverse | filter:search | filter: byLevel | limitTo:pageLogLimit"
+        <div ng-repeat="log in items | filter: byNewFilter track by log.idx" on-finish-render="ngRepeatFinished"
              class="entry-log level-{{log.level}}">
                 <span>
+                    <span>{{log.idx}} </span>
                     <span class="log-date">{{log.date}}</span>
                     <span class="log-level level-{{log.level}}">{{log.level}}</span>&nbsp;
                     <!--<span class="log-thread">{{log.threadName}}</span>&nbsp;-->
@@ -34,6 +35,7 @@
                     {{part.steasString}}
                 </div>
             </div>
+            {{$last ? window.scrollTo(0,document.body.scrollHeight) : ''}}
         </div>
     </div>
 </div>
@@ -91,8 +93,9 @@
                     <li>
                         <form class="navbar-form navbar-right">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sm">
-                                    TO STORE QUEUE <span class="badge">{{toStoreQueue.length}}</span></button>
+                                {{idx}}
+                                <button type="button" class="btn btn-sm" ng-click="filterIt()">FILTER</button>
+                                <button type="button" class="btn btn-sm">TO STORE QUEUE <span class="badge">{{toStoreQueue.length}}</span></button>
                                 <button type="button" class="btn btn-sm
                                             {{getButtonItemLengthClass(queue.length, 100, 1000)}}
                                             {{isStopped == true ? 'active' : ''}}"

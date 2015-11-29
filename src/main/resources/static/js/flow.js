@@ -20,6 +20,12 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
     $scope.remove = function (index) {
         $scope.items.splice(index, 1);
     }
+    $scope.addToItems = function (logEntry) {
+        $scope.items.push(logEntry)
+        if ($scope.items.length > 200 - 1) {
+            $scope.items.splice(0, 100)
+        }
+    }
     $scope.addToQueue = function (logEntry) {
         $scope.queue.push(logEntry)
     }
@@ -34,7 +40,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
                 var toStore = []
                 for (var t = 0; t < times; t++) {
                     var logEntry = $scope.queue.shift();
-                    $scope.items.push(logEntry)
+                    $scope.addToItems(logEntry)
                     $scope.toStoreQueue.push(logEntry)
                 }
             }
@@ -107,6 +113,58 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
         }
         return data;
     }
+    $scope.newFilter = {
+        levels: function () {
+            return [$scope.showTrace ? 'TRACE' : '',
+                $scope.showDebug ? 'DEBUG' : '',
+                $scope.showInfo ? 'INFO' : '',
+                $scope.showWarn ? 'WARN' : '',
+                $scope.showError ? 'ERROR' : ''
+            ]
+        },
+        check: function (entry) {
+            return $.inArray(entry.level, this.levels()) >= 0;
+        }
+    }
+    $scope.byNewFilter = function (log) {
+        return $scope.newFilter.check(log);
+    };
+    $scope.whenScrolledUp = function() {
+        console.info("whenScrolledUp")
+        $scope.loadMore()
+    }
+    $scope.loadMore = function() {
+        var firstElement = $scope.items[0]
+        if (!firstElement) return
+
+        var list = $scope.getFromStore(firstElement.idx, 10)
+        //$scope.items = list.concat($scope.items)
+    }
+    $scope.getFromStore = function(before, count){
+        $indexedDB.openStore('log', function(store){
+            var start = before-101
+            var find = store.query();
+            find = find.$between(start, before, true, false);
+            // update scope
+            store.eachWhere(find).then(function(storedItems){
+                if (storedItems.length > 0) {
+                    //var lastIdx = before
+                    //for(var i = storedItems.length-1; i >= 0; i--){
+                    //    //storedItems[i]['id'] = --lastIdx
+                    //    storedItems[i]= $scope.parseMessage(storedItems[i]);
+                    //}
+                    $scope.items = storedItems.concat($scope.items)
+                }
+            });
+        });
+    }
+    /**
+     * bottom scroll
+     */
+    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+        //console.info("ngRepeatFinished")
+        //window.scrollTo(0,document.body.scrollHeight);
+    });
     /***
      * STOMP
      */
