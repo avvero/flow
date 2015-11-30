@@ -34,6 +34,14 @@
                     {{part.steasString}}
                 </div>
             </div>
+            <div ng-if="log.throwableProxy.cause">
+                <div class="log-msg-error" >Caused by: {{log.throwableProxy.cause.className}}: {{log.throwableProxy.cause.message}}</div>
+                <div class="log-msg-error-stack bs-callout bs-callout-danger">
+                    <div ng-repeat="part in log.throwableProxy.cause.stackTraceElementProxyArray track by $index">
+                        {{part.steasString}}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
