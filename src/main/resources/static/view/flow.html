@@ -5,11 +5,12 @@
         <div class="pulse_rays"></div>
     </div>
 </div>
-<div class="flow">
-    <div infinite-scroll='changePageLogLimit()' infinite-scroll-distance='0'>
-        <div ng-repeat="log in items | reverse | filter:search | filter: byLevel | limitTo:pageLogLimit"
-             class="entry-log level-{{log.level}}">
+<div class="flow" when-scrolled-up="loadMore('prev')" when-scrolled-down="loadMore('next')">
+    <div>
+        <div ng-repeat="log in items | filter:search | filter: byLevel track by log.idx"
+             on-finish-render="itemsRenderFinish" class="entry-log level-{{log.level}}">
                 <span>
+                    <span>{{log.idx}} </span>
                     <span class="log-date">{{log.date}}</span>
                     <span class="log-level level-{{log.level}}">{{log.level}}</span>&nbsp;
                     <!--<span class="log-thread">{{log.threadName}}</span>&nbsp;-->

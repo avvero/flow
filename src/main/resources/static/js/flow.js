@@ -1,7 +1,11 @@
-function flowController($scope, $stompie, $timeout, $stateParams) {
+function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
     $scope.visibleLogsCapacity = 50
     $scope.visibleLogsLoadCount = 10
-    $scope.waitBeforeNextApplyTimeout = 10
+    //STORE
+    $scope.ITEMS_PER_PAGE = 200
+    $scope.ITEMS_PER_PAGE_THRESHOLD = 100
+    $scope.REMOVE_FROM_QUEUE_IDLE = 10
+    $scope.REMOVE_FROM_STORE_QUEUE_IDLE = 3000
 
     $scope.isStopped = false; // остановили обновление страницы
     $scope.pageLogLimit = $scope.visibleLogsCapacity;
@@ -11,15 +15,30 @@ function flowController($scope, $stompie, $timeout, $stateParams) {
     $scope.showWarn = true;
     $scope.showError = true;
     $scope.showTrace = true;
-    // События
+    // Списки
     $scope.items = [];
     $scope.queue = [];
+    $scope.toStoreQueue = [];
+
+    $scope.idx = 0
     $scope.remove = function (index) {
         $scope.items.splice(index, 1);
     }
     $scope.addToQueue = function (logEntry) {
         $scope.queue.push(logEntry)
     }
+    $scope.addToItems = function (logEntry) {
+        $scope.items.push(logEntry)
+        if ($scope.items.length >= $scope.ITEMS_PER_PAGE + $scope.ITEMS_PER_PAGE_THRESHOLD) {
+            $scope.items.splice(0, $scope.ITEMS_PER_PAGE_THRESHOLD)
+        }
+    }
+    /**
+     * bottom scroll
+     */
+    $scope.$on('itemsRenderFinish', function() {
+        $('.flow')[0].scrollTop = $('.flow')[0].scrollHeight
+    });
     $scope.changePageLogLimit = function () {
         $scope.pageLogLimit += $scope.visibleLogsLoadCount
     }
@@ -28,26 +47,54 @@ function flowController($scope, $stompie, $timeout, $stateParams) {
             if ($scope.queue.length != 0 && !$scope.isStopped) {
                 // Возможно нужно добавлять порциями
                 var times = $scope.getTimes($scope.queue)
+                var toStore = []
                 for (var t = 0; t < times; t++) {
                     var logEntry = $scope.queue.shift();
-                    $scope.items.push(logEntry)
+                    $scope.addToItems(logEntry)
+                    $scope.toStoreQueue.push(logEntry)
                 }
             }
             $scope.removeFromQueue()
-        }, $scope.waitBeforeNextApplyTimeout);
+        }, $scope.REMOVE_FROM_QUEUE_IDLE);
     }
-    //XXX
+    $scope.removeFromQueue()
+    $scope.removeFromStoreQueue = function () {
+        $timeout(function () {
+            if ($scope.toStoreQueue.length != 0) {
+                // Возможно нужно добавлять порциями
+                var toStore = []
+                var length = $scope.toStoreQueue.length
+                for (var t = 0; t < length; t++) {
+                    var logEntry = $scope.toStoreQueue.shift();
+                    toStore.push(logEntry)
+                }
+                if (toStore.length > 0) {
+                    $indexedDB.openStore('log', function (store) {
+                        store.insert(toStore).then(function (e) {
+                            console.info("Inserted " + e.length)
+                        });
+                    })
+                }
+            }
+            $scope.removeFromStoreQueue()
+        }, $scope.REMOVE_FROM_STORE_QUEUE_IDLE);
+    }
+    $scope.removeFromStoreQueue()
     $scope.getTimes = function (queue) {
         if (queue.length > 1000) return 1000;
         if (queue.length > 100) return 100;
         if (queue.length > 10) return 10;
         return 1;
     };
-    $scope.removeFromQueue()
     $scope.clear = function () {
         $scope.items = [];
     }
-    $scope.addMessage = function(event) {
+    $scope.onMessageReceive = function (event) {
+        var data = $scope.parseMessage(event)
+        data['idx'] = $scope.idx++
+        $scope.addToQueue(data)
+    }
+    $scope.parseMessage = function(event) {
         var data = event;
         data.level = data.level.levelStr
         var date = moment(new Date(data.timeStamp)).format("YYYY-MM-DD HH:mm:ss")
@@ -73,14 +120,16 @@ function flowController($scope, $stompie, $timeout, $stateParams) {
                 data.formattedMultiLineMessage = multiLineMessage
             }
         }
-        $scope.addToQueue(data)
+        return data;
     }
     /***
      * STOMP
      */
     $scope.stompClient = $stompie
     $stompie.using('/messages/flow', [
-        function () {$stompie.subscribe($stateParams.marker, $scope.addMessage)}
+        function () {
+            $stompie.subscribe($stateParams.marker, $scope.onMessageReceive)
+        }
     ]);
     /**
      * При закрытии делаем disconnect
