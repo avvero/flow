@@ -7,7 +7,7 @@
 </div>
 <div class="flow">
     <div infinite-scroll='changePageLogLimit()' infinite-scroll-distance='0'>
-        <div ng-repeat="log in items | reverse | filter:search | filter: byLevel | limitTo:pageLogLimit"
+        <div ng-repeat="log in items | reverse | filter:search | level:showTrace:showDebug:showInfo:showWarn:showError:pageLogLimit"
              class="entry-log level-{{log.level}}">
                 <span>
                     <span class="log-date">{{log.date}}</span>

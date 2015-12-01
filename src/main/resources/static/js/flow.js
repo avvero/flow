@@ -5,12 +5,6 @@ function flowController($scope, $stompie, $timeout, $stateParams) {
 
     $scope.isStopped = false; // остановили обновление страницы
     $scope.pageLogLimit = $scope.visibleLogsCapacity;
-    // Уровни событий
-    $scope.showDebug = true;
-    $scope.showInfo = true;
-    $scope.showWarn = true;
-    $scope.showError = true;
-    $scope.showTrace = true;
     // События
     $scope.items = [];
     $scope.queue = [];
@@ -88,8 +82,6 @@ function flowController($scope, $stompie, $timeout, $stateParams) {
     $scope.$on('$destroy', function() {
         // TODO когда-нибудь будем делать, но не сейчас
     })
-
-
     $scope.fxPostProcess = function (text) {
         return text
             .replaceAll("******* ******** ********** *******", '')
@@ -100,18 +92,16 @@ function flowController($scope, $stompie, $timeout, $stateParams) {
         //.replaceAll("******* ********", '')
         //.replaceAll("********** *******", '')
     }
-    $scope.byLevel = function (log) {
-        if ($scope.showTrace && log.level == 'TRACE') return true
-        if ($scope.showDebug && log.level == 'DEBUG') return true
-        if ($scope.showInfo && log.level == 'INFO') return true
-        if ($scope.showWarn && log.level == 'WARN') return true
-        if ($scope.showError && log.level == 'ERROR') return true
-        return false;
-    };
-
     /**
      * VIEW
      */
+        // Уровни событий
+    $scope.showDebug = true;
+    $scope.showInfo = true;
+    $scope.showWarn = true;
+    $scope.showError = true;
+    $scope.showTrace = true;
+
     $scope.getButtonItemLengthClass = function (length, d1, d2) {
         if (length <= d1) return 'btn-success'
         if (length > d1 && length < d2) return 'btn-warning'
