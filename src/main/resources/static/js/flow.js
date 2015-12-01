@@ -14,8 +14,11 @@ function flowController($scope, $stompie, $timeout, $stateParams) {
     $scope.addToQueue = function (logEntry) {
         $scope.queue.push(logEntry)
     }
-    $scope.changePageLogLimit = function () {
+    $scope.whenScrolledDown = function () {
         $scope.pageLogLimit += $scope.visibleLogsLoadCount
+    }
+    $scope.whenScrolledUp = function () {
+        $scope.pageLogLimit = $scope.visibleLogsCapacity
     }
     $scope.removeFromQueue = function () {
         $timeout(function () {
@@ -68,6 +71,9 @@ function flowController($scope, $stompie, $timeout, $stateParams) {
             }
         }
         $scope.addToQueue(data)
+    }
+    $scope.whenScrolledUp = function () {
+        $scope.pageLogLimit = $scope.visibleLogsCapacity
     }
     /***
      * STOMP

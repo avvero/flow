@@ -72,6 +72,13 @@
     font-size: 12px;
     word-wrap: break-word;
     padding-left: 3px;
+    overflow: auto;
+    position:fixed !important;
+    position:absolute;
+    top:0;
+    right:0;
+    bottom: 50px;
+    left:0;
 }
 
 .log-msg-error-stack.bs-callout.bs-callout-danger {

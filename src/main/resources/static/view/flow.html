@@ -5,8 +5,8 @@
         <div class="pulse_rays"></div>
     </div>
 </div>
-<div class="flow">
-    <div infinite-scroll='changePageLogLimit()' infinite-scroll-distance='0'>
+<div class="flow" class="flow" when-scrolled-up="whenScrolledUp()" when-scrolled-down="whenScrolledDown()">
+    <div>
         <div ng-repeat="log in items | reverse | filter:search | level:showTrace:showDebug:showInfo:showWarn:showError:pageLogLimit"
              class="entry-log level-{{log.level}}">
                 <span>
@@ -103,16 +103,16 @@
                                             {{getButtonItemLengthClass(queue.length, 5000, 10000)}}
                                             {{isStopped == true ? 'active' : ''}}"
                                         ng-click="isStopped = !isStopped" title="Stop/Start">
-                                    QUEUE <span class="badge">{{queue.length}}</span></button>
+                                    STOP <span class="badge">{{queue.length}}</span></button>
                                 <button type="button" class="btn btn-sm
                                             {{getButtonItemLengthClass(items.length, 50000, 100000)}}"
                                         ng-click="clear();" title="Clear all">
-                                    TOTAL <span class="badge">{{items.length}}</span></button>
-                                <button type="button" class="btn btn-sm
-                                            {{getButtonItemLengthClass(pageLogLimit, 500, 1000)}}"
-                                        ng-click="pageLogLimit = visibleLogsCapacity"
-                                        title="Reduce page limit to {{visibleLogsCapacity}}">
-                                    PAGE <span class="badge">{{pageLogLimit}}</span></button>
+                                    CLEAR <span class="badge">{{items.length}}</span></button>
+                                <!--<button type="button" class="btn btn-sm -->
+                                            <!--{{getButtonItemLengthClass(pageLogLimit, 500, 1000)}}"-->
+                                        <!--ng-click="pageLogLimit = visibleLogsCapacity"-->
+                                        <!--title="Reduce page limit to {{visibleLogsCapacity}}">-->
+                                    <!--PAGE <span class="badge">{{pageLogLimit}}</span></button>-->
                             </div>
                         </form>
                     </li>
