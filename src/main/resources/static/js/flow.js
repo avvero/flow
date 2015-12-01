@@ -1,4 +1,4 @@
-function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
+function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB, $location) {
     $scope.visibleLogsCapacity = 50
     $scope.visibleLogsLoadCount = 10
     //STORE
@@ -6,6 +6,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
     $scope.ITEMS_PER_PAGE_THRESHOLD = 100
     $scope.REMOVE_FROM_QUEUE_IDLE = 10
     $scope.REMOVE_FROM_STORE_QUEUE_IDLE = 3000
+    $scope.GET_FROM_STORE_COUNT = 100
 
     $scope.isStopped = false; // остановили обновление страницы
     $scope.pageLogLimit = $scope.visibleLogsCapacity;
@@ -16,11 +17,11 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
     $scope.showError = true;
     $scope.showTrace = true;
     // Списки
-    $scope.items = [];
+    $scope.idx = -1
+    $scope.items = new Array(500);;
     $scope.queue = [];
     $scope.toStoreQueue = [];
 
-    $scope.idx = 0
     $scope.remove = function (index) {
         $scope.items.splice(index, 1);
     }
@@ -91,7 +92,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
     }
     $scope.onMessageReceive = function (event) {
         var data = $scope.parseMessage(event)
-        data['idx'] = $scope.idx++
+        data['idx'] = ++$scope.idx
         $scope.addToQueue(data)
     }
     $scope.parseMessage = function(event) {
@@ -122,6 +123,80 @@ function flowController($scope, $stompie, $timeout, $stateParams, $indexedDB) {
         }
         return data;
     }
+    $scope.whenScrolledUp = function() {
+        console.info("whenScrolledUp")
+        var from = $scope.items[0]
+        if (!from) return
+
+        var count = $scope.GET_FROM_STORE_COUNT
+        $scope.loadMore("prev", from.idx, count, function(list) {
+            if (list.length > 0) {
+                $scope.items.splice($scope.items.length - count, count)
+                $scope.items = list.concat($scope.items)
+                $location.hash('log_' + from.idx);
+            }
+        })
+    }
+    $scope.whenScrolledDown = function() {
+        var from = $scope.items[$scope.items.length - 1]
+        if (!from) return
+        if (!from.idx >= $scope.idx) return
+
+        console.info("whenScrolledDown")
+
+        //$scope.loadMore("next", from.idx, function(list) {
+        //    if (list.length > 0) {
+        //        $scope.items = $scope.items.concat(list)
+        //        $location.hash('log_' + from.idx);
+        //    }
+        //})
+    }
+    $scope.loadMore = function(direction, startPoint, count, callback) {
+        $scope.getFromStore(direction, startPoint, count, callback)
+    }
+    $scope.getFromStoreLock = false;
+    $scope.getFromStore = function(direction, startPoint, count, callback){
+        if ($scope.getFromStoreLock) return;
+        $scope.getFromStoreLock = true;
+
+        $indexedDB.openStore('log', function(store){
+            var result = []
+            store.store.openCursor(null, direction).onsuccess = function(event) {
+                var cursor = event.target.result;
+                if (cursor) {
+                    var isInRange = "prev" == direction ? cursor.value.idx < startPoint : cursor.value.idx > startPoint
+                    if(isInRange && result.length < count ) {
+                        var entry = cursor.value
+                        if ($scope.newFilter.check(entry)) {
+                            result.unshift(entry)
+                        }
+                    }
+                    cursor.continue();
+                } else {
+                    //alert("No more entries!");
+                    console.info("Fetched from store " + result.length)
+                    callback(result)
+                    $scope.getFromStoreLock = false
+                }
+            }
+        });
+    }
+    $scope.newFilter = {
+        levels: function () {
+            return [$scope.showTrace ? 'TRACE' : '',
+                $scope.showDebug ? 'DEBUG' : '',
+                $scope.showInfo ? 'INFO' : '',
+                $scope.showWarn ? 'WARN' : '',
+                $scope.showError ? 'ERROR' : ''
+            ]
+        },
+        check: function (entry) {
+            return $.inArray(entry.level, this.levels()) >= 0;
+        }
+    }
+    $scope.byNewFilter = function (log) {
+        return $scope.newFilter.check(log);
+    };
     /***
      * STOMP
      */

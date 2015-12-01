@@ -5,12 +5,13 @@
         <div class="pulse_rays"></div>
     </div>
 </div>
-<div class="flow" when-scrolled-up="loadMore('prev')" when-scrolled-down="loadMore('next')">
+<div class="flow" when-scrolled-up="whenScrolledUp()" when-scrolled-down="whenScrolledDown()">
     <div>
         <div ng-repeat="log in items | filter:search | filter: byLevel track by log.idx"
-             on-finish-render="itemsRenderFinish" class="entry-log level-{{log.level}}">
+             on-finish-render="itemsRenderFinish" class="entry-log level-{{log.level}}"
+             id="log_{{log.idx}}">
                 <span>
-                    <span>{{log.idx}} </span>
+                    <span>{{log.idx}}    </span>
                     <span class="log-date">{{log.date}}</span>
                     <span class="log-level level-{{log.level}}">{{log.level}}</span>&nbsp;
                     <!--<span class="log-thread">{{log.threadName}}</span>&nbsp;-->
