@@ -100,12 +100,12 @@
                         <form class="navbar-form navbar-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm
-                                            {{getButtonItemLengthClass(queue.length, 100, 1000)}}
+                                            {{getButtonItemLengthClass(queue.length, 5000, 10000)}}
                                             {{isStopped == true ? 'active' : ''}}"
                                         ng-click="isStopped = !isStopped" title="Stop/Start">
                                     QUEUE <span class="badge">{{queue.length}}</span></button>
                                 <button type="button" class="btn btn-sm
-                                            {{getButtonItemLengthClass(items.length, 5000, 50000)}}"
+                                            {{getButtonItemLengthClass(items.length, 50000, 100000)}}"
                                         ng-click="clear();" title="Clear all">
                                     TOTAL <span class="badge">{{items.length}}</span></button>
                                 <button type="button" class="btn btn-sm
