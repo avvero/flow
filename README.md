@@ -1,4 +1,4 @@
 # Flow 
 Follow logs over web
 
-Supports only logback logs
+_Supports only logback logs_
