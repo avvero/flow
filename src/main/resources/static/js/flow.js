@@ -1,5 +1,5 @@
 function flowController($scope, $stompie, $timeout, $stateParams, localStorageService) {
-    $scope.visibleLogsCapacity = 50
+    $scope.visibleLogsCapacity = 100
     $scope.visibleLogsLoadCount = 10
     $scope.waitBeforeNextApplyTimeout = 10
 
