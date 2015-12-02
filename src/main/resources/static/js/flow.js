@@ -107,6 +107,9 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.showWarn = true;
     $scope.showError = true;
     $scope.showTrace = true;
+    $scope.scrollToTop = function() {
+        $('.flow')[0].scrollTop = 0
+    }
 
     $scope.getButtonItemLengthClass = function (length, d1, d2) {
         if (length <= d1) return 'btn-success'

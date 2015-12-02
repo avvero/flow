@@ -108,7 +108,7 @@
                                             {{getButtonItemLengthClass(items.length, 50000, 100000)}}"
                                         ng-click="clear();" title="Clear all">
                                     CLEAR <span class="badge">{{items.length}}</span></button>
-                                <!--<button type="button" class="btn btn-sm -->
+                                <!--<button type="button" class="btn btn-sm-->
                                             <!--{{getButtonItemLengthClass(pageLogLimit, 500, 1000)}}"-->
                                         <!--ng-click="pageLogLimit = visibleLogsCapacity"-->
                                         <!--title="Reduce page limit to {{visibleLogsCapacity}}">-->
@@ -117,6 +117,10 @@
                         </form>
                     </li>
                 </ul>
+                <div class="scroll_to_top" ng-click="scrollToTop()" ng-show="pageLogLimit > visibleLogsCapacity"
+                     title="Scroll to top">
+                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                </div>
             </div>
         </div>
     </div>

@@ -167,3 +167,15 @@
 .pointer {
     cursor: pointer;
 }
+
+.scroll_to_top {
+    float: right;
+    display: block;
+    z-index: 100;
+    position: fixed;
+    right: 24px;
+    /* top: 24px; */
+    bottom: 76px;
+    font-size: 24px;
+    cursor: pointer;
+}
