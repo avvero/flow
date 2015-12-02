@@ -3,7 +3,8 @@ var flow = angular.module("flow", [
     'ui.router',
     'ngSanitize',
     'stompie',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'LocalStorageModule'
 ])
     .filter('reverse', function () {
         return function (items) {
@@ -15,10 +16,10 @@ var flow = angular.module("flow", [
             return $sce.trustAsHtml(text);
         };
     }])
-    .filter('level', function() {
-        return function(logs, showTrace, showDebug, showInfo, showWarn, showError, limit) {
+    .filter('level', function () {
+        return function (logs, showTrace, showDebug, showInfo, showWarn, showError, limit) {
             var result = []
-            for (var i = 0; i < logs.length; i++){
+            for (var i = 0; i < logs.length; i++) {
                 if (limit == result.length) {
                     break;
                 }
@@ -34,15 +35,15 @@ var flow = angular.module("flow", [
             return result;
         }
     })
-    .directive('whenScrolledUp', ['$timeout', function($timeout) {
-        return function(scope, elm, attr) {
+    .directive('whenScrolledUp', ['$timeout', function ($timeout) {
+        return function (scope, elm, attr) {
             var raw = elm[0];
 
-            $timeout(function() {
+            $timeout(function () {
                 raw.scrollTop = raw.scrollHeight;
             });
 
-            elm.bind('scroll', function() {
+            elm.bind('scroll', function () {
                 if (raw.scrollTop < 100) { // load more items before you hit the top
                     scope.$apply(attr.whenScrolledUp);
                 }
@@ -51,10 +52,12 @@ var flow = angular.module("flow", [
                 }
             });
         };
-    }]);
+    }]).constant('options', {
+        version: "1.0.0"
+    })
 
 // configure our routes
-flow.config(function ($routeProvider, $stateProvider, $urlRouterProvider, $locationProvider) {
+flow.config(function ($routeProvider, $stateProvider, $urlRouterProvider, options, localStorageServiceProvider) {
 
     $urlRouterProvider.otherwise("/")
 
@@ -78,6 +81,9 @@ flow.config(function ($routeProvider, $stateProvider, $urlRouterProvider, $locat
                 }
             }
         })
+    localStorageServiceProvider
+        .setPrefix('com.avvero.flow.'+options.version)
+        .setStorageType('localStorage')
 });
 
 flow.controller('mainController', function ($scope) {

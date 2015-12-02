@@ -51,11 +51,18 @@
 .entry-log span.log-level {
     width: 47px;
     display: inline-block;
+    text-align: right;
 }
 
 .entry-log span.log-thread {
-    min-width: 150px;
+    /*min-width: 150px;*/
     display: inline-block;
+    /*float: right;*/
+}
+
+.entry-log span.log-mdc {
+    /*float: right;*/
+    /*padding-right: 5px;*/
 }
 
 .entry-log div.log-msg-multiline {
@@ -155,4 +162,8 @@
     margin-left: auto;
     max-width: 680px;
     padding: 0 15px;
+}
+
+.pointer {
+    cursor: pointer;
 }

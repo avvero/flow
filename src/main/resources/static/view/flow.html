@@ -11,14 +11,14 @@
              class="entry-log level-{{log.level}}">
                 <span>
                     <span class="log-date">{{log.date}}</span>
-                    <span class="log-level level-{{log.level}}">{{log.level}}</span>&nbsp;
-                    <!--<span class="log-thread">{{log.threadName}}</span>&nbsp;-->
-                    <span class="log-user">{{log.user}}</span>
+                    <span class="log-level level-{{log.level}}">{{log.level}}&nbsp;</span>
+                    <span class="glyphicon glyphicon-info-sign pointer" title="Show thread and mdc"
+                          ng-click="setBoolOption('view.showMdc')" ng-hide="isOptionOn('view.showMdc')"></span>
+                    <span class="log-mdc pointer" ng-click="setBoolOption('view.showMdc')" ng-show="isOptionOn('view.showMdc')">(
+                        {{log.mdc.userLogin}},{{log.mdc.sessionId}})&nbsp;</span>
+                    <span class="log-thread pointer" ng-click="setBoolOption('view.showMdc')" ng-show="isOptionOn('view.showMdc')">
+                        {{log.threadName}}&nbsp;</span>
                     <span>
-                        <!--<span ng-repeat="part in log.callerData track by $index" ng-if="$index == 0">-->
-                            <!--{{part.className}}:{{part.methodName}}:{{part.lineNumber}}-->
-                            <!--&nbsp;-->
-                        <!--</span>-->
                         {{log.formattedMessage}}
                     </span>
                 </span>

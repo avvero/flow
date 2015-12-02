@@ -1,4 +1,4 @@
-function flowController($scope, $stompie, $timeout, $stateParams) {
+function flowController($scope, $stompie, $timeout, $stateParams, localStorageService) {
     $scope.visibleLogsCapacity = 50
     $scope.visibleLogsLoadCount = 10
     $scope.waitBeforeNextApplyTimeout = 10
@@ -112,5 +112,12 @@ function flowController($scope, $stompie, $timeout, $stateParams) {
         if (length <= d1) return 'btn-success'
         if (length > d1 && length < d2) return 'btn-warning'
         if (length >= d2) return 'btn-danger'
+    }
+    $scope.setBoolOption = function(option) {
+        var value = !!localStorageService.get(option)
+        localStorageService.set(option, !value)
+    }
+    $scope.isOptionOn = function(prop) {
+        return !!localStorageService.get(prop)
     }
 }
