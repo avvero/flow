@@ -14,9 +14,9 @@
                     <span class="log-level level-{{log.level}}">{{log.level}}&nbsp;</span>
                     <span class="glyphicon glyphicon-info-sign pointer" title="Show thread and mdc"
                           ng-click="changeBoolOption('view.showMdc')" ng-hide="isOptionOn('view.showMdc')"></span>
-                    <span class="log-mdc pointer" ng-click="setBoolOption('view.showMdc')" ng-show="isOptionOn('view.showMdc')">
+                    <span class="log-mdc pointer" ng-click="changeBoolOption('view.showMdc')" ng-show="isOptionOn('view.showMdc')">
                         ({{log.mdc.userLogin}},{{log.mdc.sessionId}})&nbsp;</span>
-                    <span class="log-thread pointer" ng-click="setBoolOption('view.showMdc')" ng-show="isOptionOn('view.showMdc')">
+                    <span class="log-thread pointer" ng-click="changeBoolOption('view.showMdc')" ng-show="isOptionOn('view.showMdc')">
                         {{log.threadName}}&nbsp;</span>
                     <span>
                         {{log.formattedMessage}}
