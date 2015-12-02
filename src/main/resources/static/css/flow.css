@@ -179,3 +179,56 @@
     font-size: 24px;
     cursor: pointer;
 }
+
+.help {
+    z-index: 1032;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
+.help_back {
+    z-index: 1031;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    opacity: 0.3;
+}
+
+.help .search_field{
+    width: 250px;
+    bottom: 40px;
+    left: 270px;
+    position: fixed;
+}
+.help .log_level_tumblers{
+    width: 250px;
+    bottom: 40px;
+    left: 10px;
+    position: fixed;
+}
+
+.log_level_tumblers button {
+    width: 32px;
+}
+
+.help .stop_button{
+    width: 300px;
+    bottom: 40px;
+    right: 10px;
+    position: fixed;
+}
+
+.help .description{
+    width: 250px;
+    margin: auto;
+    margin-top: 50px;
+}
+
+.help .server_pulse{
+    width: 250px;
+    top: 60px;
+    right: 10px;
+    position: fixed;
+}

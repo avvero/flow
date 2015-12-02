@@ -95,8 +95,9 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
             .replaceAll("---------------------------", '')
             .replaceAll("-----------", '')
             .replaceAll("----------", '')
-        //.replaceAll("******* ********", '')
-        //.replaceAll("********** *******", '')
+            .replaceAll("******* ********", '')
+            .replaceAll("********** *******", '')
+            .replaceAll("*******", '')
     }
     /**
      * VIEW
@@ -116,7 +117,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         if (length > d1 && length < d2) return 'btn-warning'
         if (length >= d2) return 'btn-danger'
     }
-    $scope.setBoolOption = function(option) {
+    $scope.changeBoolOption = function(option) {
         var value = !!localStorageService.get(option)
         localStorageService.set(option, !value)
     }

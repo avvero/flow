@@ -13,9 +13,9 @@
                     <span class="log-date">{{log.date}}</span>
                     <span class="log-level level-{{log.level}}">{{log.level}}&nbsp;</span>
                     <span class="glyphicon glyphicon-info-sign pointer" title="Show thread and mdc"
-                          ng-click="setBoolOption('view.showMdc')" ng-hide="isOptionOn('view.showMdc')"></span>
-                    <span class="log-mdc pointer" ng-click="setBoolOption('view.showMdc')" ng-show="isOptionOn('view.showMdc')">(
-                        {{log.mdc.userLogin}},{{log.mdc.sessionId}})&nbsp;</span>
+                          ng-click="changeBoolOption('view.showMdc')" ng-hide="isOptionOn('view.showMdc')"></span>
+                    <span class="log-mdc pointer" ng-click="setBoolOption('view.showMdc')" ng-show="isOptionOn('view.showMdc')">
+                        ({{log.mdc.userLogin}},{{log.mdc.sessionId}})&nbsp;</span>
                     <span class="log-thread pointer" ng-click="setBoolOption('view.showMdc')" ng-show="isOptionOn('view.showMdc')">
                         {{log.threadName}}&nbsp;</span>
                     <span>
@@ -45,7 +45,7 @@
         </div>
     </div>
 </div>
-<div class="container" style="padding-top: 70px">
+<div class="container">
     <div class="navbar navbar-default navbar-fixed-bottom" role="navigation">
         <div class="">
             <div class="navbar-collapse collapse">
@@ -103,16 +103,14 @@
                                             {{getButtonItemLengthClass(queue.length, 5000, 10000)}}
                                             {{isStopped == true ? 'active' : ''}}"
                                         ng-click="isStopped = !isStopped" title="Stop/Start">
-                                    STOP <span class="badge">{{queue.length}}</span></button>
-                                <button type="button" class="btn btn-sm
-                                            {{getButtonItemLengthClass(items.length, 50000, 100000)}}"
-                                        ng-click="clear();" title="Clear all">
-                                    CLEAR <span class="badge">{{items.length}}</span></button>
+                                    Freeze <span class="badge">{{queue.length}}</span></button>
                                 <!--<button type="button" class="btn btn-sm-->
-                                            <!--{{getButtonItemLengthClass(pageLogLimit, 500, 1000)}}"-->
-                                        <!--ng-click="pageLogLimit = visibleLogsCapacity"-->
-                                        <!--title="Reduce page limit to {{visibleLogsCapacity}}">-->
-                                    <!--PAGE <span class="badge">{{pageLogLimit}}</span></button>-->
+                                            <!--{{getButtonItemLengthClass(items.length, 50000, 100000)}}"-->
+                                        <!--ng-click="clear();" title="Clear all">-->
+                                    <!--CLEAR <span class="badge">{{items.length}}</span></button>-->
+                                <button type="button" class="btn btn-sm btn-success"
+                                        ng-click="changeBoolOption('view.hideHelp')">
+                                    Help</button>
                             </div>
                         </form>
                     </li>
@@ -122,6 +120,59 @@
                     <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="help_back" ng-hide="isOptionOn('view.hideHelp')"></div>
+<div class="help" ng-hide="isOptionOn('view.hideHelp')">
+    <div class="description">
+        <div class="alert alert-success" role="alert">
+            <strong>Help</strong><br/>
+            <br/>
+            Please check out elements
+            <ul>
+                <li>Log level tumblers</li>
+                <li>Freeze button</li>
+                <li>Server pulse</li>
+                <li>Log list</li>
+                <li>Search field</li>
+            </ul>
+            <br/>
+
+            <button type="button" class="btn btn-success btn-lg" ng-click="changeBoolOption('view.hideHelp')">
+                Click to close help
+            </button>
+        </div>
+    </div>
+    <div class="log_level_tumblers">
+        <div class="alert alert-info" role="alert">
+            <strong>Log level tumblers</strong><br/>
+            Click to show/hide logs with level<br/>
+            <div><button type="button" class="btn btn-sm active">T</button> - trace level</div>
+            <div><button type="button" class="btn btn-sm btn-success active">D</button> - debug level</div>
+            <div><button type="button" class="btn btn-sm btn-info active">I</button> - info level</div>
+            <div><button type="button" class="btn btn-sm btn-warning active">W</button> - warning level</div>
+            <div><button type="button" class="btn btn-sm btn-danger active">E</button> - error level</div>
+        </div>
+    </div>
+    <div class="stop_button">
+        <div class="alert alert-info" role="alert">
+            <strong>Freeze button</strong><br/>
+            Freeze log appearance for a time<br/>
+            <span class="badge">0</span> - frozen logs quantity
+        </div>
+    </div>
+    <div class="server_pulse">
+        <div class="alert alert-info" role="alert">
+            <strong>Server pulse</strong><br/>
+            Indicates status of connection with websocket server
+        </div>
+    </div>
+    <div class="search_field">
+        <div class="alert alert-info" role="alert">
+            <strong>Search field</strong><br/>
+            Search by log message
         </div>
     </div>
 </div>
