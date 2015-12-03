@@ -4,7 +4,8 @@ var flow = angular.module("flow", [
     'ngSanitize',
     'stompie',
     'ui.bootstrap',
-    'LocalStorageModule'
+    'LocalStorageModule',
+    "chart.js"
 ])
     .filter('reverse', function () {
         return function (items) {

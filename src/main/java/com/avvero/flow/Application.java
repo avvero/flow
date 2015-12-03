@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.serializer.DefaultDeserializer;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.NullChannel;
@@ -185,7 +186,7 @@ public class Application {
     @Bean
     TcpNetServerConnectionFactory cf () {
         TcpNetServerConnectionFactory factory = new TcpNetServerConnectionFactory(4561);
-        factory.setDeserializer(new DefaultDeserializerStub());
+        factory.setDeserializer(new DefaultDeserializer());
         return factory;
     }
 

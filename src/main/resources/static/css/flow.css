@@ -114,7 +114,7 @@
     display: block;
     z-index: 100;
     position: fixed;
-    right: 24px;
+    right: 38px;
     top: 24px;
 }
 
@@ -202,6 +202,13 @@
     left: 270px;
     position: fixed;
 }
+
+.help .log_list{
+    width: 250px;
+    top: 40px;
+    left: 10px;
+    position: fixed;
+}
 .help .log_level_tumblers{
     width: 250px;
     bottom: 40px;
@@ -228,7 +235,7 @@
 
 .help .server_pulse{
     width: 250px;
-    top: 60px;
+    top: 80px;
     right: 10px;
     position: fixed;
 }

@@ -1,4 +1,4 @@
-function flowController($scope, $stompie, $timeout, $stateParams, localStorageService) {
+function flowController($scope, $stompie, $timeout, $stateParams, $interval, localStorageService) {
     $scope.visibleLogsCapacity = 100
     $scope.visibleLogsLoadCount = 10
     $scope.waitBeforeNextApplyTimeout = 10
@@ -121,6 +121,42 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         if (length > d1 && length < d2) return 'btn-warning'
         if (length >= d2) return 'btn-danger'
     }
+
+    $scope.chartOptions = {
+        animation: false,
+        datasetStrokeWidth: 0.5,
+        pointDot: false,
+        showScale: true,
+        showTooltips: false,
+        scaleShowLabels: true
+    };
+    $scope.series = ['Total log income'];
+    $scope.labels = [0];
+    $scope.total = [0];
+    $scope.data = [$scope.total];
+
+    $scope.step = 0;
+    $scope.t = 0;
+    $interval(function () {
+        //if ($scope.t == 0 && $scope.items.length == 0) return
+        //if (($scope.t - $scope.items.length) == 0) return
+
+
+        if ($scope.t == 0 && $scope.items.length > 0) {
+            $scope.total.push($scope.items.length)
+        } else {
+            $scope.total.push($scope.items.length - $scope.t)
+            console.warn($scope.items.length - $scope.t)
+        }
+        $scope.t = $scope.items.length
+
+        $scope.labels.push(++$scope.step)
+    }, 5000);
+
+    /**
+     * LocalStorage
+     *
+     */
     $scope.changeBoolOption = function(option) {
         var value = !!localStorageService.get(option)
         localStorageService.set(option, !value)
@@ -128,4 +164,6 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.isOptionOn = function(prop) {
         return !!localStorageService.get(prop)
     }
+
+
 }

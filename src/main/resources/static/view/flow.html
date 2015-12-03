@@ -103,7 +103,7 @@
                                             {{getButtonItemLengthClass(queue.length, 5000, 10000)}}
                                             {{isStopped == true ? 'active' : ''}}"
                                         ng-click="isStopped = !isStopped" title="Stop/Start">
-                                    Freeze <span class="badge">{{queue.length}}</span></button>
+                                    Freeze <span class="badge" ng-show="isStopped">{{queue.length}}</span></button>
 
                                 <button type="button" class="btn btn-sm" ng-click="showSettings = !showSettings">
                                     <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span></button>
@@ -117,20 +117,18 @@
                 </div>
             </div>
         </div>
-        <div ng-show="showSettings">
+        <div ng-if="showSettings">
             <div class="row">
                 <div class="col-md-6">
-
+                    <canvas id="line" class="chart chart-line" chart-data="data"
+                            chart-labels="labels" chart-legend="false" chart-series="series"
+                            chart-options="chartOptions">
+                    </canvas>
                 </div>
                 <div class="col-md-6">
-                    <div class="panel panel-info">
-                        <div class="panel-heading">Information</div>
-                        <div class="panel-body">
-                            <div>Items in list: {{items.length}} <button type="button" class="btn btn-xs btn-danger" ng-click="clear();">CLEAR</button></div>
-                            <div>Items on page: {{pageLogLimit}}</div>
-                            <div>Is help hidden: {{isOptionOn('view.hideHelp')}} <button type="button" class="btn btn-xs btn-success" ng-click="changeBoolOption('view.hideHelp')">Help</button></div>
-                        </div>
-                    </div>
+                    <div>Items in store: {{items.length}} <button type="button" class="btn btn-xs btn-danger" ng-click="clear();">Clear</button></div>
+                    <div>Items on page: {{pageLogLimit}}</div>
+                    <div>Is help hidden: {{isOptionOn('view.hideHelp')}} <button type="button" class="btn btn-xs btn-success" ng-click="changeBoolOption('view.hideHelp')">Show help</button></div>
                 </div>
             </div>
         </div>
@@ -172,7 +170,7 @@
     <div class="stop_button">
         <div class="alert alert-info" role="alert">
             <strong>Freeze button</strong><br/>
-            Freeze log appearance for a time<br/>
+            Do freeze log appearance for a time<br/>
             <span class="badge">0</span> - frozen logs quantity
         </div>
     </div>
@@ -186,6 +184,12 @@
         <div class="alert alert-info" role="alert">
             <strong>Search field</strong><br/>
             Search by log message
+        </div>
+    </div>
+    <div class="log_list">
+        <div class="alert alert-info" role="alert">
+            <strong>Log list</strong><br/>
+            Logs will be here
         </div>
     </div>
 </div>
