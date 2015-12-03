@@ -122,26 +122,26 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
         if (length >= d2) return 'btn-danger'
     }
 
+    /**
+     * Chart
+     *
+     */
     $scope.chartOptions = {
         animation: false,
         datasetStrokeWidth: 0.5,
         pointDot: false,
         showScale: true,
         showTooltips: false,
-        scaleShowLabels: true
+        scaleShowLabels: true,
+        bezierCurve : true
     };
     $scope.series = ['Total log income'];
     $scope.labels = [0];
     $scope.total = [0];
     $scope.data = [$scope.total];
 
-    $scope.step = 0;
     $scope.t = 0;
     $interval(function () {
-        //if ($scope.t == 0 && $scope.items.length == 0) return
-        //if (($scope.t - $scope.items.length) == 0) return
-
-
         if ($scope.t == 0 && $scope.items.length > 0) {
             $scope.total.push($scope.items.length)
         } else {
@@ -150,19 +150,26 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
         }
         $scope.t = $scope.items.length
 
-        $scope.labels.push(++$scope.step)
+        $scope.labels.push('')
     }, 5000);
 
     /**
      * LocalStorage
      *
      */
+    $scope.optionCache = {}
     $scope.changeBoolOption = function(option) {
         var value = !!localStorageService.get(option)
-        localStorageService.set(option, !value)
+        var newValue = !value
+        localStorageService.set(option, newValue)
+
+        $scope.optionCache[option] = newValue
     }
-    $scope.isOptionOn = function(prop) {
-        return !!localStorageService.get(prop)
+    $scope.isOptionOn = function(option) {
+        if (!$scope.optionCache[option]) {
+            $scope.optionCache[option] = !!localStorageService.get(option)
+        }
+        return $scope.optionCache[option]
     }
 
 

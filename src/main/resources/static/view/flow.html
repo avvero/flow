@@ -5,7 +5,7 @@
         <div class="pulse_rays"></div>
     </div>
 </div>
-<div class="flow" class="flow" when-scrolled-up="whenScrolledUp()" when-scrolled-down="whenScrolledDown()">
+<div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" when-scrolled-up="whenScrolledUp()" when-scrolled-down="whenScrolledDown()">
     <div>
         <div ng-repeat="log in items | reverse | filter:search | level:showTrace:showDebug:showInfo:showWarn:showError:pageLogLimit"
              class="entry-log level-{{log.level}}">
@@ -45,7 +45,7 @@
         </div>
     </div>
 </div>
-<div class="container">
+<div class="container {{showSettings ? 'with-settings' : ''}}">
     <div class="navbar navbar-default navbar-fixed-bottom" role="navigation">
         <div class="">
             <div class="navbar-collapse collapse">
@@ -117,18 +117,19 @@
                 </div>
             </div>
         </div>
-        <div ng-if="showSettings">
+        <div class="settings" ng-if="showSettings">
             <div class="row">
                 <div class="col-md-6">
-                    <canvas id="line" class="chart chart-line" chart-data="data"
+                    <canvas id="line" height="60" class="chart chart-line" chart-data="data"
                             chart-labels="labels" chart-legend="false" chart-series="series"
                             chart-options="chartOptions">
                     </canvas>
                 </div>
                 <div class="col-md-6">
-                    <div>Items in store: {{items.length}} <button type="button" class="btn btn-xs btn-danger" ng-click="clear();">Clear</button></div>
-                    <div>Items on page: {{pageLogLimit}}</div>
-                    <div>Is help hidden: {{isOptionOn('view.hideHelp')}} <button type="button" class="btn btn-xs btn-success" ng-click="changeBoolOption('view.hideHelp')">Show help</button></div>
+                    <div class="setting">Items in store: {{items.length}} <button type="button" class="btn btn-xs btn-danger" ng-click="clear();">Clear</button></div>
+                    <div class="setting">Items on page: {{pageLogLimit}}</div>
+                    <div class="setting">Hide help: {{isOptionOn('view.hideHelp')}} <button type="button" class="btn btn-xs btn-success" ng-click="changeBoolOption('view.hideHelp')">Show help</button></div>
+                    <div class="setting">Show mdc: {{isOptionOn('view.showMdc')}} <button type="button" class="btn btn-xs btn-success" ng-click="changeBoolOption('view.showMdc')">Switch</button></div>
                 </div>
             </div>
         </div>

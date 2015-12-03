@@ -88,6 +88,10 @@
     left:0;
 }
 
+.flow.with-settings {
+    bottom: 250px;
+}
+
 .log-msg-error-stack.bs-callout.bs-callout-danger {
     background-color: white;
 }
@@ -180,6 +184,10 @@
     cursor: pointer;
 }
 
+.container.with-settings .scroll_to_top {
+    bottom: 263px;
+}
+
 .help {
     z-index: 1032;
     position: fixed;
@@ -238,4 +246,12 @@
     top: 80px;
     right: 10px;
     position: fixed;
+}
+
+.settings {
+    height: 200px
+}
+
+.setting {
+    padding-bottom: 5px;
 }
