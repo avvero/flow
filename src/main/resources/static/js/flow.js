@@ -70,6 +70,9 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
                 data.formattedMultiLineMessage = multiLineMessage
             }
         }
+        if (data.throwableProxy && data.throwableProxy.cause && data.throwableProxy.cause.message.split('\n').length > 1) {
+            data.throwableProxy.cause.message = data.throwableProxy.cause.message.replaceAll('\n', '<br/>')
+        }
         $scope.addToQueue(data)
     }
     $scope.whenScrolledUp = function () {
@@ -111,6 +114,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.scrollToTop = function() {
         $('.flow')[0].scrollTop = 0
     }
+    $scope.showSettings = false;
 
     $scope.getButtonItemLengthClass = function (length, d1, d2) {
         if (length <= d1) return 'btn-success'

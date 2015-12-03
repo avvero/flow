@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div ng-if="log.throwableProxy.cause">
-                <div class="log-msg-error" >Caused by: {{log.throwableProxy.cause.className}}: {{log.throwableProxy.cause.message}}</div>
+                <div class="log-msg-error" >Caused by: {{log.throwableProxy.cause.className}}: <span ng-bind-html="log.throwableProxy.cause.message"></span></div>
                 <div class="log-msg-error-stack bs-callout bs-callout-danger">
                     <div ng-repeat="part in log.throwableProxy.cause.stackTraceElementProxyArray track by $index">
                         {{part.steasString}}
@@ -104,13 +104,9 @@
                                             {{isStopped == true ? 'active' : ''}}"
                                         ng-click="isStopped = !isStopped" title="Stop/Start">
                                     Freeze <span class="badge">{{queue.length}}</span></button>
-                                <!--<button type="button" class="btn btn-sm-->
-                                            <!--{{getButtonItemLengthClass(items.length, 50000, 100000)}}"-->
-                                        <!--ng-click="clear();" title="Clear all">-->
-                                    <!--CLEAR <span class="badge">{{items.length}}</span></button>-->
-                                <button type="button" class="btn btn-sm btn-success"
-                                        ng-click="changeBoolOption('view.hideHelp')">
-                                    Help</button>
+
+                                <button type="button" class="btn btn-sm" ng-click="showSettings = !showSettings">
+                                    <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span></button>
                             </div>
                         </form>
                     </li>
@@ -118,6 +114,23 @@
                 <div class="scroll_to_top" ng-click="scrollToTop()" ng-show="pageLogLimit > visibleLogsCapacity"
                      title="Scroll to top">
                     <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                </div>
+            </div>
+        </div>
+        <div ng-show="showSettings">
+            <div class="row">
+                <div class="col-md-6">
+
+                </div>
+                <div class="col-md-6">
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Information</div>
+                        <div class="panel-body">
+                            <div>Items in list: {{items.length}} <button type="button" class="btn btn-xs btn-danger" ng-click="clear();">CLEAR</button></div>
+                            <div>Items on page: {{pageLogLimit}}</div>
+                            <div>Is help hidden: {{isOptionOn('view.hideHelp')}} <button type="button" class="btn btn-xs btn-success" ng-click="changeBoolOption('view.hideHelp')">Help</button></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -130,7 +143,7 @@
         <div class="alert alert-success" role="alert">
             <strong>Help</strong><br/>
             <br/>
-            Please check out elements
+            Please check out the elements:
             <ul>
                 <li>Log level tumblers</li>
                 <li>Freeze button</li>
@@ -166,7 +179,7 @@
     <div class="server_pulse">
         <div class="alert alert-info" role="alert">
             <strong>Server pulse</strong><br/>
-            Indicates status of connection with websocket server
+            Indicates the status of a connection with websocket server
         </div>
     </div>
     <div class="search_field">
