@@ -1,15 +1,10 @@
-server:
-    port: 8081
-tcpNetServer:
-    port: 4561
----
+#WLOG_OPTS="-Dspring.profiles.active=production -Dspring.config.location=file:/application.yml" wlog.bat
 
-spring:
-    profiles: development
 server:
     port: 8081
 tcpNetServer:
     port: 4561
+debug: true
 ---
 
 spring:
@@ -18,3 +13,6 @@ server:
     port: 0
 tcpNetServer:
     port: 4561
+logging:
+    file: log/flow.log
+debug: false
