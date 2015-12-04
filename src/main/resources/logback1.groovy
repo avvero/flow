@@ -12,6 +12,8 @@
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.classic.net.SocketAppender
 import ch.qos.logback.core.ConsoleAppender
+import ch.qos.logback.core.rolling.RollingFileAppender
+import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 
 import static ch.qos.logback.classic.Level.TRACE
 
@@ -23,6 +25,17 @@ appender("stdout", ConsoleAppender) {
     }
 }
 
+appender("file", RollingFileAppender) {
+    file = "log/flow.log"
+    encoder(PatternLayoutEncoder) {
+        charset = java.nio.charset.StandardCharsets.UTF_8
+        pattern = "%d{yyyy-MM-dd HH:mm:ss} %5p \\(%mdc{userLogin},%mdc{sessionId}\\) %t %c{0}:%M:%L - %m%n"
+    }
+    rollingPolicy(TimeBasedRollingPolicy) {
+        fileNamePattern = "log/flow.log.%d{yyyy-MM-dd}"
+    }
+}
 
-logger("com.avvero", TRACE, ["stdout"])
-root(TRACE, ["stdout"])
+
+logger("com", TRACE, ["file", "stdout"])
+root(TRACE, ["file", "stdout"])

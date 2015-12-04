@@ -2,7 +2,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
     $scope.visibleLogsCapacity = 100
     $scope.visibleLogsLoadCount = 10
     $scope.waitBeforeNextApplyTimeout = 10
-    $scope.CHART_CAPACITY = 1000
+    $scope.CHART_CAPACITY = 500
     $scope.CHART_UPDATE_INTERVAL = 1000
     $scope.CHART_SKIP_ZERO_TICKS = false
 
