@@ -2,6 +2,9 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
     $scope.visibleLogsCapacity = 100
     $scope.visibleLogsLoadCount = 10
     $scope.waitBeforeNextApplyTimeout = 10
+    $scope.CHART_CAPACITY = 5000
+    $scope.CHART_UPDATE_INTERVAL = 1000
+    $scope.CHART_SKIP_ZERO_TICKS = true
 
     $scope.isStopped = false; // остановили обновление страницы
     $scope.pageLogLimit = $scope.visibleLogsCapacity;
@@ -75,9 +78,6 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
         }
         $scope.addToQueue(data)
     }
-    $scope.whenScrolledUp = function () {
-        $scope.pageLogLimit = $scope.visibleLogsCapacity
-    }
     /***
      * STOMP
      */
@@ -135,23 +135,38 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
         scaleShowLabels: true,
         bezierCurve : true
     };
-    $scope.series = ['Total log income'];
-    $scope.labels = [0];
-    $scope.total = [0];
-    $scope.data = [$scope.total];
+    $scope.chartSeries = ['All'];
+    $scope.chartLabels = [0];
+    $scope.chartTotal = [0];
+    $scope.chartData = [$scope.chartTotal];
 
     $scope.t = 0;
+    $scope.prevVal = 0;
     $interval(function () {
         if ($scope.t == 0 && $scope.items.length > 0) {
-            $scope.total.push($scope.items.length)
+            $scope.pushToArray($scope.chartTotal, $scope.items.length, $scope.CHART_CAPACITY)
         } else {
-            $scope.total.push($scope.items.length - $scope.t)
-            console.warn($scope.items.length - $scope.t)
+            var newVal = $scope.items.length - $scope.t
+            if ($scope.CHART_SKIP_ZERO_TICKS && $scope.prevVal == 0 && newVal == 0) {
+                // skip zero ticks
+                return;
+            } else {
+                $scope.pushToArray($scope.chartTotal, newVal, $scope.CHART_CAPACITY)
+                console.warn(newVal)
+                $scope.prevVal = newVal
+            }
         }
         $scope.t = $scope.items.length
 
-        $scope.labels.push('')
-    }, 5000);
+        $scope.chartLabels.push('')
+    }, $scope.CHART_UPDATE_INTERVAL);
+
+    $scope.pushToArray = function(array, value, limit) {
+        if (array.length >= limit) {
+            array.shift()
+        }
+        array.push(value)
+    }
 
     /**
      * LocalStorage

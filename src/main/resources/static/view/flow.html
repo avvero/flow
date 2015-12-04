@@ -120,8 +120,8 @@
         <div class="settings" ng-if="showSettings">
             <div class="row">
                 <div class="col-md-6">
-                    <canvas id="line" height="60" class="chart chart-line" chart-data="data"
-                            chart-labels="labels" chart-legend="false" chart-series="series"
+                    <canvas id="line" height="60" class="chart chart-line" chart-data="chartData"
+                            chart-labels="chartLabels" chart-legend="false" chart-series="chartSeries"
                             chart-options="chartOptions">
                     </canvas>
                 </div>
@@ -130,6 +130,9 @@
                     <div class="setting">Items on page: {{pageLogLimit}}</div>
                     <div class="setting">Hide help: {{isOptionOn('view.hideHelp')}} <button type="button" class="btn btn-xs btn-success" ng-click="changeBoolOption('view.hideHelp')">Show help</button></div>
                     <div class="setting">Show mdc: {{isOptionOn('view.showMdc')}} <button type="button" class="btn btn-xs btn-success" ng-click="changeBoolOption('view.showMdc')">Switch</button></div>
+                    <div class="setting">Chart data size: {{chartTotal.length}}
+                    <div class="setting">Chart update interval: {{CHART_UPDATE_INTERVAL}} ms
+                    <div class="setting">Chart skip zero ticks: {{CHART_SKIP_ZERO_TICKS}}
                 </div>
             </div>
         </div>
