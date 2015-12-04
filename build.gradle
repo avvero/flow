@@ -14,7 +14,7 @@ apply plugin: 'spring-boot'
 
 jar {
     baseName = 'flow'
-    version =  '0.1.0'
+    version =  '1.0.0'
 }
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -22,9 +22,6 @@ targetCompatibility = 1.8
 repositories {
     mavenCentral()
 }
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 dependencies {
     compile 'org.codehaus.groovy:groovy-all:2.4.4'
@@ -42,4 +39,8 @@ dependencies {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
+}
+
+applicationDistribution.from("src/main/resources/application.yml") {
+    into "bin"
 }
