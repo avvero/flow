@@ -4,7 +4,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
     $scope.waitBeforeNextApplyTimeout = 10
     $scope.CHART_CAPACITY = 5000
     $scope.CHART_UPDATE_INTERVAL = 1000
-    $scope.CHART_SKIP_ZERO_TICKS = true
+    $scope.CHART_SKIP_ZERO_TICKS = false
 
     $scope.isStopped = false; // остановили обновление страницы
     $scope.pageLogLimit = $scope.visibleLogsCapacity;
@@ -145,6 +145,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
     $interval(function () {
         if ($scope.t == 0 && $scope.items.length > 0) {
             $scope.pushToArray($scope.chartTotal, $scope.items.length, $scope.CHART_CAPACITY)
+            $scope.pushToArray($scope.chartLabels, '', $scope.CHART_CAPACITY)
         } else {
             var newVal = $scope.items.length - $scope.t
             if ($scope.CHART_SKIP_ZERO_TICKS && $scope.prevVal == 0 && newVal == 0) {
@@ -152,17 +153,16 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
                 return;
             } else {
                 $scope.pushToArray($scope.chartTotal, newVal, $scope.CHART_CAPACITY)
+                $scope.pushToArray($scope.chartLabels, '', $scope.CHART_CAPACITY)
                 console.warn(newVal)
                 $scope.prevVal = newVal
             }
         }
         $scope.t = $scope.items.length
-
-        $scope.chartLabels.push('')
     }, $scope.CHART_UPDATE_INTERVAL);
 
     $scope.pushToArray = function(array, value, limit) {
-        if (array.length >= limit) {
+        while(array.length >= limit) {
             array.shift()
         }
         array.push(value)
