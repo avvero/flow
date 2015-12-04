@@ -137,7 +137,7 @@
 </div>
 
 <div class="help_back" ng-hide="isOptionOn('view.hideHelp')"></div>
-<div class="help" ng-hide="isOptionOn('view.hideHelp')">
+<div class="help {{showSettings ? 'with-settings' : ''}}" ng-hide="isOptionOn('view.hideHelp')">
     <div class="description">
         <div class="alert alert-success" role="alert">
             <strong>Help</strong><br/>

@@ -88,10 +88,6 @@
     left:0;
 }
 
-.flow.with-settings {
-    bottom: 250px;
-}
-
 .log-msg-error-stack.bs-callout.bs-callout-danger {
     background-color: white;
 }
@@ -184,10 +180,6 @@
     cursor: pointer;
 }
 
-.container.with-settings .scroll_to_top {
-    bottom: 263px;
-}
-
 .help {
     z-index: 1032;
     position: fixed;
@@ -208,7 +200,7 @@
     width: 250px;
     bottom: 40px;
     left: 270px;
-    position: fixed;
+    position: absolute;
 }
 
 .help .log_list{
@@ -221,7 +213,7 @@
     width: 250px;
     bottom: 40px;
     left: 10px;
-    position: fixed;
+    position: absolute;
 }
 
 .log_level_tumblers button {
@@ -232,7 +224,7 @@
     width: 300px;
     bottom: 40px;
     right: 10px;
-    position: fixed;
+    position: absolute;
 }
 
 .help .description{
@@ -254,4 +246,22 @@
 
 .setting {
     padding-bottom: 5px;
+}
+
+.flow.with-settings {
+    bottom: 250px;
+}
+
+.help.with-settings {
+    bottom: 200px;
+}
+
+.container.with-settings .scroll_to_top {
+    bottom: 263px;
+}
+
+.help.with-settings .description{
+    width: 250px;
+    margin: auto;
+    margin-top: 250px;
 }
