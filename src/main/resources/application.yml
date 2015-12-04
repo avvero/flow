@@ -1,0 +1,20 @@
+server:
+    port: 8081
+tcpNetServer:
+    port: 4561
+---
+
+spring:
+    profiles: development
+server:
+    port: 8081
+tcpNetServer:
+    port: 4561
+---
+
+spring:
+    profiles: production
+server:
+    port: 0
+tcpNetServer:
+    port: 4561

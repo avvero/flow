@@ -1,8 +1,11 @@
 package com.avvero.flow;
 
 import ch.qos.logback.classic.spi.LoggingEventVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -43,6 +46,7 @@ import static org.springframework.messaging.simp.SimpMessageHeaderAccessor.*;
 @ComponentScan
 @EnableAutoConfiguration
 @RestController
+@EnableConfigurationProperties(Application.TcpNetServerProperties.class)
 public class Application {
 
     public static final String MARKER_HEADER = "marker";
@@ -183,9 +187,26 @@ public class Application {
      * @return
      */
 
+    @Autowired
+    private TcpNetServerProperties tcpNetServerProperties;
+
+    @ConfigurationProperties("tcpNetServer")
+    public static class TcpNetServerProperties {
+
+        private int port;
+
+        public int getPort() {
+            return port;
+        }
+
+        public void setPort(int port) {
+            this.port = port;
+        }
+    }
+
     @Bean
     TcpNetServerConnectionFactory cf () {
-        TcpNetServerConnectionFactory factory = new TcpNetServerConnectionFactory(4561);
+        TcpNetServerConnectionFactory factory = new TcpNetServerConnectionFactory(tcpNetServerProperties.getPort());
         factory.setDeserializer(new DefaultDeserializer());
         return factory;
     }
