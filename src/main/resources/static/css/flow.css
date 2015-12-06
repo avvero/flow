@@ -265,3 +265,7 @@
     margin: auto;
     margin-top: 250px;
 }
+
+.log-search-field {
+    width: 400px;
+}
