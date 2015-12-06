@@ -2,6 +2,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
     $scope.VISIBLE_LOGS_QUANTITY = 100
     $scope.VISIBLE_LOGS_LOAD_COUNT = 10
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
+    $scope.logSearchValue = '';
     $scope.isStopped = false; // остановили обновление страницы
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
     // События

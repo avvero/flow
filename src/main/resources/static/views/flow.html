@@ -7,7 +7,7 @@
 </div>
 <div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" when-scrolled-up="whenScrolledUp()" when-scrolled-down="whenScrolledDown()">
     <div>
-        <div ng-repeat="log in items | reverse | filter:search | level:showTrace:showDebug:showInfo:showWarn:showError:pageLogLimit"
+        <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:pageLogLimit:logSearchValue"
              class="entry-log level-{{log.level.levelStr}}">
             <!--use logback template-->
             <div logback></div>
@@ -49,11 +49,11 @@
                                 </button>
                             </div>
                             <div class="form-group">
-                                <input ng-model="search.message" class="form-control"
+                                <input ng-model="logSearchValue" class="form-control"
                                        placeholder="Search by log message">
                             </div>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sm" ng-click="search.message = ''">X</button>
+                                <button type="button" class="btn btn-sm" ng-click="logSearchValue = ''">X</button>
                             </div>
                         </div>
                     </li>
