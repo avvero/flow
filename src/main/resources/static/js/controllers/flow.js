@@ -1,4 +1,4 @@
-function flowController($scope, $stompie, $timeout, $stateParams, $interval, localStorageService) {
+function flowController($scope, $stompie, $timeout, $stateParams, $interval, localStorageService, utils) {
     $scope.visibleLogsCapacity = 100
     $scope.visibleLogsLoadCount = 10
     $scope.waitBeforeNextApplyTimeout = 10
@@ -47,35 +47,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
     $scope.clear = function () {
         $scope.items = [];
     }
-    $scope.addMessage = function(event) {
-        var data = event;
-        data.level = data.level.levelStr
-        var date = moment(new Date(data.timeStamp)).format("YYYY-MM-DD HH:mm:ss")
-        data.date = date
-        var user = data.properties ? '(' + data.properties.userLogin + ',' + data.properties.sessionId + ')' : ""
-        data.user = user
-        var formattedMessage = data.formattedMessage
-        // XXX Нормально парсить в строку нужно нам
-        if ((formattedMessage + " ").indexOf('\n') != -1) {
-            //formattedMessage = safeTags(formattedMessage)
-            formattedMessage = $scope.fxPostProcess(formattedMessage)
-
-            if (formattedMessage.split('\n').length > 1) {
-                // 1 строка идет в основной лог
-                var firstLine = formattedMessage.split('\n')[0]
-
-                var multiLineMessage = formattedMessage.replace(firstLine + '\n', '')
-                multiLineMessage = vkbeautify.xml(multiLineMessage);
-                multiLineMessage = safeTags(multiLineMessage);
-                multiLineMessage = multiLineMessage.replaceAll('\n', '<br/>')
-
-                data.formattedMessage = firstLine
-                data.formattedMultiLineMessage = multiLineMessage
-            }
-        }
-        if (data.throwableProxy && data.throwableProxy.cause && data.throwableProxy.cause.message.split('\n').length > 1) {
-            data.throwableProxy.cause.message = data.throwableProxy.cause.message.replaceAll('\n', '<br/>')
-        }
+    $scope.onMessageReceive = function(event) {
+        var data = utils.parseLogbackLogEntry(event)
         $scope.addToQueue(data)
     }
     /***
@@ -83,7 +56,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
      */
     $scope.stompClient = $stompie
     $stompie.using('/messages/flow', [
-        function () {$stompie.subscribe($stateParams.marker, $scope.addMessage)}
+        function () {$stompie.subscribe($stateParams.marker, $scope.onMessageReceive)}
     ]);
     /**
      * При закрытии делаем disconnect
@@ -91,17 +64,6 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
     $scope.$on('$destroy', function() {
         // TODO когда-нибудь будем делать, но не сейчас
     })
-    $scope.fxPostProcess = function (text) {
-        return text
-            .replaceAll("******* ******** ********** *******", '')
-            .replaceAll("----------------------------", '')
-            .replaceAll("---------------------------", '')
-            .replaceAll("-----------", '')
-            .replaceAll("----------", '')
-            .replaceAll("******* ********", '')
-            .replaceAll("********** *******", '')
-            .replaceAll("*******", '')
-    }
     /**
      * VIEW
      */
@@ -144,29 +106,22 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
     $scope.prevVal = 0;
     $interval(function () {
         if ($scope.t == 0 && $scope.items.length > 0) {
-            $scope.pushToArray($scope.chartTotal, $scope.items.length, $scope.CHART_CAPACITY)
-            $scope.pushToArray($scope.chartLabels, '', $scope.CHART_CAPACITY)
+            utils.pushToArray($scope.chartTotal, $scope.items.length, $scope.CHART_CAPACITY)
+            utils.pushToArray($scope.chartLabels, '', $scope.CHART_CAPACITY)
         } else {
             var newVal = $scope.items.length - $scope.t
             if ($scope.CHART_SKIP_ZERO_TICKS && $scope.prevVal == 0 && newVal == 0) {
                 // skip zero ticks
                 return;
             } else {
-                $scope.pushToArray($scope.chartTotal, newVal, $scope.CHART_CAPACITY)
-                $scope.pushToArray($scope.chartLabels, '', $scope.CHART_CAPACITY)
+                utils.pushToArray($scope.chartTotal, newVal, $scope.CHART_CAPACITY)
+                utils.pushToArray($scope.chartLabels, '', $scope.CHART_CAPACITY)
                 console.warn(newVal)
                 $scope.prevVal = newVal
             }
         }
         $scope.t = $scope.items.length
     }, $scope.CHART_UPDATE_INTERVAL);
-
-    $scope.pushToArray = function(array, value, limit) {
-        while(array.length >= limit) {
-            array.shift()
-        }
-        array.push(value)
-    }
 
     /**
      * LocalStorage
