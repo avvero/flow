@@ -1,0 +1,31 @@
+<span>
+    <span class="log-date" log-date-time="log.timeStamp"></span>
+    <span class="log-level level-{{log.level.levelStr}}">{{log.level.levelStr}}&nbsp;</span>
+    <span class="glyphicon glyphicon-info-sign pointer" title="Show thread and mdc"
+          ng-click="changeBoolOption('view.showMdc')" ng-hide="isOptionOn('view.showMdc')"></span>
+    <span class="log-mdc pointer" ng-click="changeBoolOption('view.showMdc')"
+          ng-show="isOptionOn('view.showMdc')">
+        ({{log.mdc.userLogin}},{{log.mdc.sessionId}})&nbsp;</span>
+    <span class="log-thread pointer" ng-click="changeBoolOption('view.showMdc')"
+          ng-show="isOptionOn('view.showMdc')">
+        {{log.threadName}}&nbsp;</span>
+    <span message="log.formattedMessage"/>
+</span>
+<div message-multiline="log.formattedMessage"/>
+
+<div class="log-msg-error" ng-if="log.throwableProxy">
+    {{log.throwableProxy.className}}: {{log.throwableProxy.message}}
+</div>
+<div class="log-msg-error-stack bs-callout bs-callout-danger" ng-if="log.level.levelStr == 'ERROR'">
+    <div ng-repeat="part in log.throwableProxy.stackTraceElementProxyArray track by $index">
+        {{part.steasString}}
+    </div>
+</div>
+<div ng-if="log.throwableProxy.cause">
+    <div class="log-msg-error">Caused by: {{log.throwableProxy.cause.className}}: <span multiline="log.throwableProxy.cause.message"></span></div>
+    <div class="log-msg-error-stack bs-callout bs-callout-danger">
+        <div ng-repeat="part in log.throwableProxy.cause.stackTraceElementProxyArray track by $index">
+            {{part.steasString}}
+        </div>
+    </div>
+</div>

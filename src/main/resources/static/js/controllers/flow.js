@@ -1,13 +1,9 @@
 function flowController($scope, $stompie, $timeout, $stateParams, $interval, localStorageService, utils) {
-    $scope.visibleLogsCapacity = 100
-    $scope.visibleLogsLoadCount = 10
-    $scope.waitBeforeNextApplyTimeout = 10
-    $scope.CHART_CAPACITY = 500
-    $scope.CHART_UPDATE_INTERVAL = 1000
-    $scope.CHART_SKIP_ZERO_TICKS = false
-
+    $scope.VISIBLE_LOGS_QUANTITY = 100
+    $scope.VISIBLE_LOGS_LOAD_COUNT = 10
+    $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
     $scope.isStopped = false; // остановили обновление страницы
-    $scope.pageLogLimit = $scope.visibleLogsCapacity;
+    $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
     // События
     $scope.items = [];
     $scope.queue = [];
@@ -18,10 +14,10 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
         $scope.queue.push(logEntry)
     }
     $scope.whenScrolledDown = function () {
-        $scope.pageLogLimit += $scope.visibleLogsLoadCount
+        $scope.pageLogLimit += $scope.VISIBLE_LOGS_LOAD_COUNT
     }
     $scope.whenScrolledUp = function () {
-        $scope.pageLogLimit = $scope.visibleLogsCapacity
+        $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY
     }
     $scope.removeFromQueue = function () {
         $timeout(function () {
@@ -34,7 +30,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
                 }
             }
             $scope.removeFromQueue()
-        }, $scope.waitBeforeNextApplyTimeout);
+        }, $scope.REMOVE_FROM_QUEUE_INTERVAL);
     }
     //XXX
     $scope.getTimes = function (queue) {
@@ -48,8 +44,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
         $scope.items = [];
     }
     $scope.onMessageReceive = function(event) {
-        var data = utils.parseLogbackLogEntry(event)
-        $scope.addToQueue(data)
+        $scope.addToQueue(event)
     }
     /***
      * STOMP
@@ -88,6 +83,9 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
      * Chart
      *
      */
+    $scope.CHART_CAPACITY = 500
+    $scope.CHART_UPDATE_INTERVAL = 1000
+    $scope.CHART_SKIP_ZERO_TICKS = false
     $scope.chartOptions = {
         animation: false,
         datasetStrokeWidth: 0.5,

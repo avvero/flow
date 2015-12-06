@@ -8,40 +8,9 @@
 <div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" when-scrolled-up="whenScrolledUp()" when-scrolled-down="whenScrolledDown()">
     <div>
         <div ng-repeat="log in items | reverse | filter:search | level:showTrace:showDebug:showInfo:showWarn:showError:pageLogLimit"
-             class="entry-log level-{{log.level}}">
-                <span>
-                    <span class="log-date">{{log.date}}</span>
-                    <span class="log-level level-{{log.level}}">{{log.level}}&nbsp;</span>
-                    <span class="glyphicon glyphicon-info-sign pointer" title="Show thread and mdc"
-                          ng-click="changeBoolOption('view.showMdc')" ng-hide="isOptionOn('view.showMdc')"></span>
-                    <span class="log-mdc pointer" ng-click="changeBoolOption('view.showMdc')" ng-show="isOptionOn('view.showMdc')">
-                        ({{log.mdc.userLogin}},{{log.mdc.sessionId}})&nbsp;</span>
-                    <span class="log-thread pointer" ng-click="changeBoolOption('view.showMdc')" ng-show="isOptionOn('view.showMdc')">
-                        {{log.threadName}}&nbsp;</span>
-                    <span>
-                        {{log.formattedMessage}}
-                    </span>
-                </span>
-
-            <div class="log-msg-multiline bs-callout bs-callout-info" ng-if="log.formattedMultiLineMessage">
-                <div ng-bind-html="log.formattedMultiLineMessage | trusted"></div>
-            </div>
-            <div class="log-msg-error" ng-if="log.throwableProxy">
-                {{log.throwableProxy.className}}: {{log.throwableProxy.message}}
-            </div>
-            <div class="log-msg-error-stack bs-callout bs-callout-danger" ng-if="log.level == 'ERROR'">
-                <div ng-repeat="part in log.throwableProxy.stackTraceElementProxyArray track by $index">
-                    {{part.steasString}}
-                </div>
-            </div>
-            <div ng-if="log.throwableProxy.cause">
-                <div class="log-msg-error" >Caused by: {{log.throwableProxy.cause.className}}: <span ng-bind-html="log.throwableProxy.cause.message"></span></div>
-                <div class="log-msg-error-stack bs-callout bs-callout-danger">
-                    <div ng-repeat="part in log.throwableProxy.cause.stackTraceElementProxyArray track by $index">
-                        {{part.steasString}}
-                    </div>
-                </div>
-            </div>
+             class="entry-log level-{{log.level.levelStr}}">
+            <!--use logback template-->
+            <div logback></div>
         </div>
     </div>
 </div>
@@ -111,7 +80,7 @@
                         </form>
                     </li>
                 </ul>
-                <div class="scroll_to_top" ng-click="scrollToTop()" ng-show="pageLogLimit > visibleLogsCapacity"
+                <div class="scroll_to_top" ng-click="scrollToTop()" ng-show="pageLogLimit > VISIBLE_LOGS_QUANTITY"
                      title="Scroll to top">
                     <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
                 </div>

@@ -5,7 +5,7 @@ angular.module('flow').filter('level', function () {
             if (limit == result.length) {
                 break;
             }
-            var level = logs[i].level
+            var level = logs[i].level.levelStr
             if (showTrace && level == 'TRACE'
                 || showDebug && level == 'DEBUG'
                 || showInfo && level == 'INFO'
