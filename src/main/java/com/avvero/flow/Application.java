@@ -1,6 +1,8 @@
 package com.avvero.flow;
 
 import ch.qos.logback.classic.spi.LoggingEventVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -52,16 +54,7 @@ public class Application {
     public static final String MARKER_HEADER = "marker";
     public static final String ALL_MARKER_HEADER = "*";
 
-    public static int count;
-
-    public static synchronized int incCount() {
-        return ++count;
-    };
-    public static int succesed;
-
-    public static synchronized int incSuccesed() {
-        return ++succesed;
-    };
+    private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     public static void main(String args[]) throws Throwable {
         SpringApplication.run(Application.class, args);
@@ -98,7 +91,7 @@ public class Application {
 
     @Bean
     Map<String, List<Tuple>> markerSessions() {
-        return new ConcurrentHashMap<>();
+        return Collections.synchronizedMap(new HashMap<String, List<Tuple>>());
     }
 
     @Bean
@@ -115,6 +108,7 @@ public class Application {
                     markerSessions().put(marker, sessions);
                 }
                 sessions.add(new Tuple(simpSessionId, simpSubscriptionId, marker));
+                log.info(String.format("Do subscribe session %s on %s", simpSessionId, simpSubscriptionId));
             }
         };
     }
@@ -128,6 +122,7 @@ public class Application {
                 String simpSubscriptionId = (String) event.getMessage().getHeaders().get(SUBSCRIPTION_ID_HEADER);
                 String marker = (String) event.getMessage().getHeaders().get(DESTINATION_HEADER);
                 markerSessions().get(marker).remove(new Tuple(simpSessionId, simpSubscriptionId, marker));
+                log.info(String.format("Do unsubscribe session %s on %s", simpSessionId, simpSubscriptionId));
             }
         };
     }
@@ -138,7 +133,6 @@ public class Application {
             @Override
             public void onApplicationEvent(SessionDisconnectEvent event) {
                 String simpSessionId = (String) event.getMessage().getHeaders().get(SESSION_ID_HEADER);
-                synchronized (markerSessions()) {
                     for(List<Tuple> list : markerSessions().values()) {
                         Iterator<Tuple> iterator = list.iterator();
                         while(iterator.hasNext()) {
@@ -148,7 +142,7 @@ public class Application {
                             }
                         }
                     }
-                }
+                log.info(String.format("Do disconnect session %s", simpSessionId));
             }
         };
     }
@@ -170,6 +164,7 @@ public class Application {
                     markerSessions()
                             .get(m.getHeaders().get(MARKER_HEADER))
                             .stream()
+                            .filter(tuple -> serverWebSocketContainer().getSessions().containsKey(tuple.get(0)))
                             .map(s -> MessageBuilder.fromMessage(m)
                                     .copyHeaders(m.getHeaders())
                                     .setHeader(SESSION_ID_HEADER, s.get(0))
@@ -228,9 +223,10 @@ public class Application {
     public void sendLog(LoggingEventVO event) throws IOException, ClassNotFoundException {
         String marker = event.getMarker() != null ? event.getMarker().getName() : ALL_MARKER_HEADER;
         //TODO переделать
-        synchronized (markerSessions()) {
-            if (!markerSessions().containsKey(marker)) {
-                markerSessions().put(marker, Collections.synchronizedList(new ArrayList<>()));
+        Map<String, List<Tuple>> map = markerSessions();
+        synchronized (map) {
+            if (!map.containsKey(marker)) {
+                map.put(marker, Collections.synchronizedList(new ArrayList<>()));
             }
         }
         sendMessage().send(MessageBuilder

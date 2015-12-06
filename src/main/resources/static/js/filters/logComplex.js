@@ -30,7 +30,13 @@ angular.module('flow').filter('logComplex', function () {
         return false;
     }
     var isInLog = function (log, logSearchValue){
-        return isInMessage(log, logSearchValue)  || isInThrowableInfo(log, logSearchValue)
+        var string = log.stringfied
+        if (!log.stringfied) {
+            log.stringfied = JSON.stringify(log)
+            string = log.stringfied
+        }
+        return string.indexOf(logSearchValue) != -1
+        //return isInMessage(log, logSearchValue)  || isInThrowableInfo(log, logSearchValue)
     }
 
     return function (logs, showTrace, showDebug, showInfo, showWarn, showError, limit, logSearchValue) {

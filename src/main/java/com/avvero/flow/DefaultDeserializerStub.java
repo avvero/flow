@@ -40,10 +40,10 @@ public class DefaultDeserializerStub extends DefaultDeserializer {
      */
     @Override
     public Object deserialize(InputStream inputStream) throws IOException {
-        System.out.print("Has come " + Application.incCount());
+//        System.out.print("Has come " + Application.incCount());
         ObjectInputStream objectInputStream = new ConfigurableObjectInputStream(inputStream, this.classLoader);
         try {
-            System.out.println(" and succesed " + Application.incSuccesed());
+//            System.out.println(" and succesed " + Application.incSuccesed());
             return objectInputStream.readObject();
         }
         catch (ClassNotFoundException ex) {
