@@ -12,6 +12,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
 
+version = '1.0.0'
 jar {
     baseName = 'flow'
     version =  '1.0.0'

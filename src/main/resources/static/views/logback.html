@@ -3,8 +3,7 @@
     <span class="log-level level-{{log.level.levelStr}}">{{log.level.levelStr}}&nbsp;</span>
     <span class="glyphicon glyphicon-info-sign pointer" title="Show thread and mdc"
           ng-click="changeBoolOption('view.showMdc')" ng-hide="isOptionOn('view.showMdc')"></span>
-    <span class="log-mdc pointer" ng-click="changeBoolOption('view.showMdc')"
-          ng-show="isOptionOn('view.showMdc')">
+    <span class="log-mdc" ng-show="isOptionOn('view.showMdc')">
         ({{log.mdc.userLogin}},{{log.mdc.sessionId}})&nbsp;</span>
     <span class="log-thread pointer" ng-click="changeBoolOption('view.showMdc')"
           ng-show="isOptionOn('view.showMdc')">
