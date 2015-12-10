@@ -50,7 +50,7 @@
                             </div>
                             <div class="form-group">
                                 <input ng-model="logSearchValue" class="form-control log-search-field"
-                                       placeholder="Search by log message">
+                                       placeholder="Search by log message" ng-model-options="{ debounce: { 'default': 5000} }">
                             </div>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-sm" ng-click="logSearchValue = ''">X</button>

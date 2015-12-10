@@ -40,6 +40,7 @@ angular.module('flow').filter('logComplex', function () {
     }
 
     return function (logs, showTrace, showDebug, showInfo, showWarn, showError, limit, logSearchValue) {
+        console.debug("Filter start")
         var result = []
         for (var i = logs.length - 1; i >= 0; i--) {
             if (limit == result.length) {

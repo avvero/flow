@@ -20,18 +20,20 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
     $scope.whenScrolledUp = function () {
         $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY
     }
-    $scope.removeFromQueue = function () {
+    $scope.removeFromQueue = function (applyScope) {
         $timeout(function () {
+            applyScope = false
             if ($scope.queue.length != 0 && !$scope.isStopped) {
                 // Возможно нужно добавлять порциями
                 var times = $scope.getTimes($scope.queue)
                 for (var t = 0; t < times; t++) {
                     var logEntry = $scope.queue.shift();
                     $scope.items.push(logEntry)
+                    applyScope = true
                 }
             }
-            $scope.removeFromQueue()
-        }, $scope.REMOVE_FROM_QUEUE_INTERVAL);
+            $scope.removeFromQueue(applyScope)
+        }, $scope.REMOVE_FROM_QUEUE_INTERVAL, applyScope);
     }
     //XXX
     $scope.getTimes = function (queue) {
@@ -40,7 +42,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
         if (queue.length > 10) return 10;
         return 1;
     };
-    $scope.removeFromQueue()
+    $scope.removeFromQueue(false)
     $scope.clear = function () {
         $scope.items = [];
     }
@@ -103,25 +105,28 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
 
     $scope.t = 0;
     $scope.prevVal = 0;
-    $interval(function () {
-        if ($scope.t == 0 && $scope.items.length > 0) {
-            utils.pushToArray($scope.chartTotal, $scope.items.length, $scope.CHART_CAPACITY)
-            utils.pushToArray($scope.chartLabels, '', $scope.CHART_CAPACITY)
-        } else {
-            var newVal = $scope.items.length - $scope.t
-            if ($scope.CHART_SKIP_ZERO_TICKS && $scope.prevVal == 0 && newVal == 0) {
-                // skip zero ticks
-                return;
-            } else {
-                utils.pushToArray($scope.chartTotal, newVal, $scope.CHART_CAPACITY)
+    $scope.updateChart = function() {
+        $timeout(function () {
+            if ($scope.t == 0 && $scope.items.length > 0) {
+                utils.pushToArray($scope.chartTotal, $scope.items.length, $scope.CHART_CAPACITY)
                 utils.pushToArray($scope.chartLabels, '', $scope.CHART_CAPACITY)
-                console.warn(newVal)
-                $scope.prevVal = newVal
+            } else {
+                var newVal = $scope.items.length - $scope.t
+                if ($scope.CHART_SKIP_ZERO_TICKS && $scope.prevVal == 0 && newVal == 0) {
+                    // skip zero ticks
+                    return;
+                } else {
+                    utils.pushToArray($scope.chartTotal, newVal, $scope.CHART_CAPACITY)
+                    utils.pushToArray($scope.chartLabels, '', $scope.CHART_CAPACITY)
+                    //console.warn(newVal)
+                    $scope.prevVal = newVal
+                }
             }
-        }
-        $scope.t = $scope.items.length
-    }, $scope.CHART_UPDATE_INTERVAL);
-
+            $scope.t = $scope.items.length
+            $scope.updateChart()
+        }, $scope.CHART_UPDATE_INTERVAL, true);
+    }
+    $scope.updateChart()
     /**
      * LocalStorage
      *
