@@ -1,10 +1,10 @@
-angular.module('flow').directive('logChart', ['localTimeout', 'utils', function (localTimeout, utils) {
+angular.module('flow').directive('logChart', ['$timeout', 'utils', function ($timeout, utils) {
     return {
         scope: true,
         //restrict: 'CA',
         link: function($scope, element, attrs) {
             $scope.$watch(attrs.logChart,function(value){
-                $scope.items = value
+                $scope.length = value
             }, true);
 
             /**
@@ -31,12 +31,12 @@ angular.module('flow').directive('logChart', ['localTimeout', 'utils', function 
             $scope.t = 0;
             $scope.prevVal = 0;
             $scope.updateChart = function() {
-                localTimeout($scope, function () {
-                    if ($scope.t == 0 && $scope.items.length > 0) {
-                        utils.pushToArray($scope.chartTotal, $scope.items.length, $scope.CHART_CAPACITY)
+                $timeout(function () {
+                    if ($scope.t == 0 && $scope.length > 0) {
+                        utils.pushToArray($scope.chartTotal, $scope.length, $scope.CHART_CAPACITY)
                         utils.pushToArray($scope.chartLabels, '', $scope.CHART_CAPACITY)
                     } else {
-                        var newVal = $scope.items.length - $scope.t
+                        var newVal = $scope.length - $scope.t
                         if ($scope.CHART_SKIP_ZERO_TICKS && $scope.prevVal == 0 && newVal == 0) {
                             // skip zero ticks
                             return;
@@ -47,7 +47,7 @@ angular.module('flow').directive('logChart', ['localTimeout', 'utils', function 
                             $scope.prevVal = newVal
                         }
                     }
-                    $scope.t = $scope.items.length
+                    $scope.t = $scope.length
                     $scope.updateChart()
                 }, $scope.CHART_UPDATE_INTERVAL);
             }

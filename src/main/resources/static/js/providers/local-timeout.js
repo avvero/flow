@@ -32,7 +32,7 @@ angular.module('flow').provider('localTimeout', function LocalTimeoutProvider() 
              *   promise will be resolved with is the return value of the `fn` function.
              *
              */
-            function timeout($scope, fn, delay, invokeApply) {
+            function timeout(fn, $scope, delay, invokeApply) {
                 var deferred = $q.defer(),
                     promise = deferred.promise,
                     skipApply = (isDefined(invokeApply) && !invokeApply),
