@@ -16,7 +16,7 @@
 </div>
 <div class="container {{showSettings ? 'with-settings' : ''}}">
     <div class="navbar navbar-default navbar-fixed-bottom" role="navigation">
-        <div class="">
+        <div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>
@@ -86,22 +86,16 @@
                 </div>
             </div>
         </div>
-        <div class="settings" ng-if="showSettings">
+        <div class="settings" ng-if-del="showSettings">
             <div class="row">
                 <div class="col-md-6">
-                    <canvas id="line" height="60" class="chart chart-line" chart-data="chartData"
-                            chart-labels="chartLabels" chart-legend="false" chart-series="chartSeries"
-                            chart-options="chartOptions">
-                    </canvas>
+                    <div log-chart="items"></div>
                 </div>
                 <div class="col-md-6">
                     <div class="setting">Items in store: {{items.length}} <button type="button" class="btn btn-xs btn-danger" ng-click="clear();">Clear</button></div>
                     <div class="setting">Items on page: {{pageLogLimit}}</div>
                     <div class="setting">Hide help: {{isOptionOn('view.hideHelp')}} <button type="button" class="btn btn-xs btn-success" ng-click="changeBoolOption('view.hideHelp')">Show help</button></div>
                     <div class="setting">Show mdc: {{isOptionOn('view.showMdc')}} <button type="button" class="btn btn-xs btn-success" ng-click="changeBoolOption('view.showMdc')">Switch</button></div>
-                    <div class="setting">Chart data size: {{chartTotal.length}}</div>
-                    <div class="setting">Chart update interval: {{CHART_UPDATE_INTERVAL}} ms</div>
-                    <div class="setting">Chart skip zero ticks: {{CHART_SKIP_ZERO_TICKS}}</div>
                 </div>
             </div>
         </div>

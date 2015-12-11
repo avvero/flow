@@ -1,4 +1,4 @@
-function flowController($scope, $stompie, $timeout, $stateParams, $interval, localStorageService, utils) {
+function flowController($scope, $stompie, $timeout, $stateParams, localStorageService) {
     $scope.VISIBLE_LOGS_QUANTITY = 100
     $scope.VISIBLE_LOGS_LOAD_COUNT = 10
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
@@ -82,51 +82,6 @@ function flowController($scope, $stompie, $timeout, $stateParams, $interval, loc
         if (length >= d2) return 'btn-danger'
     }
 
-    /**
-     * Chart
-     *
-     */
-    $scope.CHART_CAPACITY = 500
-    $scope.CHART_UPDATE_INTERVAL = 1000
-    $scope.CHART_SKIP_ZERO_TICKS = false
-    $scope.chartOptions = {
-        animation: false,
-        datasetStrokeWidth: 0.5,
-        pointDot: false,
-        showScale: true,
-        showTooltips: false,
-        scaleShowLabels: true,
-        bezierCurve : true
-    };
-    $scope.chartSeries = ['All'];
-    $scope.chartLabels = [0];
-    $scope.chartTotal = [0];
-    $scope.chartData = [$scope.chartTotal];
-
-    $scope.t = 0;
-    $scope.prevVal = 0;
-    $scope.updateChart = function() {
-        $timeout(function () {
-            if ($scope.t == 0 && $scope.items.length > 0) {
-                utils.pushToArray($scope.chartTotal, $scope.items.length, $scope.CHART_CAPACITY)
-                utils.pushToArray($scope.chartLabels, '', $scope.CHART_CAPACITY)
-            } else {
-                var newVal = $scope.items.length - $scope.t
-                if ($scope.CHART_SKIP_ZERO_TICKS && $scope.prevVal == 0 && newVal == 0) {
-                    // skip zero ticks
-                    return;
-                } else {
-                    utils.pushToArray($scope.chartTotal, newVal, $scope.CHART_CAPACITY)
-                    utils.pushToArray($scope.chartLabels, '', $scope.CHART_CAPACITY)
-                    //console.warn(newVal)
-                    $scope.prevVal = newVal
-                }
-            }
-            $scope.t = $scope.items.length
-            $scope.updateChart()
-        }, $scope.CHART_UPDATE_INTERVAL, true);
-    }
-    $scope.updateChart()
     /**
      * LocalStorage
      *
