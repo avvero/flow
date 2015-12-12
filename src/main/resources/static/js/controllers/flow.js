@@ -35,6 +35,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
             $scope.removeFromQueue(applyScope)
         }, $scope.REMOVE_FROM_QUEUE_INTERVAL, applyScope);
     }
+    $scope.removeFromQueue(false)
     //XXX
     $scope.getTimes = function (queue) {
         if (queue.length > 1000) return 1000;
@@ -42,7 +43,6 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         if (queue.length > 10) return 10;
         return 1;
     };
-    $scope.removeFromQueue(false)
     $scope.clear = function () {
         $scope.items = [];
     }

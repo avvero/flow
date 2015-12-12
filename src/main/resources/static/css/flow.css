@@ -269,3 +269,10 @@
 .log-search-field {
     width: 400px;
 }
+
+.github_link {
+    bottom: 12px;
+    right: 10px;
+    position: fixed;
+    z-index: 1030;
+}
