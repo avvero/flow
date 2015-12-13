@@ -82,10 +82,10 @@
     overflow: auto;
     position:fixed !important;
     position:absolute;
-    top:0;
+    top:54px;
     right:0;
-    bottom: 50px;
-    left:0;
+    bottom: 0px;
+    left: 54px;
 }
 
 .log-msg-error-stack.bs-callout.bs-callout-danger {
