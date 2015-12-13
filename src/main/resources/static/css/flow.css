@@ -80,12 +80,12 @@
     word-wrap: break-word;
     padding-left: 3px;
     overflow: auto;
-    position:fixed !important;
-    position:absolute;
-    top:54px;
-    right:0;
+    position: fixed !important;
+    position: absolute;
+    top: 54px;
+    right: 0;
     bottom: 0px;
-    left: 54px;
+    left: 155px;
 }
 
 .log-msg-error-stack.bs-callout.bs-callout-danger {
@@ -275,4 +275,25 @@
     right: 10px;
     position: fixed;
     z-index: 1030;
+}
+
+.sidebar-menu>li.github-menu-link {
+    bottom: 0px;
+    position: absolute;
+}
+
+.main-sidebar {
+    width: 150px;
+}
+
+.main-header>.navbar {
+    margin-left: 150px;
+}
+
+.main-header .logo {
+    width: 150px;
+}
+
+.content-wrapper {
+    margin-left: 150px;
 }
