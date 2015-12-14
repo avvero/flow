@@ -3,7 +3,7 @@
 
         <header class="main-header">
             <!-- Logo -->
-            <a href="" class="logo">
+            <a ng-href="/#" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><b>F</b>L</span>
                 <!-- logo for regular state and mobile devices -->
@@ -11,11 +11,14 @@
             </a>
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top" role="navigation">
-                <form action="#" method="get" class="sidebar-form">
+                <form action="" method="get" class="sidebar-form">
                     <div class="input-group">
-                        <input type="text" name="q" class="form-control" placeholder="Search...">
+                        <input type="text" class="form-control" placeholder="Search..."
+                               ng-model="logSearchValue"
+                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1000, 'blur': 0 } }">
                           <span class="input-group-btn">
-                            <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                            <button type="button" name="search" id="search-btn" class="btn btn-flat"><i
+                                    class="fa fa-close" ng-click="logSearchValue = ''"></i>
                             </button>
                           </span>
                     </div>
@@ -33,21 +36,34 @@
                     <li><a href=""><i class="fa fa-hashtag"></i><span>fxbank</span></a></li>
                     <li><a href=""><i class="fa fa-hashtag"></i><span>fxpay</span></a></li>
                     <li class="header"><b>CONTROLS</b></li>
-                    <li>
-                        <a href=""><i class="fa fa-certificate text"></i> <span>FREEZE</span>
-                            <small class="label pull-right bg-red">3</small>
+                    <li class="{{isStopped == true ? 'activated' : ''}}">
+                        <a href="" ng-click="isStopped = !isStopped"><i class="fa fa-certificate text"></i>
+                            <span>Freeze</span>
+                            <small class="label pull-right bg-red" ng-show="isStopped">{{queue.length}}</small>
                         </a>
                     </li>
                     <li class="header"><b>LEVELS</b></li>
-                    <li><a href=""><i class="fa fa-circle-o text-red"></i> <span>Error</span></a></li>
-                    <li><a href=""><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
-                    <li><a href=""><i class="fa fa-circle-o text-aqua"></i> <span>Info</span></a></li>
-                    <li><a href=""><i class="fa fa-circle-o text-green"></i> <span>Debug</span></a></li>
-                    <li><a href=""><i class="fa fa-circle-o text-grey"></i> <span>Trace</span></a></li>
+                    <li class="{{showError == true ? '' : 'deactivated'}}">
+                        <a href="" ng-click="showError = !showError"><i class="fa fa-circle-o text-red"></i> <span>Error</span></a>
+                    </li>
+                    <li class="{{showWarn == true ? '' : 'deactivated'}}">
+                        <a href="" ng-click="showWarn = !showWarn"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a>
+                    </li>
+                    <li class="{{showInfo == true ? '' : 'deactivated'}}">
+                        <a href="" ng-click="showInfo = !showInfo"><i class="fa fa-circle-o text-aqua"></i> <span>Info</span></a>
+                    </li>
+                    <li class="{{showDebug == true ? '' : 'deactivated'}}">
+                        <a href="" ng-click="showDebug = !showDebug"><i class="fa fa-circle-o text-green"></i> <span>Debug</span></a>
+                    </li>
+                    <li class="{{showTrace == true ? '' : 'deactivated'}}">
+                        <a href="" ng-click="showTrace = !showTrace"><i class="fa fa-circle-o text-grey"></i> <span>Trace</span></a>
+                    </li>
                     <li class="header"><b></b></li>
                     <li><a href=""><i class="fa fa-gears"></i> <span>Options</span></a></li>
                     <li class="header"><b></b></li>
-                    <li class="github-menu-link"><a href=""><i class="fa fa-github"></i> <span>github</span></a></li>
+                    <li class="github-menu-link"><a href="https://github.com/avvero/flow" target="_blank">
+                        <i class="fa fa-github"></i> <span>github</span></a>
+                    </li>
                 </ul>
             </section>
             <!-- /.sidebar -->
@@ -65,6 +81,10 @@
                 </div>
             </div>
             <!-- /.content -->
+            <div class="scroll_to_top" ng-click="scrollToTop()" ng-show="pageLogLimit > VISIBLE_LOGS_QUANTITY"
+                 title="Scroll to top">
+                <span class="fa fa-arrow-circle-up" aria-hidden="true"></span>
+            </div>
         </div>
         <!-- /.control-sidebar -->
         <!-- Add the sidebar's background. This div must be placed

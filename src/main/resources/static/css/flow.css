@@ -66,17 +66,18 @@
 }
 
 .entry-log div.log-msg-multiline {
-    margin-left:50px;
+    margin-left: 50px;
     padding-left: 5px;
 }
 
 .entry-log .log-msg-error-stack {
-    margin-left:50px;
+    margin-left: 50px;
     padding-left: 5px;
 }
 
 .flow {
     font-size: 12px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     word-wrap: break-word;
     padding-left: 3px;
     overflow: auto;
@@ -88,26 +89,55 @@
     left: 155px;
 }
 
-.log-msg-error-stack.bs-callout.bs-callout-danger {
-    background-color: white;
+.log-msg-error-stack.callout.callout-danger {
+    background-color: white !important;
+    color: #AC2925 !important;
 }
 
-@-webkit-keyframes pulse
-{
-    0% {-webkit-transform: scale(0); opacity: 0;}
-    8% {-webkit-transform: scale(0); opacity: 0;}
-    15% {-webkit-transform: scale(0.1); opacity: 1;}
-    30% {-webkit-transform: scale(0.5); opacity: 1;}
-    100% {opacity: 0; -webkit-transform: scale(1);}
+@-webkit-keyframes pulse {
+    0% {
+        -webkit-transform: scale(0);
+        opacity: 0;
+    }
+    8% {
+        -webkit-transform: scale(0);
+        opacity: 0;
+    }
+    15% {
+        -webkit-transform: scale(0.1);
+        opacity: 1;
+    }
+    30% {
+        -webkit-transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: scale(1);
+    }
 }
 
-@-moz-keyframes pulse
-{
-    0% {-moz-transform: scale(0); opacity: 0;}
-    8% {-moz-transform: scale(0); opacity: 0;}
-    15% {-moz-transform: scale(0.1); opacity: 1;}
-    30% {-moz-transform: scale(0.5); opacity: 1;}
-    100% {opacity: 0; -moz-transform: scale(1);}
+@-moz-keyframes pulse {
+    0% {
+        -moz-transform: scale(0);
+        opacity: 0;
+    }
+    8% {
+        -moz-transform: scale(0);
+        opacity: 0;
+    }
+    15% {
+        -moz-transform: scale(0.1);
+        opacity: 1;
+    }
+    30% {
+        -moz-transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        -moz-transform: scale(1);
+    }
 }
 
 .pulse_holder {
@@ -175,7 +205,7 @@
     position: fixed;
     right: 24px;
     /* top: 24px; */
-    bottom: 76px;
+    bottom: 0px;
     font-size: 24px;
     cursor: pointer;
 }
@@ -196,20 +226,21 @@
     opacity: 0.3;
 }
 
-.help .search_field{
+.help .search_field {
     width: 250px;
     bottom: 40px;
     left: 270px;
     position: absolute;
 }
 
-.help .log_list{
+.help .log_list {
     width: 250px;
     top: 40px;
     left: 10px;
     position: fixed;
 }
-.help .log_level_tumblers{
+
+.help .log_level_tumblers {
     width: 250px;
     bottom: 40px;
     left: 10px;
@@ -220,20 +251,20 @@
     width: 32px;
 }
 
-.help .stop_button{
+.help .stop_button {
     width: 300px;
     bottom: 40px;
     right: 10px;
     position: absolute;
 }
 
-.help .description{
+.help .description {
     width: 250px;
     margin: auto;
     margin-top: 50px;
 }
 
-.help .server_pulse{
+.help .server_pulse {
     width: 250px;
     top: 64px;
     right: 10px;
@@ -260,7 +291,7 @@
     bottom: 263px;
 }
 
-.help.with-settings .description{
+.help.with-settings .description {
     width: 250px;
     margin: auto;
     margin-top: 250px;
@@ -270,6 +301,10 @@
     width: 400px;
 }
 
+/******
+ * LTE Template
+ */
+
 .github_link {
     bottom: 12px;
     right: 10px;
@@ -277,16 +312,17 @@
     z-index: 1030;
 }
 
-.sidebar-menu>li.github-menu-link {
+.sidebar-menu > li.github-menu-link {
     bottom: 0px;
     position: absolute;
+    width: 150px;
 }
 
 .main-sidebar {
     width: 150px;
 }
 
-.main-header>.navbar {
+.main-header > .navbar {
     margin-left: 150px;
 }
 
@@ -296,4 +332,31 @@
 
 .content-wrapper {
     margin-left: 150px;
+}
+
+.skin-blue .sidebar-menu > li.activated > a {
+    color: #fff;
+    background: #1e282c;
+    border-left-color: #dd4b39;
+}
+
+.skin-blue .sidebar-menu > li.deactivated > a {
+    text-decoration: line-through;
+}
+
+.scroll_to_top .fa {
+    font-size: 50px;
+}
+
+.flow .callout {
+    border-radius: 3px;
+    margin: 0;
+    padding: 0;
+    margin-left: 50px;
+    padding-left: 5px;
+}
+
+.flow .callout.callout-info {
+    background-color: white !important;
+    color: black !important;
 }

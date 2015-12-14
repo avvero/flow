@@ -7,10 +7,10 @@ angular.module('flow').directive('whenScrolledUp', ['$timeout', function ($timeo
         });
 
         elm.bind('scroll', function () {
-            if (raw.scrollTop < 100) { // load more items before you hit the top
+            if (raw.scrollTop < 20) { // load more items before you hit the top
                 scope.$apply(attr.whenScrolledUp);
             }
-            if ((raw.scrollHeight - raw.clientHeight - raw.scrollTop) < 100) { // load more items before you hit the top
+            if ((raw.scrollHeight - raw.clientHeight - raw.scrollTop) < 20) { // load more items before you hit the top
                 scope.$apply(attr.whenScrolledDown);
             }
         });
