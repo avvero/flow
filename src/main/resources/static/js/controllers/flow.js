@@ -65,7 +65,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
      * При закрытии делаем disconnect
      */
     $scope.$on('$destroy', function () {
-        $scope.stompSubscription.unsubscribe()
+        //$scope.stompSubscription.unsubscribe()
         $scope.stompClient.disconnect()
     })
     /**

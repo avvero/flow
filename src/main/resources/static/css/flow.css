@@ -160,7 +160,7 @@
 }
 
 .pulse_holder.connected .pulse_marker {
-    background: #099;
+    background: rgb(60, 141, 188);
 }
 
 .pulse_holder .pulse_rays {
@@ -187,7 +187,7 @@
 }
 
 .pulse_holder.connected .pulse_rays {
-    border: 2px solid rgba(0, 128, 64, 1);
+    border: 2px solid rgb(60, 141, 188);
 }
 
 .markers_container {

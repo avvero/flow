@@ -80,6 +80,13 @@
             </section>
             <!-- /.sidebar -->
         </aside>
+        <div class="pulse_holder {{stompClient.connected ? 'connected' : ''}}"
+             tooltip-placement="left"
+             uib-tooltip="{{stompClient.connected ? 'Connection is established' : 'Connection is lost'}}">
+            <div class="pulse_marker" >
+                <div class="pulse_rays"></div>
+            </div>
+        </div>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" when-scrolled-up="whenScrolledUp()"
