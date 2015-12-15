@@ -8,7 +8,7 @@ angular.module("flow", [
     'chart.js'
 ])
 angular.module("flow").constant('constants', {
-    version: "1.0.0"
+    version: "1.0.1"
 })
 // configure our routes
 angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRouterProvider, constants, localStorageServiceProvider) {
@@ -30,8 +30,9 @@ angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRout
             url: "/flow/:marker",
             views: {
                 "single": {
-                    templateUrl: '/views/flow.html',
-                    controller: flowController
+                    templateUrl: '/views/flow2.html',
+                    controller: flowController,
+                    resolve: flowController.resolve
                 }
             }
         })
@@ -64,6 +65,6 @@ angular.module("flow").run(function ($rootScope) {
     };
 })
 
-angular.module("flow").controller('mainController', function ($scope) {
-
+angular.module("flow").controller('mainController', function ($scope, page) {
+    $scope.page = page
 })

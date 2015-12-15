@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html ng-app="flow" ng-controller="mainController">
 <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-    <title>Flow</title>
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/docs.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!--<link rel="shortcut icon" type="image/png" href="http://eg.com/favicon.png"/>-->
+    <title ng-bind="page.title()"></title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/ionicons.min.css">
+
+    <link rel="stylesheet" href="css/AdminLTE.min.css">
+    <!--<link rel="stylesheet" href="css/_all-skins.min.css">-->
+    <link rel="stylesheet" href="css/skin-blue.min.css">
+
+    <!--<link rel="stylesheet" href="css/docs.css">-->
     <link rel="stylesheet" href="css/flow.css">
     <link rel="stylesheet" href="css/angular-chart.min.css">
 
@@ -31,6 +41,7 @@
     <script src="js/app.js"></script>
     <script src="js/controllers/markers.js"></script>
     <script src="js/controllers/flow.js"></script>
+    <script src="js/controllers/optionsDialog.js"></script>
     <script src="js/directives/logback.js"></script>
     <script src="js/directives/whenScrolledUp.js"></script>
     <script src="js/directives/logDateTime.js"></script>
@@ -40,6 +51,7 @@
     <script src="js/filters/reverse.js"></script>
     <script src="js/filters/trusted.js"></script>
     <script src="js/services/utils.js"></script>
+    <script src="js/services/page.js"></script>
     <script src="js/providers/local-timeout.js"></script>
 </head>
 <body>

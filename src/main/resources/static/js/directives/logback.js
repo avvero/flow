@@ -38,7 +38,7 @@ angular.module('flow').directive('messageMultiline', function(utils) {
                     }
                 }
                 if (isMultiline) {
-                    element.html('<div class="log-msg-multiline bs-callout bs-callout-info">'+value+'</div>')
+                    element.html('<div class="log-msg-multiline callout callout-info">'+value+'</div>')
                 }
             }
         });

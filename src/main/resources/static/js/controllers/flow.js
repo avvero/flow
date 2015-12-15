@@ -1,10 +1,13 @@
-function flowController($scope, $stompie, $timeout, $stateParams, localStorageService) {
+function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context) {
     $scope.VISIBLE_LOGS_QUANTITY = 100
     $scope.VISIBLE_LOGS_LOAD_COUNT = 10
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
     $scope.logSearchValue = '';
     $scope.isStopped = false; // остановили обновление страницы
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
+    $scope.currentMarker = $stateParams.marker
+    $scope.markers = context.markers
+    page.setTitle(context.instance.name + ' #'+ $stateParams.marker)
     // События
     $scope.items = [];
     $scope.queue = [];
@@ -46,21 +49,25 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.clear = function () {
         $scope.items = [];
     }
-    $scope.onMessageReceive = function(event) {
+    $scope.onMessageReceive = function (event) {
         $scope.addToQueue(event)
     }
     /***
      * STOMP
      */
     $scope.stompClient = $stompie
+    $scope.stompSubscription = null
     $stompie.using('/messages/flow', [
-        function () {$stompie.subscribe($stateParams.marker, $scope.onMessageReceive)}
+        function () {
+            $scope.stompSubscription = $stompie.subscribe($stateParams.marker, $scope.onMessageReceive)
+        }
     ]);
     /**
      * При закрытии делаем disconnect
      */
-    $scope.$on('$destroy', function() {
-        // TODO когда-нибудь будем делать, но не сейчас
+    $scope.$on('$destroy', function () {
+        //$scope.stompSubscription.unsubscribe()
+        $scope.stompClient.disconnect()
     })
     /**
      * VIEW
@@ -71,10 +78,11 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.showWarn = true;
     $scope.showError = true;
     $scope.showTrace = true;
-    $scope.scrollToTop = function() {
+    $scope.scrollToTop = function () {
         $('.flow')[0].scrollTop = 0
     }
     $scope.showSettings = false;
+    $scope.showSearch = false;
 
     $scope.getButtonItemLengthClass = function (length, d1, d2) {
         if (length <= d1) return 'btn-success'
@@ -82,24 +90,71 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         if (length >= d2) return 'btn-danger'
     }
 
+    $scope.showOptionsDialog = function () {
+        var options = {
+            showMdc: $scope.isOptionOn('view.showMdc'),
+            showChart: $scope.isOptionOn('view.showChart')
+        }
+        var modalInstance = $uibModal.open({
+            templateUrl: '/views/options.html',
+            controller: optionsDialogController,
+            resolve: {
+                options: function ($q, $http) {
+                    var deferred = $q.defer();
+                    deferred.resolve(options)
+                    return deferred.promise;
+                }
+            }
+        });
+        modalInstance.result.then(function (options) {
+            $scope.setOption('view.showMdc', options.showMdc)
+            $scope.setOption('view.showChart', options.showChart)
+        }, function () {
+
+        });
+    }
+
     /**
      * LocalStorage
      *
      */
     $scope.optionCache = {}
-    $scope.changeBoolOption = function(option) {
+    $scope.changeBoolOption = function (option) {
         var value = !!localStorageService.get(option)
         var newValue = !value
         localStorageService.set(option, newValue)
 
         $scope.optionCache[option] = newValue
     }
-    $scope.isOptionOn = function(option) {
-        if (typeof($scope.optionCache[option]) == "undefined"){
+    $scope.setOption = function (option, value) {
+        localStorageService.set(option, value)
+
+        $scope.optionCache[option] = value
+    }
+    $scope.isOptionOn = function (option) {
+        if (typeof($scope.optionCache[option]) == "undefined") {
             $scope.optionCache[option] = !!localStorageService.get(option)
         }
         return $scope.optionCache[option]
     }
+}
 
+flowController.resolve = {
+    context: function ($q, $http, $stateParams) {
+        var deferred = $q.defer();
 
+        $http({
+            method: 'GET',
+            url: '/data/context',
+            headers: {'Content-Type': 'application/json;charset=UTF-8'}
+        })
+            .success(function (data) {
+                deferred.resolve(data)
+            })
+            .error(function (data) {
+                deferred.reject("error value");
+            });
+
+        return deferred.promise;
+    }
 }

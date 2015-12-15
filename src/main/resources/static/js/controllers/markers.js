@@ -1,14 +1,15 @@
-function markersController($scope, model) {
-    $scope.markers = model
+function markersController($scope, page, context, $stateParams) {
+    $scope.markers = context.markers
+    page.setTitle(context.instance.name)
 }
 
 markersController.resolve = {
-    model: function ($q, $http, $stateParams) {
+    context: function ($q, $http, $stateParams) {
         var deferred = $q.defer();
 
         $http({
             method: 'GET',
-            url: '/data/markers',
+            url: '/data/context',
             headers: {'Content-Type': 'application/json;charset=UTF-8'}
         })
             .success(function (data) {

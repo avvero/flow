@@ -48,7 +48,7 @@ import static org.springframework.messaging.simp.SimpMessageHeaderAccessor.*;
 @ComponentScan
 @EnableAutoConfiguration
 @RestController
-@EnableConfigurationProperties(Application.TcpNetServerProperties.class)
+@EnableConfigurationProperties({Application.TcpNetServerProperties.class, Application.InstanceProperties.class})
 public class Application {
 
     public static final String MARKER_HEADER = "marker";
@@ -183,7 +183,7 @@ public class Application {
      */
 
     @Autowired
-    private TcpNetServerProperties tcpNetServerProperties;
+    public TcpNetServerProperties tcpNetServerProperties;
 
     @ConfigurationProperties("tcpNetServer")
     public static class TcpNetServerProperties {
@@ -196,6 +196,23 @@ public class Application {
 
         public void setPort(int port) {
             this.port = port;
+        }
+    }
+
+    @Autowired
+    public InstanceProperties instanceProperties;
+
+    @ConfigurationProperties("instance")
+    public static class InstanceProperties {
+
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
         }
     }
 
@@ -242,6 +259,14 @@ public class Application {
     @RequestMapping(value = "/data/markers", method = RequestMethod.GET)
     public Set getRegisteredMarkers() {
         return markerSessions().keySet();
+    }
+
+    @RequestMapping(value = "/data/context", method = RequestMethod.GET)
+    public Map getCurrentContext() {
+        Map map = new HashMap<>();
+        map.put("instance", instanceProperties);
+        map.put("markers", markerSessions().keySet());
+        return map;
     }
 
 }

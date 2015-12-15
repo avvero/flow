@@ -66,48 +66,82 @@
 }
 
 .entry-log div.log-msg-multiline {
-    margin-left:50px;
+    margin-left: 50px;
     padding-left: 5px;
 }
 
 .entry-log .log-msg-error-stack {
-    margin-left:50px;
+    margin-left: 50px;
     padding-left: 5px;
 }
 
 .flow {
     font-size: 12px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     word-wrap: break-word;
     padding-left: 3px;
     overflow: auto;
-    position:fixed !important;
-    position:absolute;
-    top:0;
-    right:0;
-    bottom: 50px;
-    left:0;
+    position: fixed !important;
+    position: absolute;
+    top: 5px;
+    right: 0;
+    bottom: 0px;
+    left: 155px;
 }
 
-.log-msg-error-stack.bs-callout.bs-callout-danger {
-    background-color: white;
+.searchable .flow {
+    top: 54px;
 }
 
-@-webkit-keyframes pulse
-{
-    0% {-webkit-transform: scale(0); opacity: 0;}
-    8% {-webkit-transform: scale(0); opacity: 0;}
-    15% {-webkit-transform: scale(0.1); opacity: 1;}
-    30% {-webkit-transform: scale(0.5); opacity: 1;}
-    100% {opacity: 0; -webkit-transform: scale(1);}
+.log-msg-error-stack.callout.callout-danger {
+    background-color: white !important;
+    color: #AC2925 !important;
 }
 
-@-moz-keyframes pulse
-{
-    0% {-moz-transform: scale(0); opacity: 0;}
-    8% {-moz-transform: scale(0); opacity: 0;}
-    15% {-moz-transform: scale(0.1); opacity: 1;}
-    30% {-moz-transform: scale(0.5); opacity: 1;}
-    100% {opacity: 0; -moz-transform: scale(1);}
+@-webkit-keyframes pulse {
+    0% {
+        -webkit-transform: scale(0);
+        opacity: 0;
+    }
+    8% {
+        -webkit-transform: scale(0);
+        opacity: 0;
+    }
+    15% {
+        -webkit-transform: scale(0.1);
+        opacity: 1;
+    }
+    30% {
+        -webkit-transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: scale(1);
+    }
+}
+
+@-moz-keyframes pulse {
+    0% {
+        -moz-transform: scale(0);
+        opacity: 0;
+    }
+    8% {
+        -moz-transform: scale(0);
+        opacity: 0;
+    }
+    15% {
+        -moz-transform: scale(0.1);
+        opacity: 1;
+    }
+    30% {
+        -moz-transform: scale(0.5);
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        -moz-transform: scale(1);
+    }
 }
 
 .pulse_holder {
@@ -126,7 +160,7 @@
 }
 
 .pulse_holder.connected .pulse_marker {
-    background: #099;
+    background: rgb(60, 141, 188);
 }
 
 .pulse_holder .pulse_rays {
@@ -153,7 +187,7 @@
 }
 
 .pulse_holder.connected .pulse_rays {
-    border: 2px solid rgba(0, 128, 64, 1);
+    border: 2px solid rgb(60, 141, 188);
 }
 
 .markers_container {
@@ -175,69 +209,67 @@
     position: fixed;
     right: 24px;
     /* top: 24px; */
-    bottom: 76px;
+    bottom: 0px;
     font-size: 24px;
     cursor: pointer;
 }
 
 .help {
-    z-index: 1032;
+    z-index: 1035;
     position: fixed;
-    width: 100%;
-    height: 100%;
+    display: none;
+    font-size: 14px;
 }
 
-.help_back {
-    z-index: 1031;
+.help_back, .help_side-menu {
+    z-index: 809;
     position: fixed;
     width: 100%;
     height: 100%;
     background-color: black;
     opacity: 0.3;
+    top: 0px;
 }
 
-.help .search_field{
-    width: 250px;
-    bottom: 40px;
-    left: 270px;
-    position: absolute;
+.help_side-menu {
+    width: 150px;
+    z-index: 1031;
 }
 
-.help .log_list{
-    width: 250px;
-    top: 40px;
-    left: 10px;
-    position: fixed;
-}
-.help .log_level_tumblers{
-    width: 250px;
-    bottom: 40px;
-    left: 10px;
-    position: absolute;
+.help.controls {
+    left: 177px;
+    margin-top: 10px;
 }
 
-.log_level_tumblers button {
-    width: 32px;
+.help.markers {
+    left: 177px;
+    /*margin-top: 91px;*/
+}
+.help.levels {
+    left: 177px;
+    margin-top: 91px;
 }
 
-.help .stop_button{
-    width: 300px;
-    bottom: 40px;
-    right: 10px;
-    position: absolute;
-}
-
-.help .description{
+.help.description {
     width: 250px;
     margin: auto;
-    margin-top: 50px;
+    margin-top: 100px;
+    position: relative;
 }
 
-.help .server_pulse{
+.help.server_pulse {
     width: 250px;
     top: 64px;
-    right: 10px;
+    right: 20px;
     position: fixed;
+}
+
+.show-help .help.markers,
+.show-help .help.server_pulse,
+.show-help .help.description,
+.show-help .help.controls,
+.show-help .help.levels {
+    display: block;
 }
 
 .settings {
@@ -260,14 +292,21 @@
     bottom: 263px;
 }
 
-.help.with-settings .description{
-    width: 250px;
-    margin: auto;
-    margin-top: 250px;
-}
-
 .log-search-field {
     width: 400px;
+}
+
+/******
+ * LTE Template
+ */
+
+.content-wrapper {
+    background-color: white;
+}
+
+.skin-blue .sidebar-form input[type="text"].filled, .skin-blue .sidebar-form input[type="text"].filled + .input-group-btn .btn {
+    background-color: #fff;
+    color: #666;
 }
 
 .github_link {
@@ -275,4 +314,68 @@
     right: 10px;
     position: fixed;
     z-index: 1030;
+}
+
+.sidebar-menu > li.github-menu-link {
+    bottom: 0px;
+    position: absolute;
+    width: 150px;
+}
+
+.main-sidebar {
+    width: 150px;
+}
+
+.main-header > .navbar {
+    margin-left: 150px;
+}
+
+.main-header .logo {
+    width: 150px;
+}
+
+.content-wrapper {
+    margin-left: 150px;
+}
+
+.skin-blue .sidebar-menu > li.activated > a {
+    color: #fff;
+    background: #1e282c;
+    border-left-color: #dd4b39;
+}
+
+.skin-blue .sidebar-menu > li.deactivated > a {
+    text-decoration: line-through;
+}
+
+.scroll_to_top .fa {
+    font-size: 50px;
+}
+
+.flow .callout {
+    border-radius: 3px;
+    margin: 0;
+    padding: 0;
+    margin-left: 50px;
+    padding-left: 5px;
+}
+
+.flow .callout.callout-info {
+    background-color: white !important;
+    color: black !important;
+}
+
+.navigation-top-panel {
+    display: none;
+}
+
+.searchable .navigation-top-panel {
+    display: block;
+}
+
+.chart-box {
+    margin-left: 150px;
+    bottom: 0px;
+    position: fixed;
+    right: 22px;
 }
