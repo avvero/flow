@@ -13,7 +13,8 @@
             <nav class="navbar navbar-static-top navigation-top-panel" role="navigation">
                 <form action="" method="get" class="sidebar-form">
                     <div class="input-group">
-                        <input type="text" class="form-control {{logSearchValue != '' ? 'filled' : 'empty'}}" placeholder="Search..."
+                        <input type="text" class="form-control {{logSearchValue != '' ? 'filled' : 'empty'}}"
+                               placeholder="Search..."
                                ng-model="logSearchValue"
                                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
                           <span class="input-group-btn">
@@ -34,36 +35,46 @@
                 <ul class="sidebar-menu">
                     <li class="header">
                         <b>MARKERS</b>
+
                         <div class="help markers">
-                            <div class="alert alert-info" role="alert">
-                                <p>
-                                    <strong>Markers</strong><br/>
-                                    Markers to follow
-                                </p>
+                            <div class="box box-info">
+                                <div class="box-body">
+                                    <label>Markers</label>
+
+                                    <p>
+                                        Markers to follow
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </li>
-                    <li ng-repeat="marker in markers"  class="{{currentMarker == marker ? 'active' : ''}}">
+                    <li ng-repeat="marker in markers" class="{{currentMarker == marker ? 'active' : ''}}">
                         <a ng-href="#flow/{{marker}}"><i class="fa fa-hashtag"></i><span>{{marker}}</span></a>
                     </li>
                     <li class="header">
                         <b>CONTROLS</b>
+
                         <div class="help controls">
-                            <div class="alert alert-info" role="alert">
-                                <p>
-                                    <strong>Freeze button</strong><br/>
-                                    Freezes log appearance for a while<br/>
-                                    <span class="label bg-red">0</span> - frozen logs quantity
-                                </p>
-                                <p>
-                                    <strong>Search button</strong><br/>
-                                    Shows/hides search field
-                                </p>
-                                <p>
-                                    <strong>Clear button</strong><br/>
-                                    Clears log list completely<br/>
-                                    <span class="label bg-green">0</span> - total log quantity
-                                </p>
+                            <div class="box box-info">
+                                <div class="box-body">
+                                    <label>Freeze button</label>
+
+                                    <p>
+                                        Freezes log appearance for a while<br/>
+                                        <span class="label bg-red">0</span> - frozen logs quantity
+                                    </p>
+                                    <label>Search button</label>
+
+                                    <p>
+                                        Shows/hides search field
+                                    </p>
+                                    <label>Clear button</label>
+
+                                    <p>
+                                        Clears log list completely<br/>
+                                        <span class="label bg-green">0</span> - total log quantity
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </li>
@@ -74,7 +85,8 @@
                         </a>
                     </li>
                     <li class="{{showSearch == true ? 'active' : ''}}">
-                        <a href="" ng-click="showSearch = !showSearch"><i class="fa fa-search"></i><span>Search</span></a>
+                        <a href="" ng-click="showSearch = !showSearch"><i
+                                class="fa fa-search"></i><span>Search</span></a>
                     </li>
                     <li>
                         <a href="" ng-click="clear();"><i class="fa fa-eraser"></i>
@@ -84,23 +96,29 @@
                     </li>
                     <li class="header">
                         <b>LEVELS</b>
+
                         <div class="help levels">
-                            <div class="alert alert-info" role="alert">
-                                <p>
-                                    <strong>Log level tumblers</strong><br/>
-                                    Click to show/hide logs with level
-                                </p>
+                            <div class="box box-info">
+                                <div class="box-body">
+                                    <label>Log level tumblers</label>
+
+                                    <p>
+                                        Click to show/hide logs with level
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </li>
                     <li class="{{showError == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showError = !showError"><i class="fa fa-circle-o text-red"></i> <span>Error</span></a>
+                        <a href="" ng-click="showError = !showError"><i class="fa fa-circle-o text-red"></i>
+                            <span>Error</span></a>
                     </li>
                     <li class="{{showWarn == true ? '' : 'deactivated'}}">
                         <a href="" ng-click="showWarn = !showWarn"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a>
                     </li>
                     <li class="{{showInfo == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showInfo = !showInfo"><i class="fa fa-circle-o text-aqua"></i> <span>Info</span></a>
+                        <a href="" ng-click="showInfo = !showInfo"><i class="fa fa-circle-o text-aqua"></i>
+                            <span>Info</span></a>
                     </li>
                     <li class="{{showDebug == true ? '' : 'deactivated'}}">
                         <a href="" ng-click="showDebug = !showDebug"><i class="fa fa-circle-o text-green"></i> <span>Debug</span></a>
@@ -126,7 +144,7 @@
         <div class="pulse_holder {{stompClient.connected ? 'connected' : ''}}"
              tooltip-placement="left"
              uib-tooltip="{{stompClient.connected ? 'Connection is established' : 'Connection is lost'}}">
-            <div class="pulse_marker" >
+            <div class="pulse_marker">
                 <div class="pulse_rays"></div>
             </div>
         </div>
@@ -154,28 +172,37 @@
         <div class="control-sidebar-bg"></div>
     </div>
     <div class="help description">
-        <div class="alert alert-success" role="alert">
-            <strong>Help</strong><br/>
-            <br/>
-            Please check out the elements:
-            <ul>
-                <li>Markers</li>
-                <li>Freeze button</li>
-                <li>Search button</li>
-                <li>Clear button</li>
-                <li>Log level tumblers</li>
-                <li>Server pulse</li>
-            </ul>
-            <br/>
-            <button type="button" class="btn btn-success btn-lg" ng-click="changeBoolOption('view.hideHelp')">
-                Click to close help
-            </button>
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title">Help</h3>
+            </div>
+            <div class="box-body">
+                <label>Please check out the elements:</label>
+                <p>
+                    <ul>
+                        <li>Markers</li>
+                        <li>Freeze button</li>
+                        <li>Search button</li>
+                        <li>Clear button</li>
+                        <li>Log level tumblers</li>
+                        <li>Server pulse</li>
+                    </ul>
+                </p>
+                <button type="button" class="btn btn-success" ng-click="changeBoolOption('view.hideHelp')">
+                    Click to close help
+                </button>
+            </div>
         </div>
     </div>
     <div class="help server_pulse">
-        <div class="alert alert-info" role="alert">
-            <strong>Server pulse</strong><br/>
-            Indicates the status of the connection with websocket server
+        <div class="box box-info">
+            <div class="box-body">
+                <label>Server pulse</label>
+
+                <p>
+                    Indicates the status of the connection with websocket server
+                </p>
+            </div>
         </div>
     </div>
 </div>
