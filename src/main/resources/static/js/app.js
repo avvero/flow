@@ -8,7 +8,7 @@ angular.module("flow", [
     'chart.js'
 ])
 angular.module("flow").constant('constants', {
-    version: "1.0.0"
+    version: "1.0.1"
 })
 // configure our routes
 angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRouterProvider, constants, localStorageServiceProvider) {
