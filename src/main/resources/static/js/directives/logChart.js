@@ -11,7 +11,7 @@ angular.module('flow').directive('logChart', ['$timeout', 'utils', function ($ti
              * Chart
              *
              */
-            $scope.CHART_CAPACITY = 500
+            $scope.CHART_CAPACITY = 200
             $scope.CHART_UPDATE_INTERVAL = 1000
             $scope.CHART_SKIP_ZERO_TICKS = false
             $scope.chartOptions = {

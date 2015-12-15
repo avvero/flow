@@ -372,3 +372,10 @@
 .searchable .navigation-top-panel {
     display: block;
 }
+
+.chart-box {
+    margin-left: 150px;
+    bottom: 0px;
+    position: fixed;
+    right: 22px;
+}

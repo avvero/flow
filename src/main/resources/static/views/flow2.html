@@ -149,7 +149,7 @@
             </div>
         </div>
         <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
+        <div class="">
             <div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" when-scrolled-up="whenScrolledUp()"
                  when-scrolled-down="whenScrolledDown()">
                 <div>
@@ -165,6 +165,9 @@
                  title="Scroll to top">
                 <span class="fa fa-arrow-circle-up" aria-hidden="true"></span>
             </div>
+        </div>
+        <div class="chart-box" ng-if="isOptionOn('view.showChart')">
+            <div log-chart="items.length"></div>
         </div>
         <!-- /.control-sidebar -->
         <!-- Add the sidebar's background. This div must be placed

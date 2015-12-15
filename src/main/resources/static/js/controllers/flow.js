@@ -91,7 +91,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
 
     $scope.showOptionsDialog = function () {
         var options = {
-            showMdc: $scope.isOptionOn('view.showMdc')
+            showMdc: $scope.isOptionOn('view.showMdc'),
+            showChart: $scope.isOptionOn('view.showChart')
         }
         var modalInstance = $uibModal.open({
             templateUrl: '/views/options.html',
@@ -106,6 +107,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         });
         modalInstance.result.then(function (options) {
             $scope.setOption('view.showMdc', options.showMdc)
+            $scope.setOption('view.showChart', options.showChart)
         }, function () {
 
         });
