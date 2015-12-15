@@ -1,6 +1,5 @@
-<div class="hold-transition skin-blue sidebar-mini fixed sidebar-collapse-no">
+<div class="hold-transition skin-blue sidebar-mini fixed sidebar-collapse-no {{showSearch == true ? 'searchable' : ''}}">
     <div class="wrapper">
-
         <header class="main-header">
             <!-- Logo -->
             <a ng-href="/#" class="logo">
@@ -10,12 +9,12 @@
                 <span class="logo-lg"><b>Flow</b></span>
             </a>
             <!-- Header Navbar: style can be found in header.less -->
-            <nav class="navbar navbar-static-top" role="navigation">
+            <nav class="navbar navbar-static-top navigation-top-panel" role="navigation">
                 <form action="" method="get" class="sidebar-form">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search..."
+                        <input type="text" class="form-control {{logSearchValue != '' ? 'filled' : 'empty'}}" placeholder="Search..."
                                ng-model="logSearchValue"
-                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1000, 'blur': 0 } }">
+                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
                           <span class="input-group-btn">
                             <button type="button" name="search" id="search-btn" class="btn btn-flat"><i
                                     class="fa fa-close" ng-click="logSearchValue = ''"></i>
@@ -33,13 +32,23 @@
                 <!-- sidebar menu: : style can be found in sidebar.less -->
                 <ul class="sidebar-menu">
                     <li class="header"><b>MARKERS</b></li>
-                    <li><a href=""><i class="fa fa-hashtag"></i><span>fxbank</span></a></li>
-                    <li><a href=""><i class="fa fa-hashtag"></i><span>fxpay</span></a></li>
+                    <li ng-repeat="marker in markers"  class="{{currentMarker == marker ? 'active' : ''}}">
+                        <a ng-href="#flow/{{marker}}"><i class="fa fa-hashtag"></i><span>{{marker}}</span></a>
+                    </li>
                     <li class="header"><b>CONTROLS</b></li>
                     <li class="{{isStopped == true ? 'activated' : ''}}">
                         <a href="" ng-click="isStopped = !isStopped"><i class="fa fa-certificate text"></i>
-                            <span>Freeze</span>
+                            <span>Stop</span>
                             <small class="label pull-right bg-red" ng-show="isStopped">{{queue.length}}</small>
+                        </a>
+                    </li>
+                    <li class="{{showSearch == true ? 'active' : ''}}">
+                        <a href="" ng-click="showSearch = !showSearch"><i class="fa fa-search"></i><span>Search</span></a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="clear();"><i class="fa fa-eraser"></i>
+                            <span>Clear</span>
+                            <small class="label pull-right bg-green">{{items.length}}</small>
                         </a>
                     </li>
                     <li class="header"><b>LEVELS</b></li>
@@ -59,7 +68,10 @@
                         <a href="" ng-click="showTrace = !showTrace"><i class="fa fa-circle-o text-grey"></i> <span>Trace</span></a>
                     </li>
                     <li class="header"><b></b></li>
-                    <li><a href=""><i class="fa fa-gears"></i> <span>Options</span></a></li>
+                    <li>
+                        <a href="" ng-click="showOptionsDialog()"><i class="fa fa-gears"></i> <span>Options</span></a>
+                    </li>
+                    <li><a href=""><i class="fa fa-question"></i> <span>Help</span></a></li>
                     <li class="header"><b></b></li>
                     <li class="github-menu-link"><a href="https://github.com/avvero/flow" target="_blank">
                         <i class="fa fa-github"></i> <span>github</span></a>
@@ -73,7 +85,7 @@
             <div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" when-scrolled-up="whenScrolledUp()"
                  when-scrolled-down="whenScrolledDown()">
                 <div>
-                    <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:pageLogLimit:logSearchValue"
+                    <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:pageLogLimit:showSearch ? logSearchValue:''"
                          class="entry-log level-{{log.level.levelStr}}">
                         <!--use logback template-->
                         <div logback></div>

@@ -83,10 +83,14 @@
     overflow: auto;
     position: fixed !important;
     position: absolute;
-    top: 54px;
+    top: 5px;
     right: 0;
     bottom: 0px;
     left: 155px;
+}
+
+.searchable .flow {
+    top: 54px;
 }
 
 .log-msg-error-stack.callout.callout-danger {
@@ -305,6 +309,15 @@
  * LTE Template
  */
 
+.content-wrapper {
+    background-color: white;
+}
+
+.skin-blue .sidebar-form input[type="text"].filled, .skin-blue .sidebar-form input[type="text"].filled + .input-group-btn .btn {
+    background-color: #fff;
+    color: #666;
+}
+
 .github_link {
     bottom: 12px;
     right: 10px;
@@ -359,4 +372,12 @@
 .flow .callout.callout-info {
     background-color: white !important;
     color: black !important;
+}
+
+.navigation-top-panel {
+    display: none;
+}
+
+.searchable .navigation-top-panel {
+    display: block;
 }

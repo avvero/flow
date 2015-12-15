@@ -5,7 +5,7 @@
           ng-click="changeBoolOption('view.showMdc')" ng-hide="isOptionOn('view.showMdc')"></span>
     <span class="log-mdc" ng-show="isOptionOn('view.showMdc')">
         ({{log.mdc.userLogin}},{{log.mdc.sessionId}})&nbsp;</span>
-    <span class="log-thread pointer" ng-show="isOptionOn('view.showMdc')">
+    <span class="log-thread" ng-show="isOptionOn('view.showMdc')">
         {{log.threadName}}&nbsp;</span>
     <span message="log.formattedMessage"/>
 </span>

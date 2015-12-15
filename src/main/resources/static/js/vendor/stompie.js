@@ -90,6 +90,9 @@ angular.module('stompie', [])
          */
         _stompie.disconnect = function (callback) {
             _socket.stomp.disconnect(callback);
+            _endpoint = null;
+            _init_callbacks = [];
+            _socket = {};
         };
 
         /**

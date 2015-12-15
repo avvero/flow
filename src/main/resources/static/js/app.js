@@ -31,7 +31,8 @@ angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRout
             views: {
                 "single": {
                     templateUrl: '/views/flow2.html',
-                    controller: flowController
+                    controller: flowController,
+                    resolve: flowController.resolve
                 }
             }
         })
