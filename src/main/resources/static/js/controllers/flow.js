@@ -1,4 +1,4 @@
-function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, context) {
+function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context) {
     $scope.VISIBLE_LOGS_QUANTITY = 100
     $scope.VISIBLE_LOGS_LOAD_COUNT = 10
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
@@ -7,6 +7,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
     $scope.currentMarker = $stateParams.marker
     $scope.markers = context.markers
+    page.setTitle(context.instance.name + ' #'+ $stateParams.marker)
     // События
     $scope.items = [];
     $scope.queue = [];

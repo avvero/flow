@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!--<link rel="shortcut icon" type="image/png" href="http://eg.com/favicon.png"/>-->
-    <title>Flow</title>
+    <title ng-bind="page.title()"></title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/ionicons.min.css">
@@ -51,6 +51,7 @@
     <script src="js/filters/reverse.js"></script>
     <script src="js/filters/trusted.js"></script>
     <script src="js/services/utils.js"></script>
+    <script src="js/services/page.js"></script>
     <script src="js/providers/local-timeout.js"></script>
 </head>
 <body>

@@ -65,6 +65,6 @@ angular.module("flow").run(function ($rootScope) {
     };
 })
 
-angular.module("flow").controller('mainController', function ($scope) {
-
+angular.module("flow").controller('mainController', function ($scope, page) {
+    $scope.page = page
 })
