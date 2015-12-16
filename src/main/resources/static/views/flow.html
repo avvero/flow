@@ -1,164 +1,212 @@
-<div class="pulse_holder {{stompClient.connected ? 'connected' : ''}}"
-     tooltip-placement="left"
-     uib-tooltip="{{stompClient.connected ? 'Connection is established' : 'Connection is lost'}}">
-    <div class="pulse_marker" >
-        <div class="pulse_rays"></div>
-    </div>
-</div>
-<div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" when-scrolled-up="whenScrolledUp()" when-scrolled-down="whenScrolledDown()">
-    <div>
-        <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:pageLogLimit:logSearchValue"
-             class="entry-log level-{{log.level.levelStr}}">
-            <!--use logback template-->
-            <div logback></div>
-        </div>
-    </div>
-</div>
-<div class="container {{showSettings ? 'with-settings' : ''}}">
-    <div class="navbar navbar-default navbar-fixed-bottom" role="navigation">
-        <div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <div class="navbar-form navbar-left">
-                            <div class="btn-group">
-                                <button type="button"
-                                        class="btn btn-sm {{showTrace == true ? 'active' : ''}}"
-                                        ng-click="showTrace = !showTrace" title="Show/hide trace logs">
-                                    T
-                                </button>
-                                <button type="button"
-                                        class="btn btn-sm {{showDebug == true ? 'btn-success active' : ''}}"
-                                        ng-click="showDebug = !showDebug" title="Show/hide debug logs">
-                                    D
-                                </button>
-                                <button type="button"
-                                        class="btn btn-sm {{showInfo == true ? 'active btn-info' : ''}}"
-                                        ng-click="showInfo = !showInfo" title="Show/hide info logs">
-                                    I
-                                </button>
-                                <button type="button"
-                                        class="btn btn-sm {{showWarn == true ? 'active btn-warning' : ''}}"
-                                        ng-click="showWarn = !showWarn" title="Show/hide warn logs">
-                                    W
-                                </button>
-                                <button type="button"
-                                        class="btn btn-sm {{showError == true ? 'active btn-danger' : ''}}"
-                                        ng-click="showError = !showError" title="Show/hide error logs">
-                                    E
-                                </button>
-                            </div>
-                            <div class="form-group">
-                                <input ng-model="logSearchValue" class="form-control log-search-field"
-                                       placeholder="Search by log message"
-                                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1000, 'blur': 0 } }">
-                            </div>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm" ng-click="logSearchValue = ''">X</button>
+<div class="hold-transition skin-blue sidebar-mini fixed sidebar-collapse-no {{showSearch == true ? 'searchable' : ''}}
+    {{isOptionOn('view.hideHelp') ? '': 'show-help'}}">
+    <div class="wrapper">
+        <header class="main-header">
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top navigation-top-panel" role="navigation">
+                <form action="" method="get" class="sidebar-form">
+                    <div class="input-group">
+                        <input type="text" class="form-control {{logSearchValue != '' ? 'filled' : 'empty'}}"
+                               placeholder="Search..."
+                               ng-model="logSearchValue"
+                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
+                          <span class="input-group-btn">
+                            <button type="button" name="search" id="search-btn" class="btn btn-flat"><i
+                                    class="fa fa-close" ng-click="logSearchValue = ''"></i>
+                            </button>
+                          </span>
+                    </div>
+                </form>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- Logo -->
+            <a ng-href="/#" class="logo">
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>Flow</b></span>
+            </a>
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- /.search form -->
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu">
+                    <li class="header">
+                        <b>MARKERS</b>
+
+                        <div class="help markers">
+                            <div class="box box-info">
+                                <div class="box-body">
+                                    <label>Markers</label>
+
+                                    <p>
+                                        Markers to follow
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </li>
-                    <li>
-
+                    <li ng-repeat="marker in markers" class="{{currentMarker == marker ? 'active' : ''}}">
+                        <a ng-href="#flow/{{marker}}"><i class="fa fa-hashtag"></i><span>{{marker}}</span></a>
                     </li>
-                </ul>
-                <ul class="nav navbar-nav">
+                    <li class="header">
+                        <b>CONTROLS</b>
 
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <form class="navbar-form navbar-right">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm
-                                            {{getButtonItemLengthClass(queue.length, 5000, 10000)}}
-                                            {{isStopped == true ? 'active' : ''}}"
-                                        ng-click="isStopped = !isStopped" title="Stop/Start">
-                                    Freeze <span class="badge" ng-show="isStopped">{{queue.length}}</span></button>
+                        <div class="help controls">
+                            <div class="box box-info">
+                                <div class="box-body">
+                                    <label>Freeze button</label>
 
-                                <button type="button" class="btn btn-sm" ng-click="showSettings = !showSettings">
-                                    <span class="glyphicon glyphicon-wrench" aria-hidden="true"></span></button>
+                                    <p>
+                                        Freezes log appearance for a while<br/>
+                                        <span class="label bg-red">0</span> - frozen logs quantity
+                                    </p>
+                                    <label>Search button</label>
+
+                                    <p>
+                                        Shows/hides search field
+                                    </p>
+                                    <label>Clear button</label>
+
+                                    <p>
+                                        Clears log list completely<br/>
+                                        <span class="label bg-green">0</span> - total log quantity
+                                    </p>
+                                </div>
                             </div>
-                        </form>
+                        </div>
+                    </li>
+                    <li class="{{isStopped == true ? 'activated' : ''}}">
+                        <a href="" ng-click="isStopped = !isStopped"><i class="fa fa-certificate text"></i>
+                            <span>Freeze</span>
+                            <small class="label pull-right bg-red" ng-show="isStopped">{{queue.length}}</small>
+                        </a>
+                    </li>
+                    <li class="{{showSearch == true ? 'active' : ''}}">
+                        <a href="" ng-click="showSearch = !showSearch"><i
+                                class="fa fa-search"></i><span>Search</span></a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="clear();"><i class="fa fa-eraser"></i>
+                            <span>Clear</span>
+                            <small class="label pull-right bg-green">{{items.length}}</small>
+                        </a>
+                    </li>
+                    <li class="header">
+                        <b>LEVELS</b>
+
+                        <div class="help levels">
+                            <div class="box box-info">
+                                <div class="box-body">
+                                    <label>Log level tumblers</label>
+
+                                    <p>
+                                        Click to show/hide logs with the level
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="{{showError == true ? '' : 'deactivated'}}">
+                        <a href="" ng-click="showError = !showError"><i class="fa fa-circle-o text-red"></i>
+                            <span>Error</span></a>
+                    </li>
+                    <li class="{{showWarn == true ? '' : 'deactivated'}}">
+                        <a href="" ng-click="showWarn = !showWarn"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a>
+                    </li>
+                    <li class="{{showInfo == true ? '' : 'deactivated'}}">
+                        <a href="" ng-click="showInfo = !showInfo"><i class="fa fa-circle-o text-aqua"></i>
+                            <span>Info</span></a>
+                    </li>
+                    <li class="{{showDebug == true ? '' : 'deactivated'}}">
+                        <a href="" ng-click="showDebug = !showDebug"><i class="fa fa-circle-o text-green"></i> <span>Debug</span></a>
+                    </li>
+                    <li class="{{showTrace == true ? '' : 'deactivated'}}">
+                        <a href="" ng-click="showTrace = !showTrace"><i class="fa fa-circle-o text-grey"></i> <span>Trace</span></a>
+                    </li>
+                    <li class="header"><b></b></li>
+                    <li>
+                        <a href="" ng-click="showOptionsDialog()"><i class="fa fa-gears"></i> <span>Options</span></a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="setOption('view.hideHelp', false)"><i class="fa fa-question"></i> <span>Help</span></a>
+                    </li>
+                    <li class="header"><b></b></li>
+                    <li class="github-menu-link"><a href="https://github.com/avvero/flow" target="_blank">
+                        <i class="fa fa-github"></i> <span>github</span></a>
                     </li>
                 </ul>
-                <div class="scroll_to_top" ng-click="scrollToTop()" ng-show="pageLogLimit > VISIBLE_LOGS_QUANTITY"
-                     title="Scroll to top">
-                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-                </div>
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+        <div class="pulse_holder {{stompClient.connected ? 'connected' : ''}}"
+             tooltip-placement="right"
+             uib-tooltip="{{stompClient.connected ? 'Connection is established' : 'Connection is lost'}}">
+            <div class="pulse_marker">
+                <div class="pulse_rays"></div>
             </div>
         </div>
-        <div class="settings" ng-if="showSettings">
-            <div class="row">
-                <div class="col-md-6">
-                    <div log-chart="items.length"></div>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="">
+            <div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" when-scrolled-up="whenScrolledUp()"
+                 when-scrolled-down="whenScrolledDown()">
+                <div>
+                    <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:pageLogLimit:showSearch ? logSearchValue:''"
+                         class="entry-log level-{{log.level.levelStr}}">
+                        <!--use logback template-->
+                        <div logback></div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="setting">Items in store: {{items.length}} <button type="button" class="btn btn-xs btn-danger" ng-click="clear();">Clear</button></div>
-                    <div class="setting">Items on page: {{pageLogLimit}}</div>
-                    <div class="setting">Hide help: {{isOptionOn('view.hideHelp')}} <button type="button" class="btn btn-xs btn-success" ng-click="changeBoolOption('view.hideHelp')">Show help</button></div>
-                    <div class="setting">Show mdc: {{isOptionOn('view.showMdc')}} <button type="button" class="btn btn-xs btn-success" ng-click="changeBoolOption('view.showMdc')">Switch</button></div>
-                </div>
+            </div>
+            <!-- /.content -->
+            <div class="scroll_to_top" ng-click="scrollToTop()" ng-show="pageLogLimit > VISIBLE_LOGS_QUANTITY"
+                 title="Scroll to top">
+                <span class="fa fa-arrow-circle-up" aria-hidden="true"></span>
+            </div>
+        </div>
+        <div class="chart-box" ng-if="isOptionOn('view.showChart')">
+            <div log-chart="items.length"></div>
+        </div>
+        <!-- /.control-sidebar -->
+        <!-- Add the sidebar's background. This div must be placed
+             immediately after the control sidebar -->
+        <div class="control-sidebar-bg"></div>
+    </div>
+    <div class="help description">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title">Help</h3>
+            </div>
+            <div class="box-body">
+                <label>Please check out the elements:</label>
+                <p>
+                    <ul>
+                        <li>Markers</li>
+                        <li>Freeze button</li>
+                        <li>Search button</li>
+                        <li>Clear button</li>
+                        <li>Log level tumblers</li>
+                        <li>Server pulse</li>
+                    </ul>
+                </p>
+                <button type="button" class="btn btn-success" ng-click="changeBoolOption('view.hideHelp')">
+                    Click to close help
+                </button>
             </div>
         </div>
     </div>
-    <div class="github_link" ng-if="showSettings"><a href="https://github.com/avvero/flow">github</a></div>
+    <div class="help server_pulse">
+        <div class="box box-info">
+            <div class="box-body">
+                <label>Server pulse</label>
+
+                <p>
+                    Indicates the status of the connection with websocket server
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="help_back" ng-hide="isOptionOn('view.hideHelp')"></div>
-<div class="help {{showSettings ? 'with-settings' : ''}}" ng-hide="isOptionOn('view.hideHelp')">
-    <div class="description">
-        <div class="alert alert-success" role="alert">
-            <strong>Help</strong><br/>
-            <br/>
-            Please check out the elements:
-            <ul>
-                <li>Log level tumblers</li>
-                <li>Freeze button</li>
-                <li>Server pulse</li>
-                <li>Log list</li>
-                <li>Search field</li>
-            </ul>
-            <br/>
-
-            <button type="button" class="btn btn-success btn-lg" ng-click="changeBoolOption('view.hideHelp')">
-                Click to close help
-            </button>
-        </div>
-    </div>
-    <div class="log_level_tumblers">
-        <div class="alert alert-info" role="alert">
-            <strong>Log level tumblers</strong><br/>
-            Click to show/hide logs with level<br/>
-            <div><button type="button" class="btn btn-sm active">T</button> - trace level</div>
-            <div><button type="button" class="btn btn-sm btn-success active">D</button> - debug level</div>
-            <div><button type="button" class="btn btn-sm btn-info active">I</button> - info level</div>
-            <div><button type="button" class="btn btn-sm btn-warning active">W</button> - warning level</div>
-            <div><button type="button" class="btn btn-sm btn-danger active">E</button> - error level</div>
-        </div>
-    </div>
-    <div class="stop_button">
-        <div class="alert alert-info" role="alert">
-            <strong>Freeze button</strong><br/>
-            Do freeze log appearance for a time<br/>
-            <span class="badge">0</span> - frozen logs quantity
-        </div>
-    </div>
-    <div class="server_pulse">
-        <div class="alert alert-info" role="alert">
-            <strong>Server pulse</strong><br/>
-            Indicates the status of a connection with websocket server
-        </div>
-    </div>
-    <div class="search_field">
-        <div class="alert alert-info" role="alert">
-            <strong>Search field</strong><br/>
-            Search by log message
-        </div>
-    </div>
-    <div class="log_list">
-        <div class="alert alert-info" role="alert">
-            <strong>Log list</strong><br/>
-            Logs will be here
-        </div>
-    </div>
-</div>
+<div class="help_side-menu" ng-hide="isOptionOn('view.hideHelp')"></div>

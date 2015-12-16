@@ -30,7 +30,7 @@ angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRout
             url: "/flow/:marker",
             views: {
                 "single": {
-                    templateUrl: '/views/flow2.html',
+                    templateUrl: '/views/flow.html',
                     controller: flowController,
                     resolve: flowController.resolve
                 }

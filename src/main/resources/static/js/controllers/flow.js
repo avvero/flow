@@ -137,6 +137,14 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         }
         return $scope.optionCache[option]
     }
+    $scope.setDefaultOption = function (option, value) {
+        if (localStorageService.get(option) == null) {
+            $scope.setOption(option, value)
+        }
+    }
+    $scope.setDefaultOption('view.showMdc', true)
+    $scope.setDefaultOption('view.showChart', false)
+    $scope.setDefaultOption('view.hideHelp', false)
 }
 
 flowController.resolve = {

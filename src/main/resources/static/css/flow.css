@@ -49,7 +49,7 @@
 }
 
 .entry-log span.log-level {
-    width: 47px;
+    width: 50px;
     display: inline-block;
     text-align: right;
 }
@@ -146,10 +146,11 @@
 
 .pulse_holder {
     display: block;
-    z-index: 100;
+    z-index: 1030;
     position: fixed;
-    right: 38px;
-    top: 24px;
+    left: -8px;
+    /*left: 114px;*/
+    top: 18px;
 }
 
 .pulse_holder .pulse_marker {
@@ -243,8 +244,9 @@
 
 .help.markers {
     left: 177px;
-    /*margin-top: 91px;*/
+    margin-top: 8px;
 }
+
 .help.levels {
     left: 177px;
     margin-top: 91px;
@@ -258,12 +260,11 @@
 }
 
 .help.server_pulse {
-    width: 250px;
-    top: 64px;
-    right: 20px;
+    /* width: 250px; */
+    top: 3px;
+    left: 177px;
     position: fixed;
 }
-
 .show-help .help.markers,
 .show-help .help.server_pulse,
 .show-help .help.description,
@@ -365,11 +366,11 @@
     color: black !important;
 }
 
-.navigation-top-panel {
+.main-header {
     display: none;
 }
 
-.searchable .navigation-top-panel {
+.searchable .main-header {
     display: block;
 }
 
@@ -378,4 +379,31 @@
     bottom: 0px;
     position: fixed;
     right: 22px;
+}
+
+.main-sidebar .logo {
+    color: #fff;
+    border-bottom: 0 solid transparent;
+    width: 150px;
+    -webkit-transition: width .3s ease-in-out;
+    -o-transition: width .3s ease-in-out;
+    transition: width .3s ease-in-out;
+    display: block;
+    height: 50px;
+    font-size: 20px;
+    line-height: 50px;
+    text-align: center;
+    width: 150px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    padding: 0 15px;
+    font-weight: 300;
+    overflow: hidden;
+}
+
+.main-sidebar, .left-side {
+    padding-top: 0px;
+}
+
+.tooltip {
+    position: fixed;
 }
