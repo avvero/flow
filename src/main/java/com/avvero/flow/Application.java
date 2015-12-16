@@ -6,8 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -48,13 +51,19 @@ import static org.springframework.messaging.simp.SimpMessageHeaderAccessor.*;
 @ComponentScan
 @EnableAutoConfiguration
 @RestController
+@SpringBootApplication
 @EnableConfigurationProperties({Application.TcpNetServerProperties.class, Application.InstanceProperties.class})
-public class Application {
+public class Application extends SpringBootServletInitializer {
 
     public static final String MARKER_HEADER = "marker";
     public static final String ALL_MARKER_HEADER = "*";
 
     private static final Logger log = LoggerFactory.getLogger(Application.class);
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(Application.class);
+    }
 
     public static void main(String args[]) throws Throwable {
         SpringApplication.run(Application.class, args);

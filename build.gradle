@@ -11,6 +11,7 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
+apply plugin: 'war'
 
 version = '1.0.1'
 jar {
@@ -35,7 +36,7 @@ dependencies {
     compile("org.springframework.integration:spring-integration-websocket")
     compile('org.springframework.integration:spring-integration-java-dsl:1.1.0.RELEASE')
     compile("org.springframework:spring-messaging")
-    testCompile("junit:junit")
+    runtime("org.springframework.boot:spring-boot-starter-tomcat")
 }
 
 task wrapper(type: Wrapper) {
