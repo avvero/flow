@@ -27,7 +27,7 @@ angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRout
             }
         })
         .state('flow', {
-            url: "/flow/:marker",
+            url: "/follow/:marker",
             views: {
                 "single": {
                     templateUrl: '/views/flow.html',
