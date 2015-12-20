@@ -1,14 +1,14 @@
 angular.module('flow').filter('logComplex', function () {
-    var isInMessage = function (log, logSearchValue){
+    var isInMessage = function (log, logSearchValue) {
         return log.formattedMessage.indexOf(logSearchValue) != -1
     }
-    var isInThrowableInfo = function (log, logSearchValue){
+    var isInThrowableInfo = function (log, logSearchValue) {
         if (log.throwableProxy) {
-            if ( log.throwableProxy.message && log.throwableProxy.message.indexOf(logSearchValue) != -1) {
+            if (log.throwableProxy.message && log.throwableProxy.message.indexOf(logSearchValue) != -1) {
                 return true;
             }
             if (log.throwableProxy.stackTraceElementProxyArray && log.throwableProxy.stackTraceElementProxyArray.length) {
-                for (var i =0; i < log.throwableProxy.stackTraceElementProxyArray.length; i++) {
+                for (var i = 0; i < log.throwableProxy.stackTraceElementProxyArray.length; i++) {
                     if (log.throwableProxy.stackTraceElementProxyArray[i].steasString.indexOf(logSearchValue) != -1) {
                         return true;
                     }
@@ -19,7 +19,7 @@ angular.module('flow').filter('logComplex', function () {
                     return true;
                 }
                 if (log.throwableProxy.cause.stackTraceElementProxyArray && log.throwableProxy.cause.stackTraceElementProxyArray.length > 0) {
-                    for (var i =0; i < log.throwableProxy.cause.stackTraceElementProxyArray.length; i++) {
+                    for (var i = 0; i < log.throwableProxy.cause.stackTraceElementProxyArray.length; i++) {
                         if (log.throwableProxy.cause.stackTraceElementProxyArray[i].steasString.indexOf(logSearchValue) != -1) {
                             return true;
                         }
@@ -29,7 +29,7 @@ angular.module('flow').filter('logComplex', function () {
         }
         return false;
     }
-    var isInLog = function (log, logSearchValue){
+    var isInLog = function (log, logSearchValue) {
         var string = log.stringfied
         if (!log.stringfied) {
             log.stringfied = JSON.stringify(log)
@@ -39,10 +39,16 @@ angular.module('flow').filter('logComplex', function () {
         //return isInMessage(log, logSearchValue)  || isInThrowableInfo(log, logSearchValue)
     }
 
-    return function (logs, showTrace, showDebug, showInfo, showWarn, showError, caretStart, limit, filter, logSearchValue) {
+    return function (logs, showTrace, showDebug, showInfo, showWarn, showError, caret, limit, logSearchValue) {
         console.debug("Filter start")
         var result = []
-        for (var i = caretStart-1; i >= 0; i--) {
+        var hash = '' + showTrace + showDebug + showInfo + showWarn + showError + limit + logSearchValue
+        if (hash != caret.hash) {
+            caret.hash = hash
+            caret.position = 0
+        }
+        var toSkip = caret.position;
+        for (var i = logs.length - 1; i >= 0; i--) {
             if (limit == result.length) {
                 break;
             }
@@ -56,11 +62,17 @@ angular.module('flow').filter('logComplex', function () {
                 || showError && level == 'ERROR') {
                 // Log message filter
                 if (logSearchValue == '' || isInLog(log, logSearchValue)) {
-                    result.push(logs[i])
+                    if (toSkip == 0) {
+                        result.push(logs[i])
+                    } else {
+                        --toSkip
+                    }
                 }
             }
         }
-        filter.result = result
+        if (toSkip > 0) {
+            caret.position = caret.position - toSkip
+        }
         return result;
     }
 })

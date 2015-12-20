@@ -150,7 +150,7 @@
         <div class="">
             <div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" msd-wheel="mouseWheel($event, $delta, $deltaX, $deltaY)">
                 <div>
-                    <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:caretStart:pageLogLimit:filter:showSearch ? logSearchValue:''"
+                    <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:caret:pageLogLimit:showSearch ? logSearchValue:''"
                          class="entry-log level-{{log.level.levelStr}}">
                         <!--use logback template-->
                         <div logback id="logEntry_{{log.idx}}"></div>
@@ -158,17 +158,20 @@
                 </div>
             </div>
             <!-- /.content -->
-            <div class="scroll_to_top" ng-click="scrollToTop()" ng-show="pageLogLimit > VISIBLE_LOGS_QUANTITY"
+            <div class="scroll_to_top" ng-click="scrollToTop()" ng-show="caret.position > SCROLL_TO_TOP_THRESHOLD"
                  title="Scroll to top">
                 <span class="fa fa-arrow-circle-up" aria-hidden="true"></span>
+            </div>
+            <div class="scroll_to_bottom" ng-click="scrollToBottom()"
+                 title="Scroll to bottom">
+                <span class="fa fa-arrow-circle-down" aria-hidden="true"></span>
             </div>
         </div>
         <div class="debug-box" ng-if="isOptionOn('app.isDebugMode')">
             <p>DEBUG</p>
             <p>pageLogLimit: {{pageLogLimit}}</p>
-            <p>caretStart: {{caretStart}}</p>
-            <p>caretEnd: {{caretStart - pageLogLimit}}</p>
-            <p>filter.result.length: {{filter.result.length}}</p>
+            <p>caret.position: {{caret.position}}</p>
+            <p>caret.hash: {{caret.hash}}</p>
         </div>
         <div class="chart-box" ng-if="isOptionOn('view.showChart')">
             <div log-chart="items.length"></div>

@@ -9,7 +9,7 @@ angular.module("flow", [
     'monospaced.mousewheel'
 ])
 angular.module("flow").constant('constants', {
-    version: "1.0.1"
+    version: "1.0.2"
 })
 // configure our routes
 angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRouterProvider, constants, localStorageServiceProvider) {

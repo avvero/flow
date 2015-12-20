@@ -1,5 +1,6 @@
 function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context, $location) {
-    $scope.VISIBLE_LOGS_QUANTITY = 100
+    $scope.VISIBLE_LOGS_QUANTITY = 100  // количество элементов на странице
+    $scope.SCROLL_TO_TOP_THRESHOLD = 20 // позиция каретки, полсе который будет показана кнопка Scroll to top
     $scope.VISIBLE_LOGS_LOAD_COUNT = 50
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
     $scope.logSearchValue = '';
@@ -7,15 +8,14 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
     $scope.currentMarker = $stateParams.marker
     $scope.markers = context.markers
-    $scope.caretStart = 0
     page.setTitle(context.instance.name + ' #'+ $stateParams.marker)
     // События
     $scope.items = [];
-    $scope.filter = {
-        result : []
-    };
     $scope.caret = {
         position: 0
+    }
+    $scope.setMark = function (entry, mark) {
+        entry[mark] = true
     }
     /* QUEUE */
     $scope.queue = [];
@@ -27,15 +27,11 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     }
     $scope.mouseWheel = function($event, $delta, $deltaX, $deltaY) {
         if ($delta > 0) { // load more items before you hit the top
-            var t = 5
-            if (($scope.caretStart + t) <= $scope.items.length) {
-                $scope.caretStart += t
+            if ($scope.caret.position > 0) {
+                $scope.caret.position -= 1
             }
         } else {
-            var t = 5
-            if (($scope.caretStart - $scope.pageLogLimit - t) >= 0) {
-                $scope.caretStart -= t
-            }
+            $scope.caret.position += 1
         }
     }
     $scope.removeFromQueue = function (applyScope) {
@@ -46,8 +42,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
                 var times = $scope.getTimes($scope.queue)
                 for (var t = 0; t < times; t++) {
                     var logEntry = $scope.queue.shift();
+                    logEntry.idx = $scope.items.length
                     $scope.items.push(logEntry)
-                    $scope.caretStart = $scope.items.length
                     applyScope = true
                 }
             }
@@ -64,7 +60,6 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     };
     $scope.clear = function () {
         $scope.items = [];
-        $scope.caretStart = 0
     }
     $scope.onMessageReceive = function (event) {
         $scope.addToQueue(event)
@@ -96,7 +91,15 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.showError = true;
     $scope.showTrace = true;
     $scope.scrollToTop = function () {
+        $scope.caret.position = 0
         $('.flow')[0].scrollTop = 0
+    }
+    $scope.scrollToBottom = function () {
+        if ($scope.items.length - $scope.VISIBLE_LOGS_QUANTITY > 0) {
+            $scope.caret.position = $scope.items.length - $scope.VISIBLE_LOGS_QUANTITY
+            var raw = $('.flow')[0]
+            raw.scrollTop = raw.scrollHeight - raw.clientHeight
+        }
     }
     $scope.showSettings = false;
     $scope.showSearch = false;

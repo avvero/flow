@@ -28,6 +28,11 @@
     word-wrap: break-word;
 }
 
+.entry-log .selected {
+    /*display: none;*/
+    background-color: #e08e0b;
+}
+
 .show-level-ERROR .entry-log.level-ERROR {
     display: block
 }
@@ -203,16 +208,28 @@
     cursor: pointer;
 }
 
-.scroll_to_top {
+.scroll_to_top,
+.scroll_to_bottom {
     float: right;
     display: block;
     z-index: 100;
     position: fixed;
     right: 24px;
-    /* top: 24px; */
-    bottom: 0px;
     font-size: 24px;
     cursor: pointer;
+}
+
+.scroll_to_top {
+    bottom: 50px;
+}
+.scroll_to_bottom {
+    bottom: 0px;
+}
+
+
+.scroll_to_top .fa,
+.scroll_to_bottom .fa {
+    font-size: 50px;
 }
 
 .help {
@@ -347,10 +364,6 @@
 
 .skin-blue .sidebar-menu > li.deactivated > a {
     text-decoration: line-through;
-}
-
-.scroll_to_top .fa {
-    font-size: 50px;
 }
 
 .flow .callout {
