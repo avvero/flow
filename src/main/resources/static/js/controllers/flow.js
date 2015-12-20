@@ -1,15 +1,23 @@
-function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context) {
+function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context, $location) {
     $scope.VISIBLE_LOGS_QUANTITY = 100
-    $scope.VISIBLE_LOGS_LOAD_COUNT = 10
+    $scope.VISIBLE_LOGS_LOAD_COUNT = 50
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
     $scope.logSearchValue = '';
     $scope.isStopped = false; // остановили обновление страницы
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
     $scope.currentMarker = $stateParams.marker
     $scope.markers = context.markers
+    $scope.caretStart = 0
     page.setTitle(context.instance.name + ' #'+ $stateParams.marker)
     // События
     $scope.items = [];
+    $scope.filter = {
+        result : []
+    };
+    $scope.caret = {
+        position: 0
+    }
+    /* QUEUE */
     $scope.queue = [];
     $scope.remove = function (index) {
         $scope.items.splice(index, 1);
@@ -17,11 +25,18 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.addToQueue = function (logEntry) {
         $scope.queue.push(logEntry)
     }
-    $scope.whenScrolledDown = function () {
-        $scope.pageLogLimit += $scope.VISIBLE_LOGS_LOAD_COUNT
-    }
-    $scope.whenScrolledUp = function () {
-        $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY
+    $scope.mouseWheel = function($event, $delta, $deltaX, $deltaY) {
+        if ($delta > 0) { // load more items before you hit the top
+            var t = 5
+            if (($scope.caretStart + t) <= $scope.items.length) {
+                $scope.caretStart += t
+            }
+        } else {
+            var t = 5
+            if (($scope.caretStart - $scope.pageLogLimit - t) >= 0) {
+                $scope.caretStart -= t
+            }
+        }
     }
     $scope.removeFromQueue = function (applyScope) {
         $timeout(function () {
@@ -32,6 +47,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
                 for (var t = 0; t < times; t++) {
                     var logEntry = $scope.queue.shift();
                     $scope.items.push(logEntry)
+                    $scope.caretStart = $scope.items.length
                     applyScope = true
                 }
             }
@@ -48,6 +64,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     };
     $scope.clear = function () {
         $scope.items = [];
+        $scope.caretStart = 0
     }
     $scope.onMessageReceive = function (event) {
         $scope.addToQueue(event)
@@ -93,7 +110,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.showOptionsDialog = function () {
         var options = {
             showMdc: $scope.isOptionOn('view.showMdc'),
-            showChart: $scope.isOptionOn('view.showChart')
+            showChart: $scope.isOptionOn('view.showChart'),
+            isDebugMode: $scope.isOptionOn('app.isDebugMode')
         }
         var modalInstance = $uibModal.open({
             templateUrl: '/views/options.html',
@@ -109,6 +127,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         modalInstance.result.then(function (options) {
             $scope.setOption('view.showMdc', options.showMdc)
             $scope.setOption('view.showChart', options.showChart)
+            $scope.setOption('app.isDebugMode', options.isDebugMode)
         }, function () {
 
         });
@@ -145,6 +164,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.setDefaultOption('view.showMdc', true)
     $scope.setDefaultOption('view.showChart', false)
     $scope.setDefaultOption('view.hideHelp', false)
+    $scope.setDefaultOption('app.isDebugMode', false)
 }
 
 flowController.resolve = {

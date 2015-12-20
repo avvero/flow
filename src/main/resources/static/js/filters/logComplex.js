@@ -39,10 +39,10 @@ angular.module('flow').filter('logComplex', function () {
         //return isInMessage(log, logSearchValue)  || isInThrowableInfo(log, logSearchValue)
     }
 
-    return function (logs, showTrace, showDebug, showInfo, showWarn, showError, limit, logSearchValue) {
+    return function (logs, showTrace, showDebug, showInfo, showWarn, showError, caretStart, limit, filter, logSearchValue) {
         console.debug("Filter start")
         var result = []
-        for (var i = logs.length - 1; i >= 0; i--) {
+        for (var i = caretStart-1; i >= 0; i--) {
             if (limit == result.length) {
                 break;
             }
@@ -60,6 +60,7 @@ angular.module('flow').filter('logComplex', function () {
                 }
             }
         }
+        filter.result = result
         return result;
     }
 })

@@ -148,13 +148,12 @@
         </div>
         <!-- Content Wrapper. Contains page content -->
         <div class="">
-            <div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" when-scrolled-up="whenScrolledUp()"
-                 when-scrolled-down="whenScrolledDown()">
+            <div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" msd-wheel="mouseWheel($event, $delta, $deltaX, $deltaY)">
                 <div>
-                    <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:pageLogLimit:showSearch ? logSearchValue:''"
+                    <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:caretStart:pageLogLimit:filter:showSearch ? logSearchValue:''"
                          class="entry-log level-{{log.level.levelStr}}">
                         <!--use logback template-->
-                        <div logback></div>
+                        <div logback id="logEntry_{{log.idx}}"></div>
                     </div>
                 </div>
             </div>
@@ -163,6 +162,13 @@
                  title="Scroll to top">
                 <span class="fa fa-arrow-circle-up" aria-hidden="true"></span>
             </div>
+        </div>
+        <div class="debug-box" ng-if="isOptionOn('app.isDebugMode')">
+            <p>DEBUG</p>
+            <p>pageLogLimit: {{pageLogLimit}}</p>
+            <p>caretStart: {{caretStart}}</p>
+            <p>caretEnd: {{caretStart - pageLogLimit}}</p>
+            <p>filter.result.length: {{filter.result.length}}</p>
         </div>
         <div class="chart-box" ng-if="isOptionOn('view.showChart')">
             <div log-chart="items.length"></div>

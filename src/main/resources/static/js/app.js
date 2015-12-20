@@ -5,7 +5,8 @@ angular.module("flow", [
     'stompie',
     'ui.bootstrap',
     'LocalStorageModule',
-    'chart.js'
+    'chart.js',
+    'monospaced.mousewheel'
 ])
 angular.module("flow").constant('constants', {
     version: "1.0.1"

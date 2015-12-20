@@ -380,6 +380,14 @@
     position: fixed;
     right: 22px;
 }
+.debug-box {
+    margin-left: 150px;
+    top:100px;
+    position: fixed;
+    right: 22px;
+    background-color: #001a35;
+    color: white;
+}
 
 .main-sidebar .logo {
     color: #fff;
