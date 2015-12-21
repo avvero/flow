@@ -81,9 +81,6 @@
 }
 
 .flow {
-    font-size: 12px;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    word-wrap: break-word;
     padding-left: 3px;
     overflow: auto;
     position: fixed !important;
@@ -92,6 +89,12 @@
     right: 0;
     bottom: 0px;
     left: 155px;
+}
+
+.log-list {
+    font-size: 12px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    word-wrap: break-word;
 }
 
 .searchable .flow {
@@ -366,7 +369,7 @@
     text-decoration: line-through;
 }
 
-.flow .callout {
+.log-list .callout {
     border-radius: 3px;
     margin: 0;
     padding: 0;
@@ -374,7 +377,7 @@
     padding-left: 5px;
 }
 
-.flow .callout.callout-info {
+.log-list .callout.callout-info {
     background-color: white !important;
     color: black !important;
 }
@@ -395,11 +398,12 @@
 }
 .debug-box {
     margin-left: 150px;
-    top:100px;
+    bottom:100px;
     position: fixed;
     right: 22px;
     background-color: #001a35;
     color: white;
+    z-index: 2000;
 }
 
 .main-sidebar .logo {
@@ -427,4 +431,35 @@
 
 .tooltip {
     position: fixed;
+}
+
+.search-result {
+    position: fixed;
+    width: initial;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+
+}
+
+.search-result .log-list{
+    max-height: 305px;
+    overflow: auto;
+}
+
+.search-result .callout{
+    padding: 3px;
+}
+
+.search-result .log-list {
+    font-size: 10px;
+}
+
+.callout-navy {
+    background-color: #FFFFFF;
+    color: black;
+    border-color: #1A2226;
+    border: 1px solid #374850;
+    border-left: 5px solid;
 }

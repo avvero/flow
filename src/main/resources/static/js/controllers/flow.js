@@ -3,6 +3,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.SCROLL_TO_TOP_THRESHOLD = 20 // позиция каретки, полсе который будет показана кнопка Scroll to top
     $scope.VISIBLE_LOGS_LOAD_COUNT = 50
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
+    $scope.logFilterValue = '';
     $scope.logSearchValue = '';
     $scope.isStopped = false; // остановили обновление страницы
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
@@ -14,8 +15,15 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.caret = {
         position: 0
     }
+    $scope.caret2 = {
+        position: 0
+    }
     $scope.setMark = function (entry, mark) {
         entry[mark] = !entry[mark]
+    }
+    $scope.chooseEntry = function(entry) {
+        $scope.caret.position = $scope.items.length - entry.idx - 1
+        //$('.flow')[0].scrollTop = 0
     }
     /* QUEUE */
     $scope.queue = [];
