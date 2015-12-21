@@ -15,7 +15,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         position: 0
     }
     $scope.setMark = function (entry, mark) {
-        entry[mark] = true
+        entry[mark] = !entry[mark]
     }
     /* QUEUE */
     $scope.queue = [];
