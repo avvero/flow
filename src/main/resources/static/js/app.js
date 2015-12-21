@@ -4,6 +4,7 @@ angular.module("flow", [
     'ngSanitize',
     'stompie',
     'ui.bootstrap',
+    'ui.bootstrap-slider',
     'LocalStorageModule',
     'chart.js',
     'monospaced.mousewheel'
