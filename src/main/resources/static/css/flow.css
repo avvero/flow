@@ -223,7 +223,7 @@
 }
 
 .scroll_to_top {
-    bottom: 50px;
+    bottom: 35px;
 }
 .scroll_to_bottom {
     bottom: 0px;
@@ -232,7 +232,7 @@
 
 .scroll_to_top .fa,
 .scroll_to_bottom .fa {
-    font-size: 50px;
+    font-size: 30px;
 }
 
 .help {
@@ -462,4 +462,20 @@
     border-color: #1A2226;
     border: 1px solid #374850;
     border-left: 5px solid;
+}
+
+#flow-slider {
+    position: fixed;
+    top: 15px;
+    right: 1px;
+    height: 96%;
+    padding-bottom: 34px;
+    /* border: black; */
+    /* border-width: 1px; */
+    z-index: 2000;
+    margin-bottom: 10px;
+}
+
+.with-slider {
+    overflow: hidden;
 }

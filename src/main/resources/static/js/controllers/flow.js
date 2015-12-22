@@ -1,6 +1,6 @@
 function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context, $location) {
     $scope.VISIBLE_LOGS_QUANTITY = 100  // количество элементов на странице
-    $scope.SCROLL_TO_TOP_THRESHOLD = 20 // позиция каретки, полсе который будет показана кнопка Scroll to top
+    $scope.SCROLL_TO_TOP_THRESHOLD = 1 // позиция каретки, полсе который будет показана кнопка Scroll to top
     $scope.VISIBLE_LOGS_LOAD_COUNT = 50
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
     $scope.logFilterValue = '';
@@ -13,7 +13,9 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     // События
     $scope.items = [];
     $scope.caret = {
-        position: 0
+        position: 0,
+        min: 0,
+        max: 1000
     }
     $scope.caret2 = {
         position: 0
@@ -103,8 +105,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         $('.flow')[0].scrollTop = 0
     }
     $scope.scrollToBottom = function () {
-        if ($scope.items.length - $scope.VISIBLE_LOGS_QUANTITY > 0) {
-            $scope.caret.position = $scope.items.length - $scope.VISIBLE_LOGS_QUANTITY
+        if ($scope.items.length - 1 > 0) {
+            $scope.caret.position = $scope.items.length - 10
             var raw = $('.flow')[0]
             raw.scrollTop = raw.scrollHeight - raw.clientHeight
         }

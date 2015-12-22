@@ -180,7 +180,7 @@
         </div>
         <!-- Content Wrapper. Contains page content -->
         <div class="">
-            <div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" msd-wheel="mouseWheel($event, $delta, $deltaX, $deltaY)">
+            <div class="flow with-slider {{showSettings ? 'with-settings' : ''}}" class="flow" msd-wheel="mouseWheel($event, $delta, $deltaX, $deltaY)">
                 <div class="log-list">
                     <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:caret:pageLogLimit:showSearch ? logFilterValue:''"
                          class="entry-log level-{{log.level.levelStr}}">
@@ -199,6 +199,20 @@
                 <span class="fa fa-arrow-circle-down" aria-hidden="true"></span>
             </div>
         </div>
+        <slider id="flow-slider"
+                ng-model="caret.position"
+                value="caret.position"
+                min="caret.min"
+                max="items.length"
+                step="1"
+                range="false"
+                reversed="false"
+                orientation="vertical"
+                handle="round"
+                enabled="true">
+            If you can see this then slider did not get compiled by Angular.
+            Check that all necessary files are included, did you run "bower install"?
+        </slider>
         <div class="debug-box" ng-if="isOptionOn('app.isDebugMode')">
             <p>DEBUG</p>
             <p>pageLogLimit: {{pageLogLimit}}</p>

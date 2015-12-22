@@ -49,7 +49,7 @@ angular.module('ui.bootstrap-slider', [])
                         return (angular.isString(value) && value.indexOf("[") === 0) ? angular.fromJson(value) : value;
                     }
 
-                    setOption('id', $scope.sliderid);
+                    setOption('id', attrs.id);
                     setOption('orientation', attrs.orientation, 'horizontal');
                     setOption('selection', attrs.selection, 'before');
                     setOption('handle', attrs.handle, 'round');

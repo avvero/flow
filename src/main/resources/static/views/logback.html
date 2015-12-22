@@ -16,8 +16,11 @@
     {{log.throwableProxy.className}}: {{log.throwableProxy.message}}
 </div>
 <div class="log-msg-error-stack callout callout-danger" ng-if="log.level.levelStr == 'ERROR'">
-    <div ng-repeat="part in log.throwableProxy.stackTraceElementProxyArray track by $index">
+    <div ng-repeat="part in log.throwableProxy.stackTraceElementProxyArray | limitTo:10">
         {{part.steasString}}
+    </div>
+    <div ng-if="log.throwableProxy.stackTraceElementProxyArray.length > 10">
+        ...
     </div>
 </div>
 <div ng-if="log.throwableProxy.cause">
