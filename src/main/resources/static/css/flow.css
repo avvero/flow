@@ -215,7 +215,7 @@
 .scroll_to_bottom {
     float: right;
     display: block;
-    z-index: 100;
+    z-index: 1031;
     position: fixed;
     right: 5px;
     font-size: 24px;
@@ -349,6 +349,7 @@
 
 .main-header > .navbar {
     margin-left: 150px;
+    margin-right: 36px;
 }
 
 .main-header .logo {

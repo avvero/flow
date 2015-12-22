@@ -1,6 +1,6 @@
 <span class="{{log.selected ? 'selected' : ''}}">
     <!--<span>{{log.idx}}</span>-->
-    <span class="log-date pointer" log-date-time="log.timeStamp" ng-click="setMark(log, 'selected')"></span>
+    <span class="log-date pointer" log-date-time="log.timeStamp" ng-click="onClick(log, 'selected')"></span>
     <span class="log-level level-{{log.level.levelStr}}">{{log.level.levelStr}}&nbsp;</span>
     <span class="fa fa-info-circle pointer" title="Show thread and mdc"
           ng-click="changeBoolOption('view.showMdc')" ng-hide="isOptionOn('view.showMdc')"></span>
@@ -16,10 +16,10 @@
     {{log.throwableProxy.className}}: {{log.throwableProxy.message}}
 </div>
 <div class="log-msg-error-stack callout callout-danger" ng-if="log.level.levelStr == 'ERROR'">
-    <div ng-repeat="part in log.throwableProxy.stackTraceElementProxyArray | limitTo:10">
+    <div ng-repeat="part in log.throwableProxy.stackTraceElementProxyArray | limitTo:7">
         {{part.steasString}}
     </div>
-    <div ng-if="log.throwableProxy.stackTraceElementProxyArray.length > 10">
+    <div ng-if="log.throwableProxy.stackTraceElementProxyArray.length > 7">
         ...
     </div>
 </div>

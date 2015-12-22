@@ -1,5 +1,10 @@
 angular.module('flow').directive('logback', function() {
     return {
+        link: function($scope, element, attrs) {
+            $scope.$watch(attrs.onClick, function(value){
+                $scope.onClick = value
+            });
+        },
         templateUrl: '/views/logback.html'
     };
 });
