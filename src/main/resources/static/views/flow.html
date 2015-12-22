@@ -40,9 +40,9 @@
                                          class="entry-log level-{{log.level.levelStr}}">
                                         <div logback></div>
                                         <!--<span class="{{log.selected ? 'selected' : ''}}">-->
-                                            <!--<span class="log-date pointer" log-date-time="log.timeStamp" ng-click="chooseEntry(log)"></span>-->
-                                            <!--<span class="log-level level-{{log.level.levelStr}}">{{log.level.levelStr}}&nbsp;</span>-->
-                                            <!--<span message="log.formattedMessage"/>-->
+                                        <!--<span class="log-date pointer" log-date-time="log.timeStamp" ng-click="chooseEntry(log)"></span>-->
+                                        <!--<span class="log-level level-{{log.level.levelStr}}">{{log.level.levelStr}}&nbsp;</span>-->
+                                        <!--<span message="log.formattedMessage"/>-->
                                         <!--</span>-->
                                     </div>
                                 </div>
@@ -190,7 +190,7 @@
                 </div>
             </div>
             <!-- /.content -->
-            <div class="scroll_to_top" ng-click="scrollToTop()" ng-show="caret.position > SCROLL_TO_TOP_THRESHOLD"
+            <div class="scroll_to_top" ng-click="scrollToTop()"
                  title="Scroll to top">
                 <span class="fa fa-arrow-circle-up" aria-hidden="true"></span>
             </div>
@@ -199,21 +199,21 @@
                 <span class="fa fa-arrow-circle-down" aria-hidden="true"></span>
             </div>
         </div>
-        <slider id="flow-slider"
-                ng-model="caret.position"
-                ng-model-options="{ updateOn: 'default', debounce: { 'default': 100} }"
-                value="caret.position"
-                min="caret.min"
-                max="items.length"
-                step="1"
-                range="false"
-                reversed="false"
-                orientation="vertical"
-                handle="round"
-                enabled="true">
-            If you can see this then slider did not get compiled by Angular.
-            Check that all necessary files are included, did you run "bower install"?
-        </slider>
+        <div id="flow-slider-container">
+            <slider id="flow-slider"
+                    ng-model="caret.position"
+                    ng-model-options="{ updateOn: 'default', debounce: { 'default': 100} }"
+                    value="caret.position"
+                    min="caret.min"
+                    max="items.length"
+                    step="1"
+                    range="false"
+                    reversed="false"
+                    orientation="vertical"
+                    handle="round"
+                    enabled="true">
+            </slider>
+        </div>
         <div class="debug-box" ng-if="isOptionOn('app.isDebugMode')">
             <p>DEBUG</p>
             <p>pageLogLimit: {{pageLogLimit}}</p>
