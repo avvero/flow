@@ -201,6 +201,7 @@
         </div>
         <slider id="flow-slider"
                 ng-model="caret.position"
+                ng-model-options="{ updateOn: 'default', debounce: { 'default': 100} }"
                 value="caret.position"
                 min="caret.min"
                 max="items.length"
