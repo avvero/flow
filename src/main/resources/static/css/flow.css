@@ -217,13 +217,13 @@
     display: block;
     z-index: 100;
     position: fixed;
-    right: 24px;
+    right: 5px;
     font-size: 24px;
     cursor: pointer;
 }
 
 .scroll_to_top {
-    bottom: 35px;
+    top: 5px;
 }
 .scroll_to_bottom {
     bottom: 0px;
@@ -464,18 +464,19 @@
     border-left: 5px solid;
 }
 
-#flow-slider {
+#flow-slider-container {
     position: fixed;
-    top: 15px;
-    right: 1px;
-    height: 96%;
-    padding-bottom: 34px;
-    /* border: black; */
-    /* border-width: 1px; */
-    z-index: 2000;
-    margin-bottom: 10px;
+    right: 8px;
+    height: 100%;
+    z-index: 99;
 }
 
 .with-slider {
-    overflow: hidden;
+    /*overflow: hidden;*/
+}
+
+#flow-slider {
+    height: 100%;
+    padding-top: 46px;
+    padding-bottom: 46px;
 }

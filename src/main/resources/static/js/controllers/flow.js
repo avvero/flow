@@ -1,7 +1,6 @@
 function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context, $location) {
     $scope.VISIBLE_LOGS_QUANTITY = 100  // количество элементов на странице
     $scope.SCROLL_TO_TOP_THRESHOLD = 1 // позиция каретки, полсе который будет показана кнопка Scroll to top
-    $scope.VISIBLE_LOGS_LOAD_COUNT = 50
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
     $scope.logFilterValue = '';
     $scope.logSearchValue = '';
@@ -25,7 +24,6 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     }
     $scope.chooseEntry = function(entry) {
         $scope.caret.position = $scope.items.length - entry.idx - 1
-        //$('.flow')[0].scrollTop = 0
     }
     /* QUEUE */
     $scope.queue = [];
@@ -36,13 +34,21 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         $scope.queue.push(logEntry)
     }
     $scope.mouseWheel = function($event, $delta, $deltaX, $deltaY) {
-        if ($delta > 0) { // load more items before you hit the top
+        if ($delta < 0) { // load more items before you hit the top
             if ($scope.caret.position > 0) {
                 $scope.caret.position -= 1
             }
         } else {
-            $scope.caret.position += 1
+            var raw = $('.flow')[0]
+            if ($scope.caret.position <= $scope.items.length - $scope.VISIBLE_LOGS_QUANTITY) {
+            //if (raw.scrollHeight - 20 > raw.clientHeight) {
+                $scope.caret.position += 1
+            }
         }
+        var row = $('.flow')[0]
+        console.warn("scrollTop " + row.scrollTop)
+        console.warn("scrollHeight " + row.scrollHeight)
+        console.warn("clientHeight " + row.clientHeight)
     }
     $scope.removeFromQueue = function (applyScope) {
         $timeout(function () {
@@ -55,6 +61,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
                     logEntry.idx = $scope.items.length
                     $scope.items.push(logEntry)
                     applyScope = true
+                    var raw = $('.flow')[0]
+                    raw.scrollTop = raw.scrollHeight - raw.clientHeight
                 }
             }
             $scope.removeFromQueue(applyScope)
@@ -101,15 +109,16 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.showError = true;
     $scope.showTrace = true;
     $scope.scrollToTop = function () {
-        $scope.caret.position = 0
-        $('.flow')[0].scrollTop = 0
+        if ($scope.items.length - 1 > 0) {
+            $scope.caret.position = $scope.items.length - $scope.VISIBLE_LOGS_QUANTITY
+            $('.flow')[0].scrollTop = 0
+        }
     }
     $scope.scrollToBottom = function () {
-        if ($scope.items.length - 1 > 0) {
-            $scope.caret.position = $scope.items.length - 10
-            var raw = $('.flow')[0]
-            raw.scrollTop = raw.scrollHeight - raw.clientHeight
-        }
+
+        var raw = $('.flow')[0]
+        raw.scrollTop = raw.scrollHeight - raw.clientHeight
+        $scope.caret.position = 0
     }
     $scope.showSettings = false;
     $scope.showSearch = false;

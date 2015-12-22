@@ -1,5 +1,5 @@
 <span class="{{log.selected ? 'selected' : ''}}">
-    <!--<span>{{log.idx}}</span>-->
+    <span>{{log.idx}}</span>
     <span class="log-date pointer" log-date-time="log.timeStamp" ng-click="setMark(log, 'selected')"></span>
     <span class="log-level level-{{log.level.levelStr}}">{{log.level.levelStr}}&nbsp;</span>
     <span class="fa fa-info-circle pointer" title="Show thread and mdc"
