@@ -436,12 +436,11 @@
 
 .search-result {
     position: fixed;
-    width: initial;
-    padding-right: 10px;
+    width: inherit;
+    padding-right: 118px;
     padding-left: 10px;
     padding-bottom: 10px;
     margin-bottom: 10px;
-
 }
 
 .search-result .log-list{
