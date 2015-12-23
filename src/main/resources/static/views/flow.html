@@ -34,9 +34,8 @@
                         </form>
                         <div class="search-result" ng-if="logSearchValue != ''">
                             <div class="callout callout-navy">
-                                <!-- /.box-header -->
                                 <div class="log-list">
-                                    <div ng-repeat="log in items | logComplex:true:true:true:true:true:caret2:100:logSearchValue"
+                                    <div ng-repeat="log in items | logComplex:true:true:true:true:true:caret2:-1:logSearchValue"
                                          class="entry-log level-{{log.level.levelStr}}">
                                         <div logback on-click="chooseEntry"></div>
                                         <!--<span class="{{log.selected ? 'selected' : ''}}">-->
@@ -109,7 +108,7 @@
                             </div>
                         </div>
                     </li>
-                    <li class="{{isStopped == true ? 'activated' : ''}}">
+                    <li class="{{isStopped == true ? 'active-red' : ''}}">
                         <a href="" ng-click="isStopped = !isStopped"><i class="fa fa-certificate text"></i>
                             <span>Freeze</span>
                             <small class="label pull-right bg-red" ng-show="isStopped">{{queue.length}}</small>
@@ -117,6 +116,12 @@
                     </li>
                     <li class="{{showSearch == true ? 'active' : ''}}">
                         <a href="" ng-click="showSearch = !showSearch"><i class="fa fa-search"></i><span>Filter/Search</span></a>
+                    </li>
+                    <li class="{{isStampMode == true ? 'active-orange' : ''}}">
+                        <a href="" ng-click="isStampMode = !isStampMode"><i class="fa fa-hand-pointer-o text"></i>
+                            <span>Stamps</span>
+                            <small class="label pull-right bg-orange">{{stamps.length}}</small>
+                        </a>
                     </li>
                     <li>
                         <a href="" ng-click="clear();"><i class="fa fa-eraser"></i>
@@ -140,21 +145,21 @@
                         </div>
                     </li>
                     <li class="{{showError == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showError = !showError"><i class="fa fa-circle-o text-red"></i>
+                        <a href="" ng-click="showError = !showError"><i class="fa {{showError == true ? 'fa-toggle-on text-red' : 'fa-toggle-off'}}"></i>
                             <span>Error</span></a>
                     </li>
                     <li class="{{showWarn == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showWarn = !showWarn"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a>
+                        <a href="" ng-click="showWarn = !showWarn"><i class="fa {{showWarn == true ? 'fa-toggle-on text-yellow' : 'fa-toggle-off'}}"></i> <span>Warning</span></a>
                     </li>
                     <li class="{{showInfo == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showInfo = !showInfo"><i class="fa fa-circle-o text-aqua"></i>
+                        <a href="" ng-click="showInfo = !showInfo"><i class="fa {{showInfo == true ? 'fa-toggle-on text-aqua' : 'fa-toggle-off'}}"></i>
                             <span>Info</span></a>
                     </li>
                     <li class="{{showDebug == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showDebug = !showDebug"><i class="fa fa-circle-o text-green"></i> <span>Debug</span></a>
+                        <a href="" ng-click="showDebug = !showDebug"><i class="fa {{showDebug == true ? 'fa-toggle-on text-green' : 'fa-toggle-off'}}"></i> <span>Debug</span></a>
                     </li>
                     <li class="{{showTrace == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showTrace = !showTrace"><i class="fa fa-circle-o text-grey"></i> <span>Trace</span></a>
+                        <a href="" ng-click="showTrace = !showTrace"><i class="fa {{showTrace == true ? 'fa-toggle-on text-grey' : 'fa-toggle-off'}}"></i> <span>Trace</span></a>
                     </li>
                     <li class="header"><b></b></li>
                     <li>
@@ -185,7 +190,7 @@
                     <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:caret:pageLogLimit:showSearch ? logFilterValue:''"
                          class="entry-log level-{{log.level.levelStr}}">
                         <!--use logback template-->
-                        <div logback id="logEntry_{{log.idx}}" on-click="setMark"></div>
+                        <div logback id="logEntry_{{log.idx}}" on-click="isStampMode ? setStamp : nullFunction "></div>
                     </div>
                 </div>
             </div>
@@ -219,6 +224,7 @@
             <p>pageLogLimit: {{pageLogLimit}}</p>
             <p>caret.position: {{caret.position}}</p>
             <p>caret.hash: {{caret.hash}}</p>
+            <p>CARET_STEP: {{CARET_STEP}}<input ng-model="CARET_STEP" type="number" style="width: 20px"></p>
         </div>
         <div class="chart-box" ng-if="isOptionOn('view.showChart')">
             <div log-chart="items.length"></div>

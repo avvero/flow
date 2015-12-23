@@ -6,12 +6,14 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.logFilterValue = '';
     $scope.logSearchValue = '';
     $scope.isStopped = false; // остановили обновление страницы
+    $scope.isStampMode = false; //
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
     $scope.currentMarker = $stateParams.marker
     $scope.markers = context.markers
     page.setTitle(context.instance.name + ' #'+ $stateParams.marker)
     // События
     $scope.items = [];
+    $scope.stamps = [];
     $scope.caret = {
         position: 0,
         min: 0,
@@ -20,8 +22,18 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.caret2 = {
         position: 0
     }
-    $scope.setMark = function (entry, mark) {
-        entry[mark] = !entry[mark]
+    $scope.nullFunction = function () {}
+    $scope.setStamp = function (entry, stamp) {
+        var list = $scope.stamps
+        if (!entry[stamp]) {
+            list.push(entry)
+        } else {
+            var index = list.indexOf(entry);
+            if (index > -1) {
+                list.splice(index, 1);
+            }
+        }
+        entry[stamp] = !entry[stamp]
     }
     $scope.chooseEntry = function(entry) {
         $scope.caret.position = $scope.items.length - entry.idx - 1
@@ -69,7 +81,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         return 1;
     };
     $scope.clear = function () {
-        $scope.items = [];
+        $scope.items = []
+        $scope.stamps = []
     }
     $scope.onMessageReceive = function (event) {
         $scope.addToQueue(event)

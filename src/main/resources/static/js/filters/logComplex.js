@@ -18,7 +18,7 @@ angular.module('flow').filter('logComplex', function () {
         }
         var toSkip = caret.position;
         for (var i = logs.length - 1; i >= 0; i--) {
-            if (limit == result.length) {
+            if (limit != -1 && limit == result.length) {
                 break;
             }
             var log = logs[i]
