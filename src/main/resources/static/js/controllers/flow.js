@@ -84,9 +84,13 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     }
     $scope.getShift = function (tension) {
         if ($scope.caret.tension >= 0) {
-            return $scope.caret.tension * 17
+            return 'margin-top:-'+$scope.caret.tension * 17+'px'
         } else {
-            return (tension + $scope.caret.tension) * 17
+            if (typeof(tension) == "undefined") {
+                return ''
+            } else {
+                return 'margin-top:-'+(tension + $scope.caret.tension) * 17+'px'
+            }
         }
     }
     $scope.removeFromQueue = function (applyScope) {
@@ -148,11 +152,13 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.showTrace = true;
     $scope.scrollToTop = function () {
         $scope.caret.position = 0
+        $scope.caret.tension = 0
         $('.flow')[0].scrollTop = 0
     }
     $scope.scrollToBottom = function () {
         if ($scope.items.length - 1 > 0) {
             $scope.caret.position = $scope.items.length - 10
+            $scope.caret.tension = 0
             var raw = $('.flow')[0]
             raw.scrollTop = raw.scrollHeight - raw.clientHeight
         }
