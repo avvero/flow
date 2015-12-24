@@ -1,6 +1,7 @@
-<span class="{{log.selected ? 'selected' : ''}}">
-    <!--<span>{{log.idx}}</span>-->
-    <span class="log-date pointer" log-date-time="log.timeStamp" ng-click="onClick(log, 'selected')"></span>
+<span>
+    <span>{{log.idx}}</span>
+    <span>{{tension}}</span>
+    <span class="log-date" log-date-time="log.timeStamp" ng-click="onClick(log, 'selected')"></span>
     <span class="log-level level-{{log.level.levelStr}}">{{log.level.levelStr}}&nbsp;</span>
     <span class="fa fa-info-circle pointer" title="Show thread and mdc"
           ng-click="changeBoolOption('view.showMdc')" ng-hide="isOptionOn('view.showMdc')"></span>

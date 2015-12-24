@@ -16,6 +16,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.stamps = [];
     $scope.caret = {
         position: 0,
+        tension: 0,
         min: 0,
         max: 1000
     }
@@ -49,11 +50,21 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     }
     $scope.mouseWheel = function($event, $delta, $deltaX, $deltaY) {
         if ($delta > 0) { // load more items before you hit the top
-            if ($scope.caret.position > 0) {
+            // up
+            if ($scope.caret.tension > 0) {
+                $scope.caret.tension -= 1
+            } else if ($scope.caret.position > 0) {
                 $scope.caret.position -= 1
             }
         } else {
-            $scope.caret.position += 1
+            // down
+            var tension = parseInt($('.entry-log').first().attr('tension'))
+            if (tension > $scope.caret.tension + 1) {
+                $scope.caret.tension +=1
+            } else {
+                $scope.caret.tension = 0
+                $scope.caret.position += 1
+            }
         }
     }
     $scope.removeFromQueue = function (applyScope) {

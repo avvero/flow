@@ -28,7 +28,7 @@
     word-wrap: break-word;
 }
 
-.entry-log .selected {
+.entry-log.selected {
     /*display: none;*/
     background-color: #e08e0b;
 }

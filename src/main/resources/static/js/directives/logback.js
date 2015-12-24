@@ -1,13 +1,19 @@
-angular.module('flow').directive('logback', function() {
+angular.module('flow').directive('logback', ['$timeout', function ($timeout) {
     return {
         link: function($scope, element, attrs) {
             $scope.$watch(attrs.onClick, function(value){
                 $scope.onClick = value
             });
+            $timeout(init, false);
+            //Initialization
+            function init(){
+                $scope.tension = element[0].offsetHeight / 17
+                console.log('offsetHeight = ' + element[0].offsetHeight,  element.html());
+            }
         },
         templateUrl: '/views/logback.html'
     };
-});
+}])
 angular.module('flow').directive('message', function(utils) {
     return function($scope, element, attrs) {
         $scope.$watch(attrs.message,function(value){

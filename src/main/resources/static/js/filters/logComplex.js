@@ -15,6 +15,7 @@ angular.module('flow').filter('logComplex', function () {
         if (hash != caret.hash) {
             caret.hash = hash
             caret.position = 0
+            caret.tension = 0
         }
         var toSkip = caret.position;
         for (var i = logs.length - 1; i >= 0; i--) {
