@@ -8,7 +8,6 @@ angular.module('flow').directive('logback', ['$timeout', function ($timeout) {
             //Initialization
             function init(){
                 $scope.tension = element[0].offsetHeight / 17
-                console.log('offsetHeight = ' + element[0].offsetHeight,  element.html());
             }
         },
         templateUrl: '/views/logback.html'

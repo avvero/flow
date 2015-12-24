@@ -35,9 +35,9 @@
                         <div class="search-result" ng-if="logSearchValue != ''">
                             <div class="callout callout-navy">
                                 <div class="log-list">
-                                    <div ng-repeat="log in items | logComplex:true:true:true:true:true:caret2:-1:logSearchValue"
-                                         class="entry-log level-{{log.level.levelStr}}">
-                                        <div logback on-click="chooseEntry"></div>
+                                    <div ng-repeat="log in items | logComplex:true:true:true:true:true:caret2:50:logSearchValue"
+                                         class="entry-log level-{{log.level.levelStr}} pointer" ng-click="chooseEntry(log)">
+                                        <div logback></div>
                                         <!--<span class="{{log.selected ? 'selected' : ''}}">-->
                                         <!--<span class="log-date pointer" log-date-time="log.timeStamp" ng-click="chooseEntry(log)"></span>-->
                                         <!--<span class="log-level level-{{log.level.levelStr}}">{{log.level.levelStr}}&nbsp;</span>-->
@@ -117,10 +117,10 @@
                     <li class="{{showSearch == true ? 'active' : ''}}">
                         <a href="" ng-click="showSearch = !showSearch"><i class="fa fa-search"></i><span>Filter/Search</span></a>
                     </li>
-                    <li class="{{isStampMode == true ? 'active-orange' : ''}}">
-                        <a href="" ng-click="isStampMode = !isStampMode"><i class="fa fa-hand-pointer-o text"></i>
-                            <span>Stamps</span>
-                            <small class="label pull-right bg-orange">{{stamps.length}}</small>
+                    <li class="{{isSelectMode == true ? 'active-orange' : ''}}">
+                        <a href="" ng-click="isSelectMode = !isSelectMode"><i class="fa fa-hand-pointer-o text"></i>
+                            <span>Select</span>
+                            <small class="label pull-right bg-orange">{{selected.length}}</small>
                         </a>
                     </li>
                     <li>
@@ -188,8 +188,8 @@
             <div class="flow with-slider {{showSettings ? 'with-settings' : ''}}" class="flow" msd-wheel="mouseWheel($event, $delta, $deltaX, $deltaY)">
                 <div class="log-list">
                     <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:caret:pageLogLimit:showSearch ? logFilterValue:''"
-                         class="entry-log level-{{log.level.levelStr}} {{isStampMode ? 'pointer' : ''}} {{log.selected ? 'selected' : ''}}"
-                         ng-click="isStampMode ? setStamp(log, 'selected') : nullFunction()"
+                         class="entry-log level-{{log.level.levelStr}} {{isSelectMode ? 'pointer' : ''}} {{log.selected ? 'selected' : ''}}"
+                         ng-click="isSelectMode ? setSelected(log, 'selected') : nullFunction()"
                          tension="{{tension}}"  style="{{$first? getShift(tension) : ''}}">
                         <!--use logback template-->
                         <div logback id="logEntry_{{log.idx}}"></div>

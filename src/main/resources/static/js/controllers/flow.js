@@ -6,14 +6,14 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.logFilterValue = '';
     $scope.logSearchValue = '';
     $scope.isStopped = false; // остановили обновление страницы
-    $scope.isStampMode = false; //
+    $scope.isSelectMode = false; //
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
     $scope.currentMarker = $stateParams.marker
     $scope.markers = context.markers
     page.setTitle(context.instance.name + ' #' + $stateParams.marker)
     // События
     $scope.items = [];
-    $scope.stamps = [];
+    $scope.selected = [];
     $scope.caret = {
         position: 0,
         tension: 0,
@@ -25,9 +25,9 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     }
     $scope.nullFunction = function () {
     }
-    $scope.setStamp = function (entry, stamp) {
-        var list = $scope.stamps
-        if (!entry[stamp]) {
+    $scope.setSelected = function (entry, tag) {
+        var list = $scope.selected
+        if (!entry[tag]) {
             list.push(entry)
         } else {
             var index = list.indexOf(entry);
@@ -35,7 +35,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
                 list.splice(index, 1);
             }
         }
-        entry[stamp] = !entry[stamp]
+        entry[tag] = !entry[tag]
     }
     $scope.chooseEntry = function (entry) {
         $scope.caret.position = $scope.items.length - entry.idx - 1
@@ -119,7 +119,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     };
     $scope.clear = function () {
         $scope.items = []
-        $scope.stamps = []
+        $scope.selected = []
     }
     $scope.onMessageReceive = function (event) {
         $scope.addToQueue(event)
