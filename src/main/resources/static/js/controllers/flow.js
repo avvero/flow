@@ -10,7 +10,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
     $scope.currentMarker = $stateParams.marker
     $scope.markers = context.markers
-    page.setTitle(context.instance.name + ' #'+ $stateParams.marker)
+    page.setTitle(context.instance.name + ' #' + $stateParams.marker)
     // События
     $scope.items = [];
     $scope.stamps = [];
@@ -23,7 +23,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.caret2 = {
         position: 0
     }
-    $scope.nullFunction = function () {}
+    $scope.nullFunction = function () {
+    }
     $scope.setStamp = function (entry, stamp) {
         var list = $scope.stamps
         if (!entry[stamp]) {
@@ -36,7 +37,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         }
         entry[stamp] = !entry[stamp]
     }
-    $scope.chooseEntry = function(entry) {
+    $scope.chooseEntry = function (entry) {
         $scope.caret.position = $scope.items.length - entry.idx - 1
         //$('.flow')[0].scrollTop = 0
     }
@@ -48,23 +49,44 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.addToQueue = function (logEntry) {
         $scope.queue.push(logEntry)
     }
-    $scope.mouseWheel = function($event, $delta, $deltaX, $deltaY) {
+    $scope.mouseWheel = function ($event, $delta, $deltaX, $deltaY) {
+        var tension = parseInt($('.entry-log').first().attr('tension'))
         if ($delta > 0) { // load more items before you hit the top
+            if (tension + $scope.caret.tension == 0) {
+                $scope.caret.tension = 0
+            }
             // up
             if ($scope.caret.tension > 0) {
                 $scope.caret.tension -= 1
-            } else if ($scope.caret.position > 0) {
+                return;
+            }
+            if ($scope.caret.position > 0) {
                 $scope.caret.position -= 1
+                $scope.caret.tension -= 1
+
+                $timeout(init, false);
+                //Initialization
+                function init(){
+                    var tension = $('.entry-log').first()[0].offsetHeight / 17
+                    $scope.caret.tension = tension -1
+                }
+                return;
             }
         } else {
             // down
-            var tension = parseInt($('.entry-log').first().attr('tension'))
             if (tension > $scope.caret.tension + 1) {
-                $scope.caret.tension +=1
+                $scope.caret.tension += 1
             } else {
                 $scope.caret.tension = 0
                 $scope.caret.position += 1
             }
+        }
+    }
+    $scope.getShift = function (tension) {
+        if ($scope.caret.tension >= 0) {
+            return $scope.caret.tension * 17
+        } else {
+            return (tension + $scope.caret.tension) * 17
         }
     }
     $scope.removeFromQueue = function (applyScope) {

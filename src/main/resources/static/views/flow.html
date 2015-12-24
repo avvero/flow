@@ -190,7 +190,7 @@
                     <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:caret:pageLogLimit:showSearch ? logFilterValue:''"
                          class="entry-log level-{{log.level.levelStr}} {{isStampMode ? 'pointer' : ''}} {{log.selected ? 'selected' : ''}}"
                          ng-click="isStampMode ? setStamp(log, 'selected') : nullFunction()"
-                         tension="{{tension}}"  style="{{$first? 'margin-top:-'+caret.tension*17+'px' : ''}}">
+                         tension="{{tension}}"  style="{{$first? 'margin-top:-'+getShift(tension)+'px' : ''}}">
                         <!--use logback template-->
                         <div logback id="logEntry_{{log.idx}}"></div>
                     </div>
