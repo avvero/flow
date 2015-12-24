@@ -87,7 +87,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
             return 'margin-top:-'+$scope.caret.tension * 17+'px'
         } else {
             if (typeof(tension) == "undefined") {
-                return ''
+                return 'position: fixed; visibility: hidden;'
             } else {
                 return 'margin-top:-'+(tension + $scope.caret.tension) * 17+'px'
             }
