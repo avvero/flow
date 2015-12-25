@@ -130,24 +130,11 @@
                         </a>
                     </li>
                     <li class="header">
-                        <b>LEVELS</b>
-                    </li>
-                    <li>
-                        <div class="btn-group">
-                            <a type="button" class="btn btn-sm bg-black" ng-click="showError = !showError"><i class="fa {{showError == true ? 'fa-toggle-on text-red' : 'fa-toggle-off'}}"></i></a>
-                            <a type="button" class="btn btn-sm bg-black"><i class="fa fa-toggle-on"></i></a>
-                            <a type="button" class="btn btn-sm bg-black"><i class="fa fa-toggle-on"></i></a>
-                            <a type="button" class="btn btn-sm bg-black"><i class="fa fa-toggle-on"></i></a>
-                            <a type="button" class="btn btn-sm bg-black"><i class="fa fa-toggle-on"></i></a>
-                        </div>
-                    </li>
-                    <li class="header">
-                        <b>LEVELS</b>
-
+                        <b>LEVEL TOGGLES</b>
                         <div class="help levels">
                             <div class="box box-info">
                                 <div class="box-body">
-                                    <label>Log level tumblers</label>
+                                    <label>Log level toggles</label>
 
                                     <p>
                                         Click to show/hide logs with the level
@@ -156,22 +143,24 @@
                             </div>
                         </div>
                     </li>
-                    <li class="{{showError == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showError = !showError"><i class="fa {{showError == true ? 'fa-toggle-on text-red' : 'fa-toggle-off'}}"></i>
-                            <span>Error</span></a>
-                    </li>
-                    <li class="{{showWarn == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showWarn = !showWarn"><i class="fa {{showWarn == true ? 'fa-toggle-on text-yellow' : 'fa-toggle-off'}}"></i> <span>Warning</span></a>
-                    </li>
-                    <li class="{{showInfo == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showInfo = !showInfo"><i class="fa {{showInfo == true ? 'fa-toggle-on text-aqua' : 'fa-toggle-off'}}"></i>
-                            <span>Info</span></a>
-                    </li>
-                    <li class="{{showDebug == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showDebug = !showDebug"><i class="fa {{showDebug == true ? 'fa-toggle-on text-green' : 'fa-toggle-off'}}"></i> <span>Debug</span></a>
-                    </li>
-                    <li class="{{showTrace == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showTrace = !showTrace"><i class="fa {{showTrace == true ? 'fa-toggle-on text-grey' : 'fa-toggle-off'}}"></i> <span>Trace</span></a>
+                    <li>
+                        <div class="btn-group log-level-buttons">
+                            <a type="button" class="btn btn-sm vertical" ng-click="showError = !showError">
+                                <i class="fa {{showError == true ? 'fa-toggle-on text-red' : 'fa-toggle-off'}}"></i>
+                            </a>
+                            <a type="button" class="btn btn-sm vertical" ng-click="showWarn = !showWarn">
+                                <i class="fa {{showWarn == true ? 'fa-toggle-on text-yellow' : 'fa-toggle-off'}}"></i>
+                            </a>
+                            <a type="button" class="btn btn-sm vertical" ng-click="showInfo = !showInfo">
+                                <i class="fa {{showInfo == true ? 'fa-toggle-on text-blue' : 'fa-toggle-off'}}"></i>
+                            </a>
+                            <a type="button" class="btn btn-sm vertical" ng-click="showDebug = !showDebug">
+                                <i class="fa {{showDebug == true ? 'fa-toggle-on text-green' : 'fa-toggle-off'}}"></i>
+                                </a>
+                            <a type="button" class="btn btn-sm vertical"ng-click="showTrace = !showTrace">
+                                <i class="fa {{showTrace == true ? 'fa-toggle-on text-grey' : 'fa-toggle-off'}}"></i>
+                            </a>
+                        </div>
                     </li>
                     <li class="header"><b></b></li>
                     <li>
