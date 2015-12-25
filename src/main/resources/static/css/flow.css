@@ -505,3 +505,8 @@
     /* width:20px; */
     /* height:20px; */
 }
+
+.btn-group.select-buttons .btn{
+    font-size: 14px;
+    padding: 5px 11px;
+}
