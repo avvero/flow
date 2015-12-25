@@ -117,6 +117,15 @@
                     <li class="{{showSearch == true ? 'active' : ''}}">
                         <a href="" ng-click="showSearch = !showSearch"><i class="fa fa-search"></i><span>Filter/Search</span></a>
                     </li>
+                    <li>
+                        <a href="" ng-click="clear();"><i class="fa fa-eraser"></i>
+                            <span>Clear</span>
+                            <small class="label pull-right bg-green">{{items.length}}</small>
+                        </a>
+                    </li>
+                    <li class="header">
+                        <b>SELECT</b>
+                    </li>
                     <li class="{{isSelectMode == true ? 'active-orange' : ''}}">
                         <a href="" ng-click="isSelectMode = !isSelectMode"><i class="fa fa-hand-pointer-o text"></i>
                             <span>Select</span>
@@ -124,10 +133,10 @@
                         </a>
                     </li>
                     <li>
-                        <a href="" ng-click="clear();"><i class="fa fa-eraser"></i>
-                            <span>Clear</span>
-                            <small class="label pull-right bg-green">{{items.length}}</small>
-                        </a>
+                        <div class="btn-group log-level-buttons" style="padding-left: 96px">
+                            <a type="button" class="btn btn-sm" ng-click="selectPrev(caret.position)"><i class="fa fa-arrow-up"></i></a>
+                            <a type="button" class="btn btn-sm" ng-click="selectNext(caret.position)"><i class="fa fa-arrow-down"></i></a>
+                        </div>
                     </li>
                     <li class="header">
                         <b>LEVEL TUMBLERS</b>

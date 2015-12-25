@@ -23,6 +23,9 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.caret2 = {
         position: 0
     }
+    /**
+     * SELECT
+     */
     $scope.nullFunction = function () {
     }
     $scope.setSelected = function (entry, tag) {
@@ -40,6 +43,33 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.chooseEntry = function (entry) {
         $scope.caret.position = $scope.items.length - entry.idx - 1
         //$('.flow')[0].scrollTop = 0
+    }
+    $scope.selectPrev = function(position) {
+        var list = $scope.selected.sort()
+        var prev = null
+        for (var i = 0; i < list.length; i++) {
+            var entryPosition = $scope.items.length - list[i].idx - 1
+            if (entryPosition < position) {
+                prev = list[i]
+            }
+        }
+        if (prev != null) {
+            $scope.chooseEntry(prev)
+        }
+    }
+    $scope.selectNext = function(position) {
+        var list = $scope.selected.sort()
+        var prev = null
+        for (var i = 0; i < list.length; i++) {
+            var entryPosition = $scope.items.length - list[i].idx - 1
+            if (entryPosition > position) {
+                prev = list[i]
+                break;
+            }
+        }
+        if (prev != null) {
+            $scope.chooseEntry(prev)
+        }
     }
     /* QUEUE */
     $scope.queue = [];

@@ -30,7 +30,7 @@
 
 .entry-log.selected {
     /*display: none;*/
-    background-color: #e08e0b;
+    background-color: #FFE485;
 }
 
 .show-level-ERROR .entry-log.level-ERROR {
@@ -493,7 +493,7 @@
 }
 
 .vertical{
-    writing-mode:tb-rl;
+    /*writing-mode:tb-rl;*/
     -webkit-transform:rotate(90deg);
     -moz-transform:rotate(90deg);
     -o-transform: rotate(90deg);
