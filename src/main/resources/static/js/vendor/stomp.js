@@ -252,7 +252,7 @@
             return;
           }
           if (typeof _this.debug === "function") {
-            _this.debug("<<< " + data);
+            //_this.debug("<<< " + data);
           }
           _ref = Frame.unmarshall(data);
           _results = [];

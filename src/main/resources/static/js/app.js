@@ -4,11 +4,13 @@ angular.module("flow", [
     'ngSanitize',
     'stompie',
     'ui.bootstrap',
+    'ui.bootstrap-slider',
     'LocalStorageModule',
-    'chart.js'
+    'chart.js',
+    'monospaced.mousewheel'
 ])
 angular.module("flow").constant('constants', {
-    version: "1.0.1"
+    version: "1.0.3"
 })
 // configure our routes
 angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRouterProvider, constants, localStorageServiceProvider) {

@@ -1,27 +1,82 @@
-function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context) {
-    $scope.VISIBLE_LOGS_QUANTITY = 100
-    $scope.VISIBLE_LOGS_LOAD_COUNT = 10
+function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context, $location) {
+    $scope.VISIBLE_LOGS_QUANTITY = 100  // количество элементов на странице
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
+    $scope.SCROLL_SPEED = 3
+    $scope.logFilterValue = '';
     $scope.logSearchValue = '';
     $scope.isStopped = false; // остановили обновление страницы
+    $scope.isSelectMode = false; //
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
     $scope.currentMarker = $stateParams.marker
     $scope.markers = context.markers
-    page.setTitle(context.instance.name + ' #'+ $stateParams.marker)
+    page.setTitle(context.instance.name + ' #' + $stateParams.marker)
     // События
     $scope.items = [];
+    $scope.selected = [];
+    $scope.caret = {
+        position: 0,
+        tension: 0,
+        min: 0,
+        max: 1000
+    }
+    $scope.caret2 = {
+        position: 0
+    }
+    /**
+     * SELECT
+     */
+    $scope.nullFunction = function () {
+    }
+    $scope.setSelected = function (entry, tag) {
+        var list = $scope.selected
+        if (!entry[tag]) {
+            list.push(entry)
+        } else {
+            var index = list.indexOf(entry);
+            if (index > -1) {
+                list.splice(index, 1);
+            }
+        }
+        entry[tag] = !entry[tag]
+    }
+    $scope.chooseEntry = function (entry) {
+        $scope.caret.position = $scope.items.length - entry.idx - 1
+        //$('.flow')[0].scrollTop = 0
+    }
+    $scope.selectPrev = function(position) {
+        var list = $scope.selected.sort(function(a,b) {return b.idx - a.idx})
+        var prev = null
+        for (var i = 0; i < list.length; i++) {
+            var entryPosition = $scope.items.length - list[i].idx - 1
+            if (entryPosition < position) {
+                prev = list[i]
+            }
+        }
+        if (prev != null) {
+            $scope.chooseEntry(prev)
+        }
+    }
+    $scope.selectNext = function(position) {
+        var list = $scope.selected.sort(function(a,b) {return b.idx - a.idx})
+        var prev = null
+        for (var i = 0; i < list.length; i++) {
+            var entryPosition = $scope.items.length - list[i].idx - 1
+            if (entryPosition > position) {
+                prev = list[i]
+                break;
+            }
+        }
+        if (prev != null) {
+            $scope.chooseEntry(prev)
+        }
+    }
+    /* QUEUE */
     $scope.queue = [];
     $scope.remove = function (index) {
         $scope.items.splice(index, 1);
     }
     $scope.addToQueue = function (logEntry) {
         $scope.queue.push(logEntry)
-    }
-    $scope.whenScrolledDown = function () {
-        $scope.pageLogLimit += $scope.VISIBLE_LOGS_LOAD_COUNT
-    }
-    $scope.whenScrolledUp = function () {
-        $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY
     }
     $scope.removeFromQueue = function (applyScope) {
         $timeout(function () {
@@ -31,6 +86,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
                 var times = $scope.getTimes($scope.queue)
                 for (var t = 0; t < times; t++) {
                     var logEntry = $scope.queue.shift();
+                    logEntry.idx = $scope.items.length
                     $scope.items.push(logEntry)
                     applyScope = true
                 }
@@ -47,7 +103,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         return 1;
     };
     $scope.clear = function () {
-        $scope.items = [];
+        $scope.items = []
+        $scope.selected = []
     }
     $scope.onMessageReceive = function (event) {
         $scope.addToQueue(event)
@@ -79,7 +136,17 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.showError = true;
     $scope.showTrace = true;
     $scope.scrollToTop = function () {
+        $scope.caret.position = 0
+        $scope.caret.tension = 0
         $('.flow')[0].scrollTop = 0
+    }
+    $scope.scrollToBottom = function () {
+        if ($scope.items.length - 1 > 0) {
+            $scope.caret.position = $scope.items.length - 10
+            $scope.caret.tension = 0
+            var raw = $('.flow')[0]
+            raw.scrollTop = raw.scrollHeight - raw.clientHeight
+        }
     }
     $scope.showSettings = false;
     $scope.showSearch = false;
@@ -93,7 +160,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.showOptionsDialog = function () {
         var options = {
             showMdc: $scope.isOptionOn('view.showMdc'),
-            showChart: $scope.isOptionOn('view.showChart')
+            showChart: $scope.isOptionOn('view.showChart'),
+            isDebugMode: $scope.isOptionOn('app.isDebugMode')
         }
         var modalInstance = $uibModal.open({
             templateUrl: '/views/options.html',
@@ -109,9 +177,68 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         modalInstance.result.then(function (options) {
             $scope.setOption('view.showMdc', options.showMdc)
             $scope.setOption('view.showChart', options.showChart)
+            $scope.setOption('app.isDebugMode', options.isDebugMode)
         }, function () {
 
         });
+    }
+    /**
+     * CARET
+     */
+    $scope.mouseWheel = function ($event, $delta, $deltaX, $deltaY) {
+        if ($delta > 0) {
+            // up
+            var tension = parseInt($('.entry-log').first().attr('tension'))
+            if (tension + $scope.caret.tension == 0) {
+                $scope.caret.tension = 0
+            }
+            if ($scope.caret.tension > 0) {
+                $scope.caret.tension -= 1
+                return;
+            }
+            if ($scope.caret.position > 0) {
+                $scope.caret.position -= 1
+                $scope.caret.tension -= 1
+
+                $timeout(init, false);
+                //Initialization
+                function init(){
+                    var tension = $('.entry-log').first()[0].offsetHeight / 17
+                    $scope.caret.tension = tension -1
+                }
+                return;
+            }
+        } else {
+            // down
+            var steps = $scope.SCROLL_SPEED;
+            var cTension = $scope.caret.tension;
+            var cPosition = $scope.caret.position;
+            var element = 0
+            while (steps > 0) {
+                var tension = parseInt($($('.entry-log')[element]).attr('tension'))
+                if (tension > cTension + 1) {
+                    cTension += 1
+                } else {
+                    cTension = 0
+                    cPosition += 1
+                    element += 1
+                }
+                -- steps
+            }
+            $scope.caret.tension = cTension
+            $scope.caret.position = cPosition
+        }
+    }
+    $scope.getShift = function (tension) {
+        if ($scope.caret.tension >= 0) {
+            return 'margin-top:-'+$scope.caret.tension * 17+'px'
+        } else {
+            if (typeof(tension) == "undefined") {
+                return 'position: fixed; visibility: hidden;'
+            } else {
+                return 'margin-top:-'+(tension + $scope.caret.tension) * 17+'px'
+            }
+        }
     }
 
     /**
@@ -145,6 +272,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.setDefaultOption('view.showMdc', true)
     $scope.setDefaultOption('view.showChart', false)
     $scope.setDefaultOption('view.hideHelp', false)
+    $scope.setDefaultOption('app.isDebugMode', false)
 }
 
 flowController.resolve = {

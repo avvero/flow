@@ -4,19 +4,52 @@
         <header class="main-header">
             <!-- Header Navbar: style can be found in header.less -->
             <nav class="navbar navbar-static-top navigation-top-panel" role="navigation">
-                <form action="" method="get" class="sidebar-form">
-                    <div class="input-group">
-                        <input type="text" class="form-control {{logSearchValue != '' ? 'filled' : 'empty'}}"
-                               placeholder="Search..."
-                               ng-model="logSearchValue"
-                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
+                <div class="row">
+                    <div class="col-md-6">
+                        <form action="" method="get" class="sidebar-form">
+                            <div class="input-group">
+                                <input type="text" class="form-control {{logFilterValue != '' ? 'filled' : 'empty'}}"
+                                       placeholder="Filter..."
+                                       ng-model="logFilterValue"
+                                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
                           <span class="input-group-btn">
-                            <button type="button" name="search" id="search-btn" class="btn btn-flat"><i
-                                    class="fa fa-close" ng-click="logSearchValue = ''"></i>
+                            <button type="button" class="btn btn-flat"><i class="fa fa-close" ng-click="logFilterValue = ''"></i>
                             </button>
                           </span>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                    <div class="col-md-6">
+                        <form action="" method="get" class="sidebar-form">
+                            <div class="input-group">
+                                <input type="text" class="form-control {{logSearchValue != '' ? 'filled' : 'empty'}}"
+                                       placeholder="Search..."
+                                       ng-model="logSearchValue"
+                                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
+                          <span class="input-group-btn">
+                            <button type="button" class="btn btn-flat"><i class="fa fa-close" ng-click="logSearchValue = ''"></i>
+                            </button>
+                          </span>
+                            </div>
+                        </form>
+                        <div class="search-result" ng-if="logSearchValue != ''">
+                            <div class="callout callout-navy">
+                                <div class="log-list">
+                                    <div ng-repeat="log in items | logComplex:true:true:true:true:true:caret2:50:logSearchValue"
+                                         class="entry-log level-{{log.level.levelStr}} pointer" ng-click="chooseEntry(log)">
+                                        <div logback></div>
+                                        <!--<span class="{{log.selected ? 'selected' : ''}}">-->
+                                        <!--<span class="log-date pointer" log-date-time="log.timeStamp" ng-click="chooseEntry(log)"></span>-->
+                                        <!--<span class="log-level level-{{log.level.levelStr}}">{{log.level.levelStr}}&nbsp;</span>-->
+                                        <!--<span message="log.formattedMessage"/>-->
+                                        <!--</span>-->
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </nav>
         </header>
         <!-- Left side column. contains the logo and sidebar -->
@@ -51,40 +84,39 @@
                     </li>
                     <li class="header">
                         <b>CONTROLS</b>
-
                         <div class="help controls">
                             <div class="box box-info">
                                 <div class="box-body">
                                     <label>Freeze button</label>
-
                                     <p>
                                         Freezes log appearance for a while<br/>
                                         <span class="label bg-red">0</span> - frozen logs quantity
                                     </p>
-                                    <label>Search button</label>
-
+                                    <label>Filter/Search button</label>
                                     <p>
-                                        Shows/hides search field
+                                        Shows/hides filter/search field
                                     </p>
                                     <label>Clear button</label>
-
                                     <p>
                                         Clears log list completely<br/>
                                         <span class="label bg-green">0</span> - total log quantity
+                                    </p>
+                                    <label>Select button</label>
+                                    <p>
+                                        Turns on/off mode, in which you can select log entries <br/>and then iterate through them
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </li>
-                    <li class="{{isStopped == true ? 'activated' : ''}}">
+                    <li class="{{isStopped == true ? 'active-red' : ''}}">
                         <a href="" ng-click="isStopped = !isStopped"><i class="fa fa-certificate text"></i>
                             <span>Freeze</span>
                             <small class="label pull-right bg-red" ng-show="isStopped">{{queue.length}}</small>
                         </a>
                     </li>
                     <li class="{{showSearch == true ? 'active' : ''}}">
-                        <a href="" ng-click="showSearch = !showSearch"><i
-                                class="fa fa-search"></i><span>Search</span></a>
+                        <a href="" ng-click="showSearch = !showSearch"><i class="fa fa-search"></i><span>Filter/Search</span></a>
                     </li>
                     <li>
                         <a href="" ng-click="clear();"><i class="fa fa-eraser"></i>
@@ -93,13 +125,26 @@
                         </a>
                     </li>
                     <li class="header">
-                        <b>LEVELS</b>
-
+                        <b>SELECT</b>
+                    </li>
+                    <li class="{{isSelectMode == true ? 'active-orange' : ''}}">
+                        <a href="" ng-click="isSelectMode = !isSelectMode"><i class="fa fa-hand-pointer-o text"></i>
+                            <span>Select</span>
+                            <small class="label pull-right bg-orange">{{selected.length}}</small>
+                        </a>
+                    </li>
+                    <li>
+                        <div class="btn-group log-level-buttons" style="padding-left: 96px">
+                            <a type="button" class="btn btn-sm" ng-click="selectPrev(caret.position)"><i class="fa fa-arrow-up"></i></a>
+                            <a type="button" class="btn btn-sm" ng-click="selectNext(caret.position)"><i class="fa fa-arrow-down"></i></a>
+                        </div>
+                    </li>
+                    <li class="header">
+                        <b>LEVEL TOGGLES</b>
                         <div class="help levels">
                             <div class="box box-info">
                                 <div class="box-body">
-                                    <label>Log level tumblers</label>
-
+                                    <label>Log level toggles</label>
                                     <p>
                                         Click to show/hide logs with the level
                                     </p>
@@ -107,22 +152,24 @@
                             </div>
                         </div>
                     </li>
-                    <li class="{{showError == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showError = !showError"><i class="fa fa-circle-o text-red"></i>
-                            <span>Error</span></a>
-                    </li>
-                    <li class="{{showWarn == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showWarn = !showWarn"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a>
-                    </li>
-                    <li class="{{showInfo == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showInfo = !showInfo"><i class="fa fa-circle-o text-aqua"></i>
-                            <span>Info</span></a>
-                    </li>
-                    <li class="{{showDebug == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showDebug = !showDebug"><i class="fa fa-circle-o text-green"></i> <span>Debug</span></a>
-                    </li>
-                    <li class="{{showTrace == true ? '' : 'deactivated'}}">
-                        <a href="" ng-click="showTrace = !showTrace"><i class="fa fa-circle-o text-grey"></i> <span>Trace</span></a>
+                    <li>
+                        <div class="btn-group log-level-buttons">
+                            <a type="button" class="btn btn-sm vertical" ng-click="showError = !showError">
+                                <i class="fa {{showError == true ? 'fa-toggle-on text-red' : 'fa-toggle-off'}}"></i>
+                            </a>
+                            <a type="button" class="btn btn-sm vertical" ng-click="showWarn = !showWarn">
+                                <i class="fa {{showWarn == true ? 'fa-toggle-on text-yellow' : 'fa-toggle-off'}}"></i>
+                            </a>
+                            <a type="button" class="btn btn-sm vertical" ng-click="showInfo = !showInfo">
+                                <i class="fa {{showInfo == true ? 'fa-toggle-on text-blue' : 'fa-toggle-off'}}"></i>
+                            </a>
+                            <a type="button" class="btn btn-sm vertical" ng-click="showDebug = !showDebug">
+                                <i class="fa {{showDebug == true ? 'fa-toggle-on text-green' : 'fa-toggle-off'}}"></i>
+                                </a>
+                            <a type="button" class="btn btn-sm vertical"ng-click="showTrace = !showTrace">
+                                <i class="fa {{showTrace == true ? 'fa-toggle-on text-grey' : 'fa-toggle-off'}}"></i>
+                            </a>
+                        </div>
                     </li>
                     <li class="header"><b></b></li>
                     <li>
@@ -148,21 +195,48 @@
         </div>
         <!-- Content Wrapper. Contains page content -->
         <div class="">
-            <div class="flow {{showSettings ? 'with-settings' : ''}}" class="flow" when-scrolled-up="whenScrolledUp()"
-                 when-scrolled-down="whenScrolledDown()">
-                <div>
-                    <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:pageLogLimit:showSearch ? logSearchValue:''"
-                         class="entry-log level-{{log.level.levelStr}}">
+            <div class="flow with-slider {{showSettings ? 'with-settings' : ''}}" class="flow" msd-wheel="mouseWheel($event, $delta, $deltaX, $deltaY)">
+                <div class="log-list">
+                    <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:caret:pageLogLimit:showSearch ? logFilterValue:''"
+                         class="entry-log level-{{log.level.levelStr}} {{isSelectMode ? 'pointer' : ''}} {{log.selected ? 'selected' : ''}}"
+                         ng-click="isSelectMode ? setSelected(log, 'selected') : nullFunction()"
+                         tension="{{tension}}"  style="{{$first? getShift(tension) : ''}}">
                         <!--use logback template-->
-                        <div logback></div>
+                        <div logback id="logEntry_{{log.idx}}"></div>
                     </div>
                 </div>
             </div>
             <!-- /.content -->
-            <div class="scroll_to_top" ng-click="scrollToTop()" ng-show="pageLogLimit > VISIBLE_LOGS_QUANTITY"
+            <div class="scroll_to_top" ng-click="scrollToTop()"
                  title="Scroll to top">
-                <span class="fa fa-arrow-circle-up" aria-hidden="true"></span>
+                <span class="fa fa-arrow-circle-up {{caret.position + caret.tension == 0 ? 'text-gray' : '' }}" aria-hidden="true"></span>
             </div>
+            <div class="scroll_to_bottom" ng-click="scrollToBottom()"
+                 title="Scroll to bottom">
+                <span class="fa fa-arrow-circle-down" aria-hidden="true"></span>
+            </div>
+        </div>
+        <div id="flow-slider-container">
+            <slider id="flow-slider"
+                    ng-model="caret.position"
+                    ng-model-options="{ updateOn: 'default', debounce: { 'default': 100} }"
+                    value="caret.position"
+                    min="caret.min"
+                    max="items.length"
+                    step="1"
+                    range="false"
+                    reversed="false"
+                    orientation="vertical"
+                    handle="round"
+                    enabled="true">
+            </slider>
+        </div>
+        <div class="debug-box" ng-if="isOptionOn('app.isDebugMode')">
+            <p>DEBUG</p>
+            <p>pageLogLimit: {{pageLogLimit}}</p>
+            <p>caret.position: {{caret.position}}</p>
+            <p>caret.tension: {{caret.tension}}</p>
+            <p>caret.hash: {{caret.hash}}</p>
         </div>
         <div class="chart-box" ng-if="isOptionOn('view.showChart')">
             <div log-chart="items.length"></div>
