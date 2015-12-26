@@ -139,11 +139,11 @@
                         </div>
                     </li>
                     <li class="header">
-                        <b>LEVEL TUMBLERS</b>
+                        <b>LEVEL TOGGLES</b>
                         <div class="help levels">
                             <div class="box box-info">
                                 <div class="box-body">
-                                    <label>Log level tumblers</label>
+                                    <label>Log level toggles</label>
                                     <p>
                                         Click to show/hide logs with the level
                                     </p>
@@ -208,7 +208,7 @@
             <!-- /.content -->
             <div class="scroll_to_top" ng-click="scrollToTop()"
                  title="Scroll to top">
-                <span class="fa fa-arrow-circle-up" aria-hidden="true"></span>
+                <span class="fa fa-arrow-circle-up {{caret.position == 0 ? 'text-gray' : '' }}" aria-hidden="true"></span>
             </div>
             <div class="scroll_to_bottom" ng-click="scrollToBottom()"
                  title="Scroll to bottom">
@@ -236,7 +236,6 @@
             <p>caret.position: {{caret.position}}</p>
             <p>caret.tension: {{caret.tension}}</p>
             <p>caret.hash: {{caret.hash}}</p>
-            <p>CARET_STEP: {{CARET_STEP}}<input ng-model="CARET_STEP" type="number" style="width: 20px"></p>
         </div>
         <div class="chart-box" ng-if="isOptionOn('view.showChart')">
             <div log-chart="items.length"></div>

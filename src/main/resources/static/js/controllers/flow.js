@@ -45,7 +45,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         //$('.flow')[0].scrollTop = 0
     }
     $scope.selectPrev = function(position) {
-        var list = $scope.selected.sort()
+        var list = $scope.selected.sort(function(a,b) {return b.idx - a.idx})
         var prev = null
         for (var i = 0; i < list.length; i++) {
             var entryPosition = $scope.items.length - list[i].idx - 1
@@ -58,7 +58,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         }
     }
     $scope.selectNext = function(position) {
-        var list = $scope.selected.sort()
+        var list = $scope.selected.sort(function(a,b) {return b.idx - a.idx})
         var prev = null
         for (var i = 0; i < list.length; i++) {
             var entryPosition = $scope.items.length - list[i].idx - 1
