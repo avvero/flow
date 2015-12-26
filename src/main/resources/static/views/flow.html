@@ -88,21 +88,22 @@
                             <div class="box box-info">
                                 <div class="box-body">
                                     <label>Freeze button</label>
-
                                     <p>
                                         Freezes log appearance for a while<br/>
                                         <span class="label bg-red">0</span> - frozen logs quantity
                                     </p>
                                     <label>Filter/Search button</label>
-
                                     <p>
                                         Shows/hides filter/search field
                                     </p>
                                     <label>Clear button</label>
-
                                     <p>
                                         Clears log list completely<br/>
                                         <span class="label bg-green">0</span> - total log quantity
+                                    </p>
+                                    <label>Select button</label>
+                                    <p>
+                                        Turns on/off mode, in which you can select log entries <br/>and then iterate through them
                                     </p>
                                 </div>
                             </div>
@@ -208,7 +209,7 @@
             <!-- /.content -->
             <div class="scroll_to_top" ng-click="scrollToTop()"
                  title="Scroll to top">
-                <span class="fa fa-arrow-circle-up {{caret.position == 0 ? 'text-gray' : '' }}" aria-hidden="true"></span>
+                <span class="fa fa-arrow-circle-up {{caret.position + caret.tension == 0 ? 'text-gray' : '' }}" aria-hidden="true"></span>
             </div>
             <div class="scroll_to_bottom" ng-click="scrollToBottom()"
                  title="Scroll to bottom">

@@ -1,8 +1,7 @@
 function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context, $location) {
     $scope.VISIBLE_LOGS_QUANTITY = 100  // количество элементов на странице
-    $scope.SCROLL_TO_TOP_THRESHOLD = 1 // позиция каретки, полсе который будет показана кнопка Scroll to top
-    $scope.VISIBLE_LOGS_LOAD_COUNT = 50
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
+    $scope.SCROLL_SPEED = 3
     $scope.logFilterValue = '';
     $scope.logSearchValue = '';
     $scope.isStopped = false; // остановили обновление страницы
@@ -78,50 +77,6 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     }
     $scope.addToQueue = function (logEntry) {
         $scope.queue.push(logEntry)
-    }
-    $scope.mouseWheel = function ($event, $delta, $deltaX, $deltaY) {
-        var tension = parseInt($('.entry-log').first().attr('tension'))
-        if ($delta > 0) { // load more items before you hit the top
-            if (tension + $scope.caret.tension == 0) {
-                $scope.caret.tension = 0
-            }
-            // up
-            if ($scope.caret.tension > 0) {
-                $scope.caret.tension -= 1
-                return;
-            }
-            if ($scope.caret.position > 0) {
-                $scope.caret.position -= 1
-                $scope.caret.tension -= 1
-
-                $timeout(init, false);
-                //Initialization
-                function init(){
-                    var tension = $('.entry-log').first()[0].offsetHeight / 17
-                    $scope.caret.tension = tension -1
-                }
-                return;
-            }
-        } else {
-            // down
-            if (tension > $scope.caret.tension + 1) {
-                $scope.caret.tension += 1
-            } else {
-                $scope.caret.tension = 0
-                $scope.caret.position += 1
-            }
-        }
-    }
-    $scope.getShift = function (tension) {
-        if ($scope.caret.tension >= 0) {
-            return 'margin-top:-'+$scope.caret.tension * 17+'px'
-        } else {
-            if (typeof(tension) == "undefined") {
-                return 'position: fixed; visibility: hidden;'
-            } else {
-                return 'margin-top:-'+(tension + $scope.caret.tension) * 17+'px'
-            }
-        }
     }
     $scope.removeFromQueue = function (applyScope) {
         $timeout(function () {
@@ -226,6 +181,64 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         }, function () {
 
         });
+    }
+    /**
+     * CARET
+     */
+    $scope.mouseWheel = function ($event, $delta, $deltaX, $deltaY) {
+        if ($delta > 0) {
+            // up
+            var tension = parseInt($('.entry-log').first().attr('tension'))
+            if (tension + $scope.caret.tension == 0) {
+                $scope.caret.tension = 0
+            }
+            if ($scope.caret.tension > 0) {
+                $scope.caret.tension -= 1
+                return;
+            }
+            if ($scope.caret.position > 0) {
+                $scope.caret.position -= 1
+                $scope.caret.tension -= 1
+
+                $timeout(init, false);
+                //Initialization
+                function init(){
+                    var tension = $('.entry-log').first()[0].offsetHeight / 17
+                    $scope.caret.tension = tension -1
+                }
+                return;
+            }
+        } else {
+            // down
+            var steps = $scope.SCROLL_SPEED;
+            var cTension = $scope.caret.tension;
+            var cPosition = $scope.caret.position;
+            var element = 0
+            while (steps > 0) {
+                var tension = parseInt($($('.entry-log')[element]).attr('tension'))
+                if (tension > cTension + 1) {
+                    cTension += 1
+                } else {
+                    cTension = 0
+                    cPosition += 1
+                    element += 1
+                }
+                -- steps
+            }
+            $scope.caret.tension = cTension
+            $scope.caret.position = cPosition
+        }
+    }
+    $scope.getShift = function (tension) {
+        if ($scope.caret.tension >= 0) {
+            return 'margin-top:-'+$scope.caret.tension * 17+'px'
+        } else {
+            if (typeof(tension) == "undefined") {
+                return 'position: fixed; visibility: hidden;'
+            } else {
+                return 'margin-top:-'+(tension + $scope.caret.tension) * 17+'px'
+            }
+        }
     }
 
     /**

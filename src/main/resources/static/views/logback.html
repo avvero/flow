@@ -1,5 +1,5 @@
 <span>
-    <span>{{log.idx}}</span>
+    <span ng-if="isOptionOn('app.isDebugMode')">{{log.idx}}</span>
     <!--<span>{{tension}}</span>-->
     <span class="log-date" log-date-time="log.timeStamp" ng-click="onClick(log, 'selected')"></span>
     <span class="log-level level-{{log.level.levelStr}}">{{log.level.levelStr}}&nbsp;</span>
