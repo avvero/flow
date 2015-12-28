@@ -12,6 +12,81 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     page.setTitle(context.instance.name + ' #' + $stateParams.marker)
     // События
     $scope.items = [];
+    $scope.entryStore = {
+        items: [],
+        cache: [],
+        hash: "",
+        isHashValid: function() {
+            var hash = '' + $scope.showTrace + $scope.showDebug + $scope.showInfo + $scope.showWarn + $scope.showError + $scope.logFilterValue
+            return this.hash == hash
+        },
+        push: function(entry) {
+            this.items.push(entry)
+            if (!this.isHashValid()) {
+                this.init()
+            }
+            this.cache.push(entry)
+        },
+        init: function() {
+            this.cache = []
+            for (var i = 0; i < this.items.length; i++) {
+                if (this.filter(this.items[i])) {
+                    this.cache.push(this.items[i])
+                }
+            }
+        },
+        filter: function(entry) {
+            var log = entry
+            var level = log.level.levelStr
+            // Level filter
+            if ($scope.showTrace && level == 'TRACE'
+                || $scope.showDebug && level == 'DEBUG'
+                || $scope.showInfo && level == 'INFO'
+                || $scope.showWarn && level == 'WARN'
+                || $scope.showError && level == 'ERROR') {
+                // Log message filter
+                if ($scope.logFilterValue == '' || this.isInLog(log, $scope.logFilterValue)) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        isInLog : function (log, logFilterValue) {
+            var string = log.stringfied
+            if (!log.stringfied) {
+                log.stringfied = JSON.stringify(log)
+                string = log.stringfied
+            }
+            return string.indexOf(logFilterValue) != -1
+        },
+        getAll: function(){
+            if (!this.isHashValid()) {
+                this.init()
+            }
+            return this.cache
+        },
+        getAllLimit: function(limit, begin){
+            if (!this.isHashValid()) {
+                this.init()
+            }
+            var result = []
+            var toSkip = begin
+            for (var i = this.cache.length - 1; i >= 0; i--) {
+                if (limit != -1 && limit == result.length) {
+                    break;
+                }
+                if (toSkip == 0) {
+                    result.push(this.cache[i])
+                } else {
+                    --toSkip
+                }
+            }
+            if (toSkip > 0) {
+                //
+            }
+            return result;
+        }
+    }
     $scope.selected = [];
     $scope.caret = {
         position: 0,
@@ -86,8 +161,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
                 var times = $scope.getTimes($scope.queue)
                 for (var t = 0; t < times; t++) {
                     var logEntry = $scope.queue.shift();
-                    logEntry.idx = $scope.items.length
-                    $scope.items.push(logEntry)
+                    logEntry.idx = $scope.entryStore.items.length
+                    $scope.entryStore.push(logEntry)
                     applyScope = true
                 }
             }

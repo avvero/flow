@@ -191,7 +191,7 @@
         <div class="">
             <div class="flow with-slider {{showSettings ? 'with-settings' : ''}}" class="flow" msd-wheel="mouseWheel($event, $delta, $deltaX, $deltaY)">
                 <div class="log-list">
-                    <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:caret:pageLogLimit:showSearch ? logFilterValue:''"
+                    <div ng-repeat="log in entryStore.getAllLimit(100,caret.position)"
                          class="entry-log level-{{log.level.levelStr}} {{isSelectMode ? 'pointer' : ''}} {{log.selected ? 'selected' : ''}}"
                          ng-click="isSelectMode ? setSelected(log, 'selected') : nullFunction()"
                          tension="{{tension}}"  style="{{$first? getShift(tension) : ''}}">
@@ -220,7 +220,7 @@
                     ng-model-options="{ updateOn: 'default', debounce: { 'default': 100} }"
                     value="caret.position"
                     min="caret.min"
-                    max="items.length"
+                    max="entryStore.getAll().length"
                     step="1"
                     range="false"
                     reversed="false"
