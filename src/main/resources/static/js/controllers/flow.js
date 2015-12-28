@@ -22,6 +22,11 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.caret2 = {
         position: 0
     }
+    $scope.$watch('logSearchValue', function(newValue, oldValue) {
+        if (newValue != "") {
+            $scope.isStopped = true
+        }
+    });
     /**
      * SELECT
      */
