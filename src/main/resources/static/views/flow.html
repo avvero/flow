@@ -6,7 +6,7 @@
             <nav class="navbar navbar-static-top navigation-top-panel" role="navigation">
                 <div class="row">
                     <div class="col-md-6">
-                        <form action="" method="get" class="sidebar-form">
+                        <div class="sidebar-form">
                             <div class="input-group">
                                 <input type="text" class="form-control {{logFilterValue != '' ? 'filled' : 'empty'}}"
                                        placeholder="Filter..."
@@ -17,10 +17,10 @@
                             </button>
                           </span>
                             </div>
-                        </form>
+                        </div>
                     </div>
                     <div class="col-md-6">
-                        <form action="" method="get" class="sidebar-form">
+                        <div class="sidebar-form">
                             <div class="input-group">
                                 <input type="text" class="form-control {{logSearchValue != '' ? 'filled' : 'empty'}}"
                                        placeholder="Search..."
@@ -31,7 +31,7 @@
                             </button>
                           </span>
                             </div>
-                        </form>
+                        </div>
                         <div class="search-result" ng-if="logSearchValue != ''">
                             <div class="callout callout-navy">
                                 <div class="log-list">

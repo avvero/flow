@@ -82,6 +82,7 @@
 
 .flow {
     padding-left: 3px;
+    padding-right: 33px;
     overflow: auto;
     position: fixed !important;
     position: absolute;
