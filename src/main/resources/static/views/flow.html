@@ -133,12 +133,6 @@
                             <small class="label pull-right bg-orange">{{selected.length}}</small>
                         </a>
                     </li>
-                    <li>
-                        <div class="btn-group log-level-buttons" style="padding-left: 96px">
-                            <a type="button" class="btn btn-sm" ng-click="selectPrev(caret.position)"><i class="fa fa-arrow-up"></i></a>
-                            <a type="button" class="btn btn-sm" ng-click="selectNext(caret.position)"><i class="fa fa-arrow-down"></i></a>
-                        </div>
-                    </li>
                     <li class="header">
                         <b>LEVEL TOGGLES</b>
                         <div class="help levels">
@@ -214,6 +208,10 @@
             <div class="scroll_to_bottom" ng-click="scrollToBottom()"
                  title="Scroll to bottom">
                 <span class="fa fa-arrow-circle-down" aria-hidden="true"></span>
+            </div>
+            <div class="btn-group select-next-prev-block" ng-if="selected.length > 0">
+                <a type="button" class="btn btn-sm" ng-click="selectPrev(caret.position)"><i class="fa fa-arrow-up"></i></a>
+                <a type="button" class="btn btn-sm" ng-click="selectNext(caret.position)"><i class="fa fa-arrow-down"></i></a>
             </div>
         </div>
         <div id="flow-slider-container">

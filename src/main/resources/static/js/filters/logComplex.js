@@ -1,4 +1,5 @@
 angular.module('flow').filter('logComplex', function () {
+    var filterCallCount = 0;
     var isInLog = function (log, logFilterValue) {
         var string = log.stringfied
         if (!log.stringfied) {
@@ -9,7 +10,7 @@ angular.module('flow').filter('logComplex', function () {
     }
 
     return function (logs, showTrace, showDebug, showInfo, showWarn, showError, caret, limit, logFilterValue) {
-        console.debug("Filter start")
+        console.debug("filter is called " + ++filterCallCount)
         var result = []
         var hash = '' + showTrace + showDebug + showInfo + showWarn + showError + limit + logFilterValue
         if (hash != caret.hash) {

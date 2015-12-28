@@ -511,3 +511,22 @@
     font-size: 14px;
     padding: 5px 11px;
 }
+
+.select-next-prev-block {
+    position: fixed;
+    right: 31px;
+    top: 4px;
+}
+
+.select-next-prev-block .fa {
+    color: #ff851b;
+    font-size: 19px;
+}
+
+.select-next-prev-block .fa:hover {
+    color: #3C8DBC;
+}
+
+.searchable .select-next-prev-block {
+    top: 54px;
+}
