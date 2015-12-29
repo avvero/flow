@@ -182,7 +182,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
             isDebugMode: $scope.isOptionOn('app.isDebugMode')
         }
         var modalInstance = $uibModal.open({
-            templateUrl: '/views/options.html',
+            templateUrl: 'views/options.html',
             controller: optionsDialogController,
             resolve: {
                 options: function ($q, $http) {
@@ -299,7 +299,7 @@ flowController.resolve = {
 
         $http({
             method: 'GET',
-            url: 'data/context.json',
+            url: 'data/context',
             headers: {'Content-Type': 'application/json;charset=UTF-8'}
         })
             .success(function (data) {

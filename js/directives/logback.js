@@ -10,7 +10,7 @@ angular.module('flow').directive('logback', ['$timeout', function ($timeout) {
                 $scope.tension = element[0].offsetHeight / 17
             }
         },
-        templateUrl: '/views/logback.html'
+        templateUrl: 'views/logback.html'
     };
 }])
 angular.module('flow').directive('message', function(utils) {
@@ -71,6 +71,6 @@ angular.module('flow').directive('cause', function() {
                 $scope.causes = causes
             });
         },
-        templateUrl: '/views/cause.html'
+        templateUrl: 'views/cause.html'
     };
 });

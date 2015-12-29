@@ -16,7 +16,7 @@ angular.module("flow").constant('constants', {
 // configure our routes
 angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRouterProvider, constants, localStorageServiceProvider) {
 
-    $urlRouterProvider.otherwise("/follow/test")
+    $urlRouterProvider.otherwise("/")
 
     $stateProvider
         .state('index', {
