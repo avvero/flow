@@ -1,4 +1,4 @@
-function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context, $location) {
+function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context, hotkeys) {
     $scope.VISIBLE_LOGS_QUANTITY = 100  // количество элементов на странице
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
     $scope.SCROLL_SPEED = 3
@@ -25,6 +25,19 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.$watch('logSearchValue', function(newValue, oldValue) {
         if (newValue != "") {
             $scope.isStopped = true
+        }
+    });
+    hotkeys.add({
+        combo: 'ctrl+f',
+        callback: function(event) {
+            event.preventDefault();
+            $scope.showSearch = !$scope.showSearch
+        }
+    });
+    hotkeys.add({
+        combo: 'ctrl+space',
+        callback: function(event) {
+            $scope.isStopped = !$scope.isStopped
         }
     });
     /**
