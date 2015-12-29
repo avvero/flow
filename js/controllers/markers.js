@@ -9,7 +9,7 @@ markersController.resolve = {
 
         $http({
             method: 'GET',
-            url: '/data/context',
+            url: 'data/context.json',
             headers: {'Content-Type': 'application/json;charset=UTF-8'}
         })
             .success(function (data) {
