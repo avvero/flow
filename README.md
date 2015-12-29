@@ -9,7 +9,7 @@ Log over-web viewer for logback
 4. Run script `bin/flow`
 
 ### Demo
-On [jelastic](http://flow.avvero.pw/)
+[Client-only demo](http://avvero.github.io/flow)
 
 ### Known issues
 See issues
