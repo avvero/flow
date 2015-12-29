@@ -1,0 +1,25 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title">Options</h4>
+    </div>
+    <div class="modal-body">
+        <p class="setting">Show mdc: {{options.showMdc}}
+            <button type="button" class="btn btn-xs btn-success"
+                    ng-click="options.showMdc = !options.showMdc">Switch
+            </button>
+        </p>
+        <p class="setting">Show chart: {{options.showChart}}
+            <button type="button" class="btn btn-xs btn-success"
+                    ng-click="options.showChart = !options.showChart">Switch
+            </button>
+        </p>
+        <p class="setting">Debug mode: {{options.isDebugMode}}
+            <button type="button" class="btn btn-xs btn-success"
+                    ng-click="options.isDebugMode = !options.isDebugMode">Switch
+            </button>
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" ng-click="ok()">Save</button>
+    </div>
+</div>

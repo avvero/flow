@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<body>
+    <div class="markers_container">
+        <div class="page-header">
+            <h1>Flow <small>follow logs over web</small></h1>
+        </div>
+        <div ng-if="markers.length > 0">
+            <p class="lead">Choose to follow logs with marker :</p>
+            <p class="lead" ng-repeat="marker in markers">
+                <a ng-href="#follow/{{marker}}">#{{marker}}</a>
+            </p>
+
+        </div>
+        <div ng-if="!markers || markers.length == 0">
+            <p class="lead">
+                No markers to follow :(
+            </p>
+            <p>
+                Try to <a href="https://github.com/avvero/flow">follow instruction</a> at first
+            </p>
+        </div>
+    </div>
+    <div class="github_link"><a href="https://github.com/avvero/flow">github</a></div>
+</body>

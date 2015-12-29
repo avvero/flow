@@ -1,0 +1,29 @@
+<span>
+    <span ng-if="isOptionOn('app.isDebugMode')">{{log.idx}}</span>
+    <!--<span>{{tension}}</span>-->
+    <span class="log-date" log-date-time="log.timeStamp" ng-click="onClick(log, 'selected')"></span>
+    <span class="log-level level-{{log.level.levelStr}}">{{log.level.levelStr}}&nbsp;</span>
+    <span class="fa fa-info-circle pointer" title="Show thread and mdc"
+          ng-click="changeBoolOption('view.showMdc')" ng-hide="isOptionOn('view.showMdc')"></span>
+    <span class="log-mdc" ng-show="isOptionOn('view.showMdc')">
+        ({{log.mdc.userLogin}},{{log.mdc.sessionId}})&nbsp;</span>
+    <span class="log-thread" ng-show="isOptionOn('view.showMdc')">
+        {{log.threadName}}&nbsp;</span>
+    <span message="log.formattedMessage"/>
+</span>
+<div message-multiline="log.formattedMessage"/>
+
+<div class="log-msg-error" ng-if="log.throwableProxy">
+    {{log.throwableProxy.className}}: {{log.throwableProxy.message}}
+</div>
+<div class="log-msg-error-stack callout callout-danger" ng-if="log.level.levelStr == 'ERROR'">
+    <div ng-repeat="part in log.throwableProxy.stackTraceElementProxyArray | limitTo:7">
+        {{part.steasString}}
+    </div>
+    <div ng-if="log.throwableProxy.stackTraceElementProxyArray.length > 7">
+        ...
+    </div>
+</div>
+<div ng-if="log.throwableProxy.cause">
+    <div cause="log.throwableProxy.cause"/>
+</div>

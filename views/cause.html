@@ -1,0 +1,11 @@
+<div ng-repeat="cause in causes">
+    <div class="log-msg-error">Caused by: {{cause.className}}: <span multiline="cause.message"></span></div>
+    <div class="log-msg-error-stack callout callout-danger">
+        <div ng-repeat="part in cause.stackTraceElementProxyArray | limitTo:7">
+            {{part.steasString}}
+        </div>
+        <div ng-if="cause.stackTraceElementProxyArray.length > 7">
+            ...
+        </div>
+    </div>
+</div>
