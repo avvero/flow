@@ -39,7 +39,7 @@ angular.module('stompie', []).factory('$stompie', ['$rootScope', '$timeout', '$h
                     _subscriptions[j](_data[i])
                 }
                 i++;
-                $timeout(t, 200)
+                $timeout(t, 100)
             }
         }
         $timeout(t, 100)
