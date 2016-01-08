@@ -33,16 +33,21 @@ angular.module('stompie', []).factory('$stompie', ['$rootScope', '$timeout', '$h
 
     _stompie.publish = function() {
         var i = 0;
+        var d = 100
         var t = function () {
             if (i < _data.length) {
                 for (var j = 0; j < _subscriptions.length; j++) {
                     _subscriptions[j](_data[i])
                 }
                 i++;
-                $timeout(t, 100)
+                $timeout(t, d)
+            } else {
+                d = d * 2
+                i = 0;
+                $timeout(t, d)
             }
         }
-        $timeout(t, 100)
+        $timeout(t, d)
     }
 
     _stompie.disconnect = function (callback) {
