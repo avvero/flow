@@ -53,6 +53,6 @@ angular.module('flow').directive('logChart', ['$timeout', 'utils', function ($ti
             }
             $scope.updateChart()
         },
-        templateUrl: '/views/logChart.html'
+        templateUrl: 'views/logChart.html'
     };
 }])

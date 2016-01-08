@@ -23,7 +23,7 @@ angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRout
             url: "/",
             views: {
                 "single": {
-                    templateUrl: '/views/markers.html',
+                    templateUrl: 'views/markers.html',
                     controller: markersController,
                     resolve: markersController.resolve
                 }
@@ -33,7 +33,7 @@ angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRout
             url: "/follow/:marker",
             views: {
                 "single": {
-                    templateUrl: '/views/flow.html',
+                    templateUrl: 'views/flow.html',
                     controller: flowController,
                     resolve: flowController.resolve
                 }
