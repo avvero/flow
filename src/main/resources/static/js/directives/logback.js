@@ -4,11 +4,6 @@ angular.module('flow').directive('logback', ['$timeout', function ($timeout) {
             $scope.$watch(attrs.onClick, function(value){
                 $scope.onClick = value
             });
-            $timeout(init, false);
-            //Initialization
-            function init(){
-                $scope.tension = element[0].offsetHeight / 17
-            }
         },
         templateUrl: 'views/logback.html'
     };

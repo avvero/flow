@@ -4,7 +4,7 @@
  * Angular module for stompie emulation
  *
  */
-angular.module('stompie', []).factory('$stompie', ['$rootScope', '$interval', '$http', function ($rootScope, $interval, $http) {
+angular.module('stompie', []).factory('$stompie', ['$rootScope', '$timeout', '$http', function ($rootScope, $timeout, $http) {
     'use strict';
 
     var _stompie = {},
@@ -33,16 +33,16 @@ angular.module('stompie', []).factory('$stompie', ['$rootScope', '$interval', '$
 
     _stompie.publish = function() {
         var i = 0;
-        $interval(function() {
+        var t = function () {
             if (i < _data.length) {
                 for (var j = 0; j < _subscriptions.length; j++) {
                     _subscriptions[j](_data[i])
                 }
                 i++;
-            } else {
-                i = 0;
+                $timeout(t, 200)
             }
-        }, 100);
+        }
+        $timeout(t, 100)
     }
 
     _stompie.disconnect = function (callback) {
