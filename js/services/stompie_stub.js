@@ -42,9 +42,9 @@ angular.module('stompie', []).factory('$stompie', ['$rootScope', '$timeout', '$h
                 i++;
                 $timeout(t, d)
             } else {
-                d = d * 2
-                i = 0;
-                $timeout(t, d)
+                //d = d * 2
+                //i = 0;
+                //$timeout(t, d)
             }
         }
         $timeout(t, d)
