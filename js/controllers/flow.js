@@ -2,6 +2,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.VISIBLE_LOGS_QUANTITY = 100  // количество элементов на странице
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
     $scope.SCROLL_SPEED = 3
+    $scope.SCROLL_ELEMENT_H = 17
     $scope.logFilterValue = '';
     $scope.logSearchValue = '';
     $scope.isStopped = false; // остановили обновление страницы
@@ -206,7 +207,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.mouseWheel = function ($event, $delta, $deltaX, $deltaY) {
         if ($delta > 0) {
             // up
-            var tension = parseInt($('.entry-log').first().attr('tension'))
+            var tension = parseInt($('.entry-log').first()[0].offsetHeight / $scope.SCROLL_ELEMENT_H)
             if (tension + $scope.caret.tension == 0) {
                 $scope.caret.tension = 0
             }
@@ -221,7 +222,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
                 $timeout(init, false);
                 //Initialization
                 function init(){
-                    var tension = $('.entry-log').first()[0].offsetHeight / 17
+                    var tension = $('.entry-log').first()[0].offsetHeight / $scope.SCROLL_ELEMENT_H
                     $scope.caret.tension = tension -1
                 }
                 return;
@@ -233,7 +234,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
             var cPosition = $scope.caret.position;
             var element = 0
             while (steps > 0) {
-                var tension = parseInt($($('.entry-log')[element]).attr('tension'))
+                var tension = parseInt($($('.entry-log')[element])[0].offsetHeight / $scope.SCROLL_ELEMENT_H)
                 if (tension > cTension + 1) {
                     cTension += 1
                 } else {
@@ -249,12 +250,12 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     }
     $scope.getShift = function (tension) {
         if ($scope.caret.tension >= 0) {
-            return 'margin-top:-'+$scope.caret.tension * 17+'px'
+            return 'margin-top:-'+$scope.caret.tension * $scope.SCROLL_ELEMENT_H+'px'
         } else {
             if (typeof(tension) == "undefined") {
                 return 'position: fixed; visibility: hidden;'
             } else {
-                return 'margin-top:-'+(tension + $scope.caret.tension) * 17+'px'
+                return 'margin-top:-'+(tension + $scope.caret.tension) * $scope.SCROLL_ELEMENT_H+'px'
             }
         }
     }
