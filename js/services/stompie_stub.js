@@ -19,7 +19,7 @@ angular.module('stompie', []).factory('$stompie', ['$rootScope', '$timeout', '$h
     _stompie.using = function (endpoint, callbacks) {
         $http({
             method: 'GET',
-            url: 'demo/data/items',
+            url: 'data/items',
             headers: {'Content-Type': 'application/json;charset=UTF-8'}
         })
             .success(function (data) {
