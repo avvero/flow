@@ -1,6 +1,6 @@
 Flow - follow logs over web
 ==============
-Log viewer for logback
+Web log viewer for logback
 
 ### Usage
 1. [Download](https://github.com/avvero/flow/releases) last released tar or zip file.  
