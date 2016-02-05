@@ -59,6 +59,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         entry[tag] = !entry[tag]
     }
     $scope.chooseEntry = function (entry) {
+        $scope.caret.tension = 0
         $scope.caret.position = $scope.items.length - entry.idx - 1
         //$('.flow')[0].scrollTop = 0
     }
