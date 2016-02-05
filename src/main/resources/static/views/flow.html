@@ -11,9 +11,11 @@
                                 <input type="text" class="form-control {{logFilterValue != '' ? 'filled' : 'empty'}}"
                                        placeholder="Filter..."
                                        ng-model="logFilterValue"
-                                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
-                          <span class="input-group-btn">
-                            <button type="button" class="btn btn-flat"><i class="fa fa-close" ng-click="logFilterValue = ''"></i>
+                                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+                                       ng-disabled="logSearchValue != ''"
+                                >
+                          <span class="input-group-btn" ng-click="logFilterValue = ''">
+                            <button type="button" class="btn btn-flat"><i class="fa fa-close"></i>
                             </button>
                           </span>
                             </div>
@@ -25,9 +27,11 @@
                                 <input type="text" class="form-control {{logSearchValue != '' ? 'filled' : 'empty'}}"
                                        placeholder="Search..."
                                        ng-model="logSearchValue"
-                                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }">
-                          <span class="input-group-btn">
-                            <button type="button" class="btn btn-flat"><i class="fa fa-close" ng-click="logSearchValue = ''"></i>
+                                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 500, 'blur': 0 } }"
+                                       ng-disabled="logFilterValue != ''"
+                                >
+                          <span class="input-group-btn" ng-click="logSearchValue = ''">
+                            <button type="button" class="btn btn-flat"><i class="fa fa-close"></i>
                             </button>
                           </span>
                             </div>
@@ -186,7 +190,7 @@
             <div class="flow with-slider {{showSettings ? 'with-settings' : ''}}" class="flow" msd-wheel="mouseWheel($event, $delta, $deltaX, $deltaY)">
                 <div class="log-list">
                     <div ng-repeat="log in items | logComplex:showTrace:showDebug:showInfo:showWarn:showError:caret:pageLogLimit:showSearch ? logFilterValue:''"
-                         class="entry-log level-{{log.level.levelStr}} {{isSelectMode ? 'pointer' : ''}} {{log.selected ? 'selected' : ''}}"
+                         class="entry-log level-{{log.level.levelStr}} {{isSelectMode ? 'pointer' : ''}} {{log.selected ? 'selected' : ''}} {{log.blink? 'fade_in' : '' }}"
                          ng-click="isSelectMode ? setSelected(log, 'selected') : nullFunction()"
                          tension="{{tension}}"  style="{{$first? getShift(tension) : ''}}">
                         <!--use logback template-->

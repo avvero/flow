@@ -226,10 +226,10 @@
 .scroll_to_top {
     top: 5px;
 }
+
 .scroll_to_bottom {
     bottom: 0px;
 }
-
 
 .scroll_to_top .fa,
 .scroll_to_bottom .fa {
@@ -286,6 +286,7 @@
     left: 177px;
     position: fixed;
 }
+
 .show-help .help.markers,
 .show-help .help.server_pulse,
 .show-help .help.description,
@@ -404,9 +405,10 @@
     position: fixed;
     right: 22px;
 }
+
 .debug-box {
     margin-left: 150px;
-    bottom:100px;
+    bottom: 100px;
     position: fixed;
     right: 22px;
     background-color: #001a35;
@@ -450,12 +452,12 @@
     margin-bottom: 10px;
 }
 
-.search-result .log-list{
+.search-result .log-list {
     max-height: 305px;
     overflow: auto;
 }
 
-.search-result .callout{
+.search-result .callout {
     padding: 3px;
 }
 
@@ -488,26 +490,26 @@
     padding-bottom: 46px;
 }
 
-.log-level-buttons .btn{
+.log-level-buttons .btn {
     font-size: 21px;
     padding: 5px 2px;
 }
 
-.vertical{
+.vertical {
     /*writing-mode:tb-rl;*/
-    -webkit-transform:rotate(90deg);
-    -moz-transform:rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
     -o-transform: rotate(90deg);
-    -ms-transform:rotate(90deg);
+    -ms-transform: rotate(90deg);
     transform: rotate(90deg);
-    white-space:nowrap;
-    display:block;
-    bottom:0;
+    white-space: nowrap;
+    display: block;
+    bottom: 0;
     /* width:20px; */
     /* height:20px; */
 }
 
-.btn-group.select-buttons .btn{
+.btn-group.select-buttons .btn {
     font-size: 14px;
     padding: 5px 11px;
 }
@@ -529,4 +531,54 @@
 
 .searchable .select-next-prev-block {
     top: 54px;
+}
+
+.fade_in {
+    animation: fadein 1s;
+    -moz-animation: fadein 1s; /* Firefox */
+    -webkit-animation: fadein 1s; /* Safari and Chrome */
+    -o-animation: fadein 1s; /* Opera */
+}
+
+.fade_out {
+    animation: fadeout 2s;
+    -moz-animation: fadeout 2s; /* Firefox */
+    -webkit-animation: fadeout 2s; /* Safari and Chrome */
+    -o-animation: fadeout 2s; /* Opera */
+}
+
+@keyframes fadein {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes fadein { /* Firefox */
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadein { /* Safari and Chrome */
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@-o-keyframes fadein { /* Opera */
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }

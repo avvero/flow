@@ -1,6 +1,7 @@
 function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context, hotkeys) {
     $scope.VISIBLE_LOGS_QUANTITY = 100  // количество элементов на странице
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
+    $scope.BLINK_DELAY = 1500
     $scope.SCROLL_SPEED = 3
     $scope.SCROLL_ELEMENT_H = 17
     $scope.logFilterValue = '';
@@ -62,6 +63,13 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         $scope.caret.tension = 0
         $scope.caret.position = $scope.items.length - entry.idx - 1
         //$('.flow')[0].scrollTop = 0
+        $scope.blink(entry)
+    }
+    $scope.blink = function(entry) {
+        entry.blink = true
+        $timeout(function () {
+            entry.blink = null
+        }, $scope.BLINK_DELAY);
     }
     $scope.selectPrev = function(position) {
         var list = $scope.selected.sort(function(a,b) {return b.idx - a.idx})
