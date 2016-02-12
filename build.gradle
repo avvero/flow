@@ -46,3 +46,7 @@ task wrapper(type: Wrapper) {
 applicationDistribution.from("src/main/resources/application.yml") {
     into "bin"
 }
+
+task stage {
+    dependsOn build
+}
