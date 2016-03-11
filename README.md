@@ -1,4 +1,4 @@
-Flow - follow logs over web (v1)
+Flow - follow logs over web
 ==============
 Web log viewer for logback
 
