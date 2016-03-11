@@ -27,6 +27,8 @@ RUN chmod +x ./gradlew
 
 RUN ./gradlew build
 
+RUN ls
+
 #RUN java -Dserver.port=$PORT -Dspring.profiles.active=def $JAVA_OPTS -jar build/libs/*.war
 ENTRYPOINT ["java","-jar","build/libs/*.war"]
 
