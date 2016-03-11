@@ -25,11 +25,9 @@ RUN ls
 
 RUN chmod +x ./gradlew
 
-RUN ./gradlew bootRun
-
-#RUN ls
+RUN ./gradlew build
 
 #RUN java -Dserver.port=$PORT -Dspring.profiles.active=def $JAVA_OPTS -jar build/libs/*.war
-#ENTRYPOINT ["java","-jar","build/libs/*.war"]
+ENTRYPOINT ["./gradlew"]
 
 EXPOSE 8082
