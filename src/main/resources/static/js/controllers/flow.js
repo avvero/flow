@@ -216,7 +216,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.mouseWheel = function ($event, $delta, $deltaX, $deltaY) {
         if ($delta > 0) {
             // up
-            var tension = parseInt($('.entry-log').first()[0].offsetHeight / $scope.SCROLL_ELEMENT_H)
+            var tension = parseInt($('.flow .log-list .entry-log').first()[0].offsetHeight / $scope.SCROLL_ELEMENT_H)
             if (tension + $scope.caret.tension == 0) {
                 $scope.caret.tension = 0
             }
@@ -231,7 +231,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
                 $timeout(init, false);
                 //Initialization
                 function init(){
-                    var tension = $('.entry-log').first()[0].offsetHeight / $scope.SCROLL_ELEMENT_H
+                    var tension = $('.flow .log-list .entry-log').first()[0].offsetHeight / $scope.SCROLL_ELEMENT_H
                     $scope.caret.tension = tension -1
                 }
                 return;
@@ -243,7 +243,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
             var cPosition = $scope.caret.position;
             var element = 0
             while (steps > 0) {
-                var tension = parseInt($($('.entry-log')[element])[0].offsetHeight / $scope.SCROLL_ELEMENT_H)
+                var tension = parseInt($($('.flow .log-list .entry-log')[element])[0].offsetHeight / $scope.SCROLL_ELEMENT_H)
                 if (tension > cTension + 1) {
                     cTension += 1
                 } else {
