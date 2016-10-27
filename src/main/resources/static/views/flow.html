@@ -212,21 +212,6 @@
                 <a type="button" class="btn btn-sm" ng-click="selectNext(caret.position)"><i class="fa fa-arrow-down"></i></a>
             </div>
         </div>
-        <div id="flow-slider-container">
-            <slider id="flow-slider"
-                    ng-model="caret.position"
-                    ng-model-options="{ updateOn: 'default', debounce: { 'default': 100} }"
-                    value="caret.position"
-                    min="caret.min"
-                    max="items.length"
-                    step="1"
-                    range="false"
-                    reversed="false"
-                    orientation="vertical"
-                    handle="round"
-                    enabled="true">
-            </slider>
-        </div>
         <div class="debug-box" ng-if="isOptionOn('app.isDebugMode')">
             <p>DEBUG</p>
             <p>pageLogLimit: {{pageLogLimit}}</p>

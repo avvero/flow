@@ -235,48 +235,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
      * CARET
      */
     $scope.mouseWheel = function ($event, $delta, $deltaX, $deltaY) {
-        if ($delta > 0) {
-            // up
-            var tension = parseInt($('.flow .log-list .entry-log').first()[0].offsetHeight / $scope.SCROLL_ELEMENT_H)
-            if (tension + $scope.caret.tension == 0) {
-                $scope.caret.tension = 0
-            }
-            if ($scope.caret.tension > 0) {
-                $scope.caret.tension -= 1
-                return;
-            }
-            if ($scope.caret.position > 0) {
-                $scope.caret.position -= 1
-                $scope.caret.tension -= 1
 
-                $timeout(init, false);
-                //Initialization
-                function init(){
-                    var tension = $('.flow .log-list .entry-log').first()[0].offsetHeight / $scope.SCROLL_ELEMENT_H
-                    $scope.caret.tension = tension -1
-                }
-                return;
-            }
-        } else {
-            // down
-            var steps = $scope.SCROLL_SPEED;
-            var cTension = $scope.caret.tension;
-            var cPosition = $scope.caret.position;
-            var element = 0
-            while (steps > 0) {
-                var tension = parseInt($($('.flow .log-list .entry-log')[element])[0].offsetHeight / $scope.SCROLL_ELEMENT_H)
-                if (tension > cTension + 1) {
-                    cTension += 1
-                } else {
-                    cTension = 0
-                    cPosition += 1
-                    element += 1
-                }
-                -- steps
-            }
-            $scope.caret.tension = cTension
-            $scope.caret.position = cPosition
-        }
     }
     $scope.getShift = function (tension) {
         if ($scope.caret.tension >= 0) {

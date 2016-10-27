@@ -481,7 +481,7 @@
 }
 
 .with-slider {
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 #flow-slider {
