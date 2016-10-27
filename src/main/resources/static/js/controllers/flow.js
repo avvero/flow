@@ -10,7 +10,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.isSelectMode = false; //
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
     $scope.currentMarker = $stateParams.marker
-    $scope.markers = context.markers
+    $scope.waves = context.waves
     page.setTitle(context.instance.name + ' #' + $stateParams.marker)
     // События
     $scope.items = [];
@@ -144,14 +144,35 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.stompSubscription = null
     $stompie.using('/messages/flow', [
         function () {
-            $scope.stompSubscription = $stompie.subscribe($stateParams.marker, $scope.onMessageReceive)
+            var configuration = {
+                marker: $stateParams.marker
+            }
+            $scope.stompSubscription = $stompie.subscribe(JSON.stringify(configuration), $scope.onMessageReceive)
         }
     ]);
+    $scope.XXXupdate = function(){
+        var configuration = {
+            marker: $stateParams.marker,
+            levels: []
+        }
+        if ($scope.showDebug) configuration.levels.push("DEBUG")
+        if ($scope.showInfo) configuration.levels.push("INFO")
+        if ($scope.showWarn) configuration.levels.push("WARN")
+        if ($scope.showError) configuration.levels.push("ERROR")
+        if ($scope.showTrace) configuration.levels.push("TRACE")
+
+        $scope.stompClient.disconnect()
+        $stompie.using('/messages/flow', [
+            function () {
+                $scope.stompSubscription = $stompie.subscribe(JSON.stringify(configuration), $scope.onMessageReceive)
+            }
+        ]);
+    }
     /**
      * При закрытии делаем disconnect
      */
     $scope.$on('$destroy', function () {
-        //$scope.stompSubscription.unsubscribe()
+        $scope.stompSubscription.unsubscribe()
         $scope.stompClient.disconnect()
     })
     /**

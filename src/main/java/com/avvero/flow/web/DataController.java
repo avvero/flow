@@ -29,7 +29,7 @@ public class DataController {
      * MVC
      * @return
      */
-    @RequestMapping(value = "/data/markers", method = RequestMethod.GET)
+    @RequestMapping(value = "/data/waves", method = RequestMethod.GET)
     public Set getRegisteredMarkers() {
         return markerSessions.keySet();
     }
@@ -38,7 +38,7 @@ public class DataController {
     public Map getCurrentContext() {
         Map map = new HashMap<>();
         map.put("instance", instanceProperties);
-        map.put("markers", markerSessions.keySet());
+        map.put("waves", markerSessions.keySet());
         return map;
     }
 }

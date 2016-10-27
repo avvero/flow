@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.springframework.messaging.simp.SimpMessageHeaderAccessor.*;
 
@@ -39,9 +40,6 @@ import static org.springframework.messaging.simp.SimpMessageHeaderAccessor.*;
  */
 @Configuration
 public class FlowConfiguration {
-
-    public static final String MARKER_HEADER = "marker";
-    public static final String ALL_MARKER_HEADER = "*";
 
     private static final Logger log = LoggerFactory.getLogger(FlowConfiguration.class);
 
@@ -75,7 +73,7 @@ public class FlowConfiguration {
     }
 
     @Bean
-    public Map<String, List<Tuple>> markerSessions() {
+    public Map<Wave, List<Tuple>> markerSessions() {
         return Collections.synchronizedMap(new HashMap<>());
     }
 
@@ -86,13 +84,14 @@ public class FlowConfiguration {
             public void onApplicationEvent(SessionSubscribeEvent event) {
                 String simpSessionId = (String) event.getMessage().getHeaders().get(SESSION_ID_HEADER);
                 String simpSubscriptionId = (String) event.getMessage().getHeaders().get(SUBSCRIPTION_ID_HEADER);
-                String marker = (String) event.getMessage().getHeaders().get(DESTINATION_HEADER);
-                List sessions = markerSessions().get(marker);
+                String waveString = (String) event.getMessage().getHeaders().get(DESTINATION_HEADER);
+                Wave wave = Wave.from(waveString);
+                List sessions = markerSessions().get(wave);
                 if (sessions == null) {
                     sessions = Collections.synchronizedList(new ArrayList<>());
-                    markerSessions().put(marker, sessions);
+                    markerSessions().put(wave, sessions);
                 }
-                sessions.add(new Tuple(simpSessionId, simpSubscriptionId, marker));
+                sessions.add(new Tuple(simpSessionId, simpSubscriptionId));
                 log.info(String.format("Do subscribe session %s on %s", simpSessionId, simpSubscriptionId));
             }
         };
@@ -105,8 +104,9 @@ public class FlowConfiguration {
             public void onApplicationEvent(SessionUnsubscribeEvent event) {
                 String simpSessionId = (String) event.getMessage().getHeaders().get(SESSION_ID_HEADER);
                 String simpSubscriptionId = (String) event.getMessage().getHeaders().get(SUBSCRIPTION_ID_HEADER);
-                String marker = (String) event.getMessage().getHeaders().get(DESTINATION_HEADER);
-                markerSessions().get(marker).remove(new Tuple(simpSessionId, simpSubscriptionId, marker));
+                String waveString = (String) event.getMessage().getHeaders().get(DESTINATION_HEADER);
+                Wave wave = Wave.from(waveString);
+                markerSessions().get(wave).remove(new Tuple(simpSessionId, simpSubscriptionId, wave));
                 log.info(String.format("Do unsubscribe session %s on %s", simpSessionId, simpSubscriptionId));
             }
         };
@@ -118,6 +118,7 @@ public class FlowConfiguration {
             @Override
             public void onApplicationEvent(SessionDisconnectEvent event) {
                 String simpSessionId = (String) event.getMessage().getHeaders().get(SESSION_ID_HEADER);
+                log.info(String.format("Try to disconnect session %s", simpSessionId));
                 for (List<Tuple> list : markerSessions().values()) {
                     Iterator<Tuple> iterator = list.iterator();
                     while (iterator.hasNext()) {
@@ -146,10 +147,7 @@ public class FlowConfiguration {
     public IntegrationFlow webSocketFlow() {
         return f -> {
             Function<Message, Object> splitter = m ->
-                    markerSessions()
-                            .get(m.getHeaders().get(MARKER_HEADER))
-                            .stream()
-                            .filter(tuple -> serverWebSocketContainer().getSessions().containsKey(tuple.get(0)))
+                    subscriptions(markerSessions().entrySet().stream(), (LoggingEventVO) m.getPayload())
                             .map(s -> MessageBuilder.fromMessage(m)
                                     .copyHeaders(m.getHeaders())
                                     .setHeader(SESSION_ID_HEADER, s.get(0))
@@ -161,6 +159,23 @@ public class FlowConfiguration {
                     .handle(webSocketOutboundMessageHandler());
         };
     }
+
+    public Stream<Tuple> subscriptions(Stream<Map.Entry<Wave, List<Tuple>>> sessions, LoggingEventVO event) {
+        return sessions
+                .filter(entry -> isIt(entry.getKey(), event))
+                .flatMap(entry -> entry.getValue().stream());
+    }
+
+    public boolean isIt(Wave wave, LoggingEventVO eventVO) {
+        if (!wave.getMarker().equals(eventVO.getMarker().getName())) {
+            return false;
+        }
+        if (wave.getLevels() != null && !wave.getLevels().contains(eventVO.getLevel().toString())) {
+            return false;
+        }
+        return true;
+    }
+
 //
     /**
      * TCP
@@ -196,17 +211,8 @@ public class FlowConfiguration {
 
     @ServiceActivator(inputChannel = "tcpChannel")
     public void sendLog(LoggingEventVO event) throws IOException, ClassNotFoundException {
-        String marker = event.getMarker() != null ? event.getMarker().getName() : ALL_MARKER_HEADER;
-        //TODO ??????????
-        Map<String, List<Tuple>> map = markerSessions();
-        synchronized (map) {
-            if (!map.containsKey(marker)) {
-                map.put(marker, Collections.synchronizedList(new ArrayList<>()));
-            }
-        }
         sendMessage().send(MessageBuilder
                 .withPayload(event)
-                .setHeader(MARKER_HEADER, marker)
                 .build());
     }
 }

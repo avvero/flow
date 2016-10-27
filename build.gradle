@@ -36,6 +36,7 @@ dependencies {
     compile("org.springframework.integration:spring-integration-websocket")
     compile('org.springframework.integration:spring-integration-java-dsl:1.1.0.RELEASE')
     compile("org.springframework:spring-messaging")
+    compile("com.google.code.gson:gson:2.7")
     runtime("org.springframework.boot:spring-boot-starter-tomcat")
 }
 
