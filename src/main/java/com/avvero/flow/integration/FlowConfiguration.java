@@ -25,6 +25,7 @@ import org.springframework.integration.websocket.outbound.WebSocketOutboundMessa
 import org.springframework.integration.websocket.support.SubProtocolHandlerRegistry;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.messaging.*;
 
 import java.io.IOException;
@@ -147,7 +148,7 @@ public class FlowConfiguration {
     public IntegrationFlow webSocketFlow() {
         return f -> {
             Function<Message, Object> splitter = m ->
-                    subscriptions(markerSessions().entrySet().stream(), (LoggingEventVO) m.getPayload())
+                    subscriptions(markerSessions().entrySet().stream(), (LogEntry) m.getPayload())
                             .map(s -> MessageBuilder.fromMessage(m)
                                     .copyHeaders(m.getHeaders())
                                     .setHeader(SESSION_ID_HEADER, s.get(0))
@@ -160,17 +161,19 @@ public class FlowConfiguration {
         };
     }
 
-    public Stream<Tuple> subscriptions(Stream<Map.Entry<Wave, List<Tuple>>> sessions, LoggingEventVO event) {
+    public Stream<Tuple> subscriptions(Stream<Map.Entry<Wave, List<Tuple>>> sessions, LogEntry event) {
         return sessions
                 .filter(entry -> isIt(entry.getKey(), event))
                 .flatMap(entry -> entry.getValue().stream());
     }
 
-    public boolean isIt(Wave wave, LoggingEventVO eventVO) {
-        if (!wave.getMarker().equals(eventVO.getMarker().getName())) {
+    public boolean isIt(Wave wave, LogEntry logEntry) {
+        if (logEntry.getEvent().getMarker() == null) return false;
+
+        if (!wave.getMarker().equals(logEntry.getEvent().getMarker().getName())) {
             return false;
         }
-        if (wave.getLevels() != null && !wave.getLevels().contains(eventVO.getLevel().toString())) {
+        if (wave.getLevels() != null && !wave.getLevels().contains(logEntry.getEvent().getLevel().toString())) {
             return false;
         }
         return true;
@@ -212,7 +215,7 @@ public class FlowConfiguration {
     @ServiceActivator(inputChannel = "tcpChannel")
     public void sendLog(LoggingEventVO event) throws IOException, ClassNotFoundException {
         sendMessage().send(MessageBuilder
-                .withPayload(event)
+                .withPayload(new LogEntry(event))
                 .build());
     }
 }

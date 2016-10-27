@@ -190,11 +190,11 @@
             <div class="flow with-slider {{showSettings ? 'with-settings' : ''}}" class="flow" msd-wheel="mouseWheel($event, $delta, $deltaX, $deltaY)">
                 <div class="log-list">
                     <div ng-repeat="log in items | reverse"
-                         class="entry-log level-{{log.level.levelStr}} {{isSelectMode ? 'pointer' : ''}} {{log.selected ? 'selected' : ''}} {{log.blink? 'fade_in' : '' }}"
+                         class="entry-log level-{{log.event.level.levelStr}} {{isSelectMode ? 'pointer' : ''}} {{log.selected ? 'selected' : ''}} {{log.blink? 'fade_in' : '' }}"
                          ng-click="isSelectMode ? setSelected(log, 'selected') : nullFunction()"
                          tension="{{tension}}"  style="{{$first? getShift(tension) : ''}}">
                         <!--use logback template-->
-                        <div logback id="logEntry_{{log.idx}}"></div>
+                        <div logback id="logEntry_{{log.nanoTime}}"></div>
                     </div>
                 </div>
             </div>
