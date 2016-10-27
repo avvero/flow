@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE")
     }
 }
 
@@ -36,18 +36,11 @@ dependencies {
     compile("org.springframework.integration:spring-integration-websocket")
     compile('org.springframework.integration:spring-integration-java-dsl:1.1.0.RELEASE')
     compile("org.springframework:spring-messaging")
+    compile("org.springframework.boot:spring-boot-starter-data-mongodb")
     compile("com.google.code.gson:gson:2.7")
     runtime("org.springframework.boot:spring-boot-starter-tomcat")
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
-}
-
-applicationDistribution.from("src/main/resources/application.yml") {
-    into "bin"
-}
-
-task stage {
-    dependsOn build
 }

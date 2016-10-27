@@ -1,15 +1,15 @@
-package com.avvero.flow.integration;
+package com.avvero.flow.domain;
 
 import ch.qos.logback.classic.spi.LoggingEventVO;
-
-import java.time.Instant;
+import org.springframework.data.annotation.Id;
 
 /**
  * @author Avvero
  */
 public class LogEntry {
 
-    private long nanoTime;
+    @Id
+    private Long nanoTime;
     private LoggingEventVO event;
 
     public LogEntry() {
@@ -21,11 +21,11 @@ public class LogEntry {
         this.event = event;
     }
 
-    public long getNanoTime() {
+    public Long getNanoTime() {
         return nanoTime;
     }
 
-    public void setNanoTime(long nanoTime) {
+    public void setNanoTime(Long nanoTime) {
         this.nanoTime = nanoTime;
     }
 

@@ -3,6 +3,7 @@ package com.avvero.flow.integration;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 import com.avvero.flow.config.InstanceProperties;
 import com.avvero.flow.config.TcpNetServerProperties;
+import com.avvero.flow.domain.LogEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,6 @@ import org.springframework.integration.websocket.outbound.WebSocketOutboundMessa
 import org.springframework.integration.websocket.support.SubProtocolHandlerRegistry;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.messaging.*;
 
 import java.io.IOException;
