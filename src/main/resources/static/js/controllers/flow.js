@@ -104,7 +104,13 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         $scope.items.splice(index, 1);
     }
     $scope.addToQueue = function (logEntry) {
-        $scope.queue.push(logEntry)
+        if (Array.isArray(logEntry)) {
+            for (var i = 0; i < logEntry.length; i++) {
+                $scope.queue.push(logEntry[i])
+            }
+        } else {
+            $scope.queue.push(logEntry)
+        }
     }
     $scope.removeFromQueue = function (applyScope) {
         $timeout(function () {

@@ -3,7 +3,10 @@ package com.avvero.flow.integration;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 import com.avvero.flow.config.InstanceProperties;
 import com.avvero.flow.config.TcpNetServerProperties;
+import com.avvero.flow.dao.mongo.LogEntryRepository;
 import com.avvero.flow.domain.LogEntry;
+import com.google.gson.Gson;
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +14,11 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.serializer.DefaultDeserializer;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.channel.NullChannel;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.support.Function;
 import org.springframework.integration.dsl.support.tuple.Tuple;
@@ -32,7 +37,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.springframework.messaging.simp.SimpMessageHeaderAccessor.*;
 
@@ -43,6 +47,9 @@ import static org.springframework.messaging.simp.SimpMessageHeaderAccessor.*;
 public class FlowConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(FlowConfiguration.class);
+
+    @Autowired
+    LogEntryRepository logEntryRepository;
 
     @Bean
     public ServerWebSocketContainer serverWebSocketContainer() {
@@ -94,6 +101,9 @@ public class FlowConfiguration {
                 }
                 sessions.add(new Tuple(simpSessionId, simpSubscriptionId));
                 log.info(String.format("Do subscribe session %s on %s", simpSessionId, simpSubscriptionId));
+                findLogEntry().send(MessageBuilder
+                        .withPayload(wave)
+                        .build());
             }
         };
     }
@@ -134,9 +144,12 @@ public class FlowConfiguration {
         };
     }
 
+    @Autowired
+    TaskExecutor taskExecutor;
+
     @Bean(name = "webSocketFlow.input")
     public MessageChannel sendMessage() {
-        return new DirectChannel();
+        return new PublishSubscribeChannel(taskExecutor); //async
     }
 
     @Bean
@@ -145,26 +158,70 @@ public class FlowConfiguration {
     }
 
     @Bean
+    public MessageChannel logEntryChannel() {
+        return new DirectChannel();
+    }
+
+    @ServiceActivator(inputChannel = "logEntryChannel")
+    public void logEntryChannelActivator(LogEntry entry) throws IOException, ClassNotFoundException {
+        List<Tuple> subscriptions = getSubscriptions(markerSessions(), entry);
+        sendMessage().send(MessageBuilder
+                .withPayload(entry)
+                .setHeader("subscriptions", subscriptions)
+                .build());
+        saveLogEntry().send(MessageBuilder
+                .withPayload(entry)
+                .build());
+    }
+
+    @Bean
+    public MessageChannel saveLogEntry() {
+        return new PublishSubscribeChannel(taskExecutor); //async
+    }
+
+    @ServiceActivator(inputChannel = "saveLogEntry")
+    public void saveLogEntryActivator(LogEntry entry) throws IOException, ClassNotFoundException {
+        logEntryRepository.save(entry.getEvent().getMarker().getName(), entry);
+    }
+
+    @Bean
+    public MessageChannel findLogEntry() {
+        return new PublishSubscribeChannel(taskExecutor); //async
+    }
+
+    @ServiceActivator(inputChannel = "findLogEntry")
+    public void findLogEntryActivator(Wave wave) throws IOException, ClassNotFoundException {
+        List<String> entries = logEntryRepository.find(wave.getMarker());
+        List list = entries.stream().map(s -> new Gson().toJsonTree(s)).collect(Collectors.toList());
+        List<Tuple> subscriptions = markerSessions().get(wave);
+        sendMessage().send(MessageBuilder
+                .withPayload(entries)
+                .setHeader("subscriptions", subscriptions)
+                .build());
+    }
+
+    @Bean
     public IntegrationFlow webSocketFlow() {
         return f -> {
             Function<Message, Object> splitter = m ->
-                    subscriptions(markerSessions().entrySet().stream(), (LogEntry) m.getPayload())
-                            .map(s -> MessageBuilder.fromMessage(m)
-                                    .copyHeaders(m.getHeaders())
-                                    .setHeader(SESSION_ID_HEADER, s.get(0))
-                                    .setHeader(SUBSCRIPTION_ID_HEADER, s.get(1))
-                                    .build())
-                            .collect(Collectors.toList());
+                    ((List<Tuple>) m.getHeaders().get("subscriptions")).stream()
+                    .map(s -> MessageBuilder.fromMessage(m)
+                            .copyHeaders(m.getHeaders())
+                            .setHeader(SESSION_ID_HEADER, s.get(0))
+                            .setHeader(SUBSCRIPTION_ID_HEADER, s.get(1))
+                            .build())
+                    .collect(Collectors.toList());
             f.split(Message.class, splitter)
                     .channel(c -> c.executor(Executors.newCachedThreadPool()))
                     .handle(webSocketOutboundMessageHandler());
         };
     }
 
-    public Stream<Tuple> subscriptions(Stream<Map.Entry<Wave, List<Tuple>>> sessions, LogEntry event) {
-        return sessions
+    public List<Tuple> getSubscriptions(Map<Wave, List<Tuple>> sessions, LogEntry event) {
+        return sessions.entrySet().stream()
                 .filter(entry -> isIt(entry.getKey(), event))
-                .flatMap(entry -> entry.getValue().stream());
+                .flatMap(entry -> entry.getValue().stream())
+                .collect(Collectors.toList());
     }
 
     public boolean isIt(Wave wave, LogEntry logEntry) {
@@ -214,7 +271,7 @@ public class FlowConfiguration {
 
     @ServiceActivator(inputChannel = "tcpChannel")
     public void sendLog(LoggingEventVO event) throws IOException, ClassNotFoundException {
-        sendMessage().send(MessageBuilder
+        logEntryChannel().send(MessageBuilder
                 .withPayload(new LogEntry(event))
                 .build());
     }

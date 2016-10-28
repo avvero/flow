@@ -44,3 +44,7 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.3'
 }
+
+bootRun {
+    addResources = true
+}
