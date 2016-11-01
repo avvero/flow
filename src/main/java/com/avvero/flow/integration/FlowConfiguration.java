@@ -5,6 +5,7 @@ import com.avvero.flow.config.InstanceProperties;
 import com.avvero.flow.config.TcpNetServerProperties;
 import com.avvero.flow.dao.mongo.LogEntryRepository;
 import com.avvero.flow.domain.LogEntry;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.bson.Document;
 import org.slf4j.Logger;
@@ -191,8 +192,7 @@ public class FlowConfiguration {
 
     @ServiceActivator(inputChannel = "findLogEntry")
     public void findLogEntryActivator(Wave wave) throws IOException, ClassNotFoundException {
-        List<String> entries = logEntryRepository.find(wave.getMarker());
-        List list = entries.stream().map(s -> new Gson().toJsonTree(s)).collect(Collectors.toList());
+        List<String> entries = logEntryRepository.find(wave);
         List<Tuple> subscriptions = markerSessions().get(wave);
         sendMessage().send(MessageBuilder
                 .withPayload(entries)

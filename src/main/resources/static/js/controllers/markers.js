@@ -1,9 +1,9 @@
-function wavesController($scope, page, context, $stateParams) {
-    $scope.waves = context.waves
+function markerController($scope, page, context, $stateParams) {
+    $scope.markers = context.markers
     page.setTitle(context.instance.name)
 }
 
-wavesController.resolve = {
+markerController.resolve = {
     context: function ($q, $http, $stateParams) {
         var deferred = $q.defer();
 

@@ -10,7 +10,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.isSelectMode = false; //
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
     $scope.currentMarker = $stateParams.marker
-    $scope.waves = context.waves
+    $scope.markers = context.markers
     page.setTitle(context.instance.name + ' #' + $stateParams.marker)
     // События
     $scope.items = [];
@@ -106,7 +106,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.addToQueue = function (logEntry) {
         if (Array.isArray(logEntry)) {
             for (var i = 0; i < logEntry.length; i++) {
-                $scope.queue.push(logEntry[i])
+                var entry = JSON.parse(logEntry[i])
+                $scope.items.push(entry)
             }
         } else {
             $scope.queue.push(logEntry)
@@ -170,6 +171,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
         $scope.stompClient.disconnect()
         $stompie.using('/messages/flow', [
             function () {
+                $scope.clear()
                 $scope.stompSubscription = $stompie.subscribe(JSON.stringify(configuration), $scope.onMessageReceive)
             }
         ]);

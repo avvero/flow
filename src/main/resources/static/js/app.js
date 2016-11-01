@@ -23,9 +23,9 @@ angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRout
             url: "/",
             views: {
                 "single": {
-                    templateUrl: 'views/waves.html',
-                    controller: wavesController,
-                    resolve: wavesController.resolve
+                    templateUrl: 'views/markers.html',
+                    controller: markerController,
+                    resolve: markerController.resolve
                 }
             }
         })

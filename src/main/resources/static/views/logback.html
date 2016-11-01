@@ -11,19 +11,19 @@
         {{log.event.threadName}}&nbsp;</span>
     <span message="log.event.formattedMessage"/>
 </span>
-<div message-multiline="log.event.formattedMessage"/>
+<!--<div message-multiline="log.event.formattedMessage"/>-->
 
-<div class="log-msg-error" ng-if="log.event.throwableProxy">
-    {{log.event.throwableProxy.className}}: {{log.event.throwableProxy.message}}
-</div>
-<div class="log-msg-error-stack callout callout-danger" ng-if="log.event.level.levelStr == 'ERROR'">
-    <div ng-repeat="part in log.event.throwableProxy.stackTraceElementProxyArray | limitTo:7">
-        {{part.steasString}}
-    </div>
-    <div ng-if="log.event.throwableProxy.stackTraceElementProxyArray.length > 7">
-        ...
-    </div>
-</div>
-<div ng-if="log.event.throwableProxy.cause">
-    <div cause="log.event.throwableProxy.cause"/>
-</div>
+<!--<div class="log-msg-error" ng-if="log.event.throwableProxy">-->
+    <!--{{log.event.throwableProxy.className}}: {{log.event.throwableProxy.message}}-->
+<!--</div>-->
+<!--<div class="log-msg-error-stack callout callout-danger" ng-if="log.event.level.levelStr == 'ERROR'">-->
+    <!--<div ng-repeat="part in log.event.throwableProxy.stackTraceElementProxyArray | limitTo:7">-->
+        <!--{{part.steasString}}-->
+    <!--</div>-->
+    <!--<div ng-if="log.event.throwableProxy.stackTraceElementProxyArray.length > 7">-->
+        <!--...-->
+    <!--</div>-->
+<!--</div>-->
+<!--<div ng-if="log.event.throwableProxy.cause">-->
+    <!--<div cause="log.event.throwableProxy.cause"/>-->
+<!--</div>-->
