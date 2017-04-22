@@ -1,4 +1,4 @@
-function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context, hotkeys) {
+function flowController($scope, $stompie, $timeout, $stateParams, localStorageService, $uibModal, page, context, hotkeys, $websocket) {
     $scope.VISIBLE_LOGS_QUANTITY = 100  // количество элементов на странице
     $scope.REMOVE_FROM_QUEUE_INTERVAL = 100
     $scope.BLINK_DELAY = 1500
@@ -140,13 +140,32 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     /***
      * STOMP
      */
-    $scope.stompClient = $stompie
-    $scope.stompSubscription = null
-    $stompie.using('/messages/flow', [
-        function () {
-            $scope.stompSubscription = $stompie.subscribe($stateParams.marker, $scope.onMessageReceive)
+    // $scope.stompClient = $stompie
+    // $scope.stompSubscription = null
+    // $stompie.using('/messages/flow', [
+    //     function () {
+    //         $scope.stompSubscription = $stompie.subscribe($stateParams.marker, $scope.onMessageReceive)
+    //     }
+    // ]);
+    prepare('ws://localhost:8082/messages');
+    function prepare(url) {
+        var dataStream = $websocket(url);
+        dataStream.onMessage(function(message) {
+            console.info(message)
+        });
+        dataStream.onClose(function(message) {
+            console.info("CLOSED")
+            dataStream = prepare(url)
+        });
+        function send() {
+            $timeout(function () {
+                dataStream.send("Hi")
+                //send()
+            }, 2000);
         }
-    ]);
+        send()
+        return dataStream;
+    }
     /**
      * При закрытии делаем disconnect
      */
