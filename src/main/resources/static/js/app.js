@@ -8,7 +8,8 @@ angular.module("flow", [
     'LocalStorageModule',
     'chart.js',
     'monospaced.mousewheel',
-    'cfp.hotkeys'
+    'cfp.hotkeys',
+    'ngWebSocket',
 ])
 angular.module("flow").constant('constants', {
     version: "1.0.2"
