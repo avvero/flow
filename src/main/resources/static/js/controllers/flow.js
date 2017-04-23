@@ -148,10 +148,11 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     //     }
     // ]);
     prepare('ws://localhost:8082/messages');
+    var i = 0;
     function prepare(url) {
         var dataStream = $websocket(url);
         dataStream.onMessage(function(message) {
-            console.info(message)
+            console.info(++i + " "+ message)
         });
         dataStream.onClose(function(message) {
             console.info("CLOSED")
