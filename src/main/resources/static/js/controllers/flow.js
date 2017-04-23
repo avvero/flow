@@ -152,7 +152,7 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     function prepare(url) {
         var dataStream = $websocket(url);
         dataStream.onMessage(function(message) {
-            console.info(++i + " "+ message)
+            // console.info(++i + " "+ message)
         });
         dataStream.onClose(function(message) {
             console.info("CLOSED")

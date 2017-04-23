@@ -10,6 +10,11 @@ import (
 	"net/http"
 	"time"
 	"github.com/gorilla/websocket"
+	"net"
+	"os"
+	"fmt"
+	"io/ioutil"
+	"bufio"
 )
 
 const (
@@ -24,6 +29,10 @@ const (
 
 	// Maximum message size allowed from peer.
 	//maxMessageSize = 512
+
+	CONN_HOST = "localhost"
+	CONN_PORT = "4561"
+	CONN_TYPE = "tcp"
 )
 
 var (
@@ -36,6 +45,10 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
+type Listener interface {
+	readPump()
+}
+
 // Client is a middleman between the websocket connection and the hub.
 type Client struct {
 	hub *Hub
@@ -45,6 +58,33 @@ type Client struct {
 
 	// Buffered channel of outbound messages.
 	send chan []byte
+}
+
+type TCPListener struct {
+	hub *Hub
+}
+
+func (c *TCPListener) readPump() {
+	ln, err := net.Listen(CONN_TYPE, CONN_HOST+":"+CONN_PORT)
+	if err != nil {
+		log.Printf("error: %v", err)
+		os.Exit(1)
+	}
+	defer ln.Close()
+	fmt.Println("Listening on " + CONN_HOST + ":" + CONN_PORT)
+	for {
+		conn, err := ln.Accept()
+		if err != nil {
+			log.Printf("error: %v", err)
+			os.Exit(1)
+		}
+		go func() {
+			message, _ := ioutil.ReadAll(bufio.NewReader(conn))
+			log.Printf("tcp: %v",  string(message))
+			c.hub.broadcast <- message
+			conn.Close()
+		}()
+	}
 }
 
 // readPump pumps messages from the websocket connection to the hub.
@@ -88,6 +128,7 @@ func (c *Client) writePump() {
 	for {
 		select {
 		case message, ok := <-c.send:
+			log.Printf("%s, ok: %s, message: %v", &c, ok, message)
 			log.Printf("%s, ok: %s, message: %v", &c, ok, string(message))
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
@@ -128,7 +169,7 @@ func serveWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		return
 	}
-	client := &Client{hub: hub, conn: conn, send: make(chan []byte, 256)}
+	client := &Client{hub: hub, conn: conn, send: make(chan []byte)}
 	client.hub.register <- client
 	go client.writePump()
 	client.readPump()

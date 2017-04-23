@@ -4,6 +4,8 @@
 
 package main
 
+import "log"
+
 // Hub maintains the set of active clients and broadcasts messages to the
 // clients.
 type Hub struct {
@@ -40,10 +42,12 @@ func (h *Hub) run() {
 				close(client.send)
 			}
 		case message := <-h.broadcast:
+			log.Printf("broadcasting: %v for clients %d",  string(message), len(h.clients))
 			for client := range h.clients {
 				select {
 				case client.send <- message:
 				default:
+					log.Printf("close client on : %v",  string(message))
 					close(client.send)
 					delete(h.clients, client)
 				}
