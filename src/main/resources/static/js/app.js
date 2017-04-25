@@ -9,7 +9,7 @@ angular.module("flow", [
     'chart.js',
     'monospaced.mousewheel',
     'cfp.hotkeys',
-    'ngWebSocket',
+    'bd.sockjs'
 ])
 angular.module("flow").constant('constants', {
     version: "1.0.2"
@@ -45,24 +45,24 @@ angular.module("flow").config(function ($routeProvider, $stateProvider, $urlRout
         .setStorageType('localStorage')
 })
 angular.module("flow").run(function ($rootScope) {
-    String.prototype.replaceAll = function( token, newToken, ignoreCase ) {
+    String.prototype.replaceAll = function (token, newToken, ignoreCase) {
         var _token;
         var str = this + "";
         var i = -1;
-        if ( typeof token === "string" ) {
-            if ( ignoreCase ) {
+        if (typeof token === "string") {
+            if (ignoreCase) {
                 _token = token.toLowerCase();
-                while( (
+                while ((
                     i = str.toLowerCase().indexOf(
                         token, i >= 0 ? i + newToken.length : 0
                     ) ) !== -1
                     ) {
-                    str = str.substring( 0, i ) +
+                    str = str.substring(0, i) +
                         newToken +
-                        str.substring( i + token.length );
+                        str.substring(i + token.length);
                 }
             } else {
-                return this.split( token ).join( newToken );
+                return this.split(token).join(newToken);
             }
         }
         return str;
@@ -71,4 +71,10 @@ angular.module("flow").run(function ($rootScope) {
 
 angular.module("flow").controller('mainController', function ($scope, page) {
     $scope.page = page
+})
+
+angular.module("flow").factory('thisSocket', function (socketFactory) {
+    return socketFactory({
+        url: '/echo'
+    });
 })
