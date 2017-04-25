@@ -6,6 +6,9 @@ import (
 	"strconv"
 	"gopkg.in/igm/sockjs-go.v2/sockjs"
 	"log"
+	"strings"
+	"github.com/go-stomp/stomp/frame"
+	"bytes"
 )
 
 func main() {
@@ -22,7 +25,17 @@ func echoHandler(session sockjs.Session) {
 	for {
 		if msg, err := session.Recv(); err == nil {
 			log.Printf("msg: %v",  msg)
-			session.Send(msg)
+			fr, err := frame.NewReader(strings.NewReader(msg)).Read()
+			if err != nil {
+				log.Printf("frame error: %v",  err)
+				continue
+			}
+			log.Printf("recived command: %s",  fr.Command)
+
+			respFrame := frame.New(frame.CONNECTED, "session", "1092296064")
+			buf := bytes.NewBufferString("")
+			frame.NewWriter(buf).Write(respFrame)
+			session.Send(buf.String())
 			continue
 		}
 		break
