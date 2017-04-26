@@ -4,53 +4,56 @@
 
 package main
 
-import "log"
+import (
+	"log"
+	"github.com/go-stomp/stomp/server/client"
+)
 
 // Hub maintains the set of active clients and broadcasts messages to the
 // clients.
 type Hub struct {
 	// Registered clients.
-	clients map[*Client]bool
+	subscriptions map[*Subscription]bool
 
 	// Inbound messages from the clients.
 	broadcast chan []byte
 
 	// Register requests from the clients.
-	register chan *Client
+	register chan *Subscription
 
 	// Unregister requests from clients.
-	unregister chan *Client
+	unregister chan *Subscription
 }
 
 func newHub() *Hub {
 	return &Hub{
-		broadcast:  make(chan []byte),
-		register:   make(chan *Client),
-		unregister: make(chan *Client),
-		clients:    make(map[*Client]bool),
+		broadcast:     make(chan []byte),
+		register:      make(chan *Subscription),
+		unregister:    make(chan *Subscription),
+		subscriptions: make(map[*Subscription]bool),
 	}
 }
 
 func (h *Hub) run() {
 	for {
 		select {
-		case client := <-h.register:
-			h.clients[client] = true
-		case client := <-h.unregister:
-			if _, ok := h.clients[client]; ok {
-				log.Printf("unregister client on : %v",  client)
-				delete(h.clients, client)
-				close(client.send)
+		case subscription := <-h.register:
+			h.subscriptions[subscription] = true
+		case subscription := <-h.unregister:
+			if _, ok := h.subscriptions[subscription]; ok {
+				log.Printf("unsubscribe client on : %v", subscription)
+				delete(h.subscriptions, subscription)
+				close(subscription.send)
 			}
 		case message := <-h.broadcast:
-			log.Printf("broadcasting: %v for clients %d",  string(message), len(h.clients))
-			for client := range h.clients {
+			log.Printf("broadcasting: %v for clients %d", string(message), len(h.subscriptions))
+			for subscription := range h.subscriptions {
 				select {
-				case client.send <- message:
+				case subscription.send <- message:
 				default:
-					log.Printf("close client on : %v",  string(message))
-					close(client.send)
-					delete(h.clients, client)
+					log.Printf("close client on : %v", string(message))
+					close(subscription.send)
+					delete(h.subscriptions, subscription)
 				}
 			}
 		}
