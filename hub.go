@@ -7,7 +7,6 @@ package main
 import (
 	"log"
 	"sync"
-	"gopkg.in/igm/sockjs-go.v2/sockjs"
 	"github.com/go-stomp/stomp/frame"
 )
 
@@ -41,16 +40,17 @@ func (h *Hub) subscribe(subscription *Subscription) {
 	h.subscriptionsMutex.Lock()
 	defer h.subscriptionsMutex.Unlock()
 
-	log.Printf("unsubscribe client to : %v", subscription)
+	log.Printf("subscribe client to : %v", subscription)
 
 	subscriptions, ok := h.subscriptions[subscription.destination]
 	if ok == false {
 		subscriptions = make(map[string]*Subscription)
 		h.subscriptions[subscription.destination] = subscriptions
 	}
-	var session sockjs.Session = subscription.session
-	if _, ok = subscriptions[session.ID()]; ok == false {
-		subscriptions[session.ID()] = subscription
+	id := (*subscription.session).ID()
+	if _, ok = subscriptions[id]; ok == false {
+		subscriptions[id] = subscription
+		go subscription.doSend()
 	}
 }
 
@@ -61,9 +61,9 @@ func (h *Hub) unsubscribe(subscription *Subscription) {
 	log.Printf("unsubscribe client on : %v", subscription)
 
 	if subscriptions, ok := h.subscriptions[subscription.destination]; ok == true {
-		var session sockjs.Session = subscription.session
-		if _, ok = subscriptions[session.ID()]; ok == true {
-			delete(subscriptions, session.ID())
+		id := (*subscription.session).ID()
+		if _, ok = subscriptions[id]; ok == true {
+			delete(subscriptions, id)
 			close(subscription.send)
 		}
 	}
