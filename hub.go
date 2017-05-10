@@ -6,17 +6,20 @@ package main
 
 import (
 	"log"
-	"github.com/go-stomp/stomp/server/client"
+	"sync"
+	"gopkg.in/igm/sockjs-go.v2/sockjs"
+	"github.com/go-stomp/stomp/frame"
 )
 
 // Hub maintains the set of active clients and broadcasts messages to the
 // clients.
 type Hub struct {
 	// Registered clients.
-	subscriptions map[*Subscription]bool
+	subscriptions      map[string]map[string]*Subscription
+	subscriptionsMutex sync.Mutex
 
 	// Inbound messages from the clients.
-	broadcast chan []byte
+	broadcast chan *frame.Frame
 
 	// Register requests from the clients.
 	register chan *Subscription
@@ -27,10 +30,42 @@ type Hub struct {
 
 func newHub() *Hub {
 	return &Hub{
-		broadcast:     make(chan []byte),
+		broadcast:     make(chan *frame.Frame),
 		register:      make(chan *Subscription),
 		unregister:    make(chan *Subscription),
-		subscriptions: make(map[*Subscription]bool),
+		subscriptions: make(map[string]map[string]*Subscription),
+	}
+}
+
+func (h *Hub) subscribe(subscription *Subscription) {
+	h.subscriptionsMutex.Lock()
+	defer h.subscriptionsMutex.Unlock()
+
+	log.Printf("unsubscribe client to : %v", subscription)
+
+	subscriptions, ok := h.subscriptions[subscription.destination]
+	if ok == false {
+		subscriptions = make(map[string]*Subscription)
+		h.subscriptions[subscription.destination] = subscriptions
+	}
+	var session sockjs.Session = subscription.session
+	if _, ok = subscriptions[session.ID()]; ok == false {
+		subscriptions[session.ID()] = subscription
+	}
+}
+
+func (h *Hub) unsubscribe(subscription *Subscription) {
+	h.subscriptionsMutex.Lock()
+	defer h.subscriptionsMutex.Unlock()
+
+	log.Printf("unsubscribe client on : %v", subscription)
+
+	if subscriptions, ok := h.subscriptions[subscription.destination]; ok == true {
+		var session sockjs.Session = subscription.session
+		if _, ok = subscriptions[session.ID()]; ok == true {
+			delete(subscriptions, session.ID())
+			close(subscription.send)
+		}
 	}
 }
 
@@ -38,23 +73,14 @@ func (h *Hub) run() {
 	for {
 		select {
 		case subscription := <-h.register:
-			h.subscriptions[subscription] = true
+			h.subscribe(subscription)
 		case subscription := <-h.unregister:
-			if _, ok := h.subscriptions[subscription]; ok {
-				log.Printf("unsubscribe client on : %v", subscription)
-				delete(h.subscriptions, subscription)
-				close(subscription.send)
-			}
-		case message := <-h.broadcast:
-			log.Printf("broadcasting: %v for clients %d", string(message), len(h.subscriptions))
-			for subscription := range h.subscriptions {
-				select {
-				case subscription.send <- message:
-				default:
-					log.Printf("close client on : %v", string(message))
-					close(subscription.send)
-					delete(h.subscriptions, subscription)
-				}
+			h.unsubscribe(subscription)
+		case frame := <-h.broadcast:
+			destination := frame.Header.Get("destination")
+			log.Printf("broadcasting on %s the %s for clients %d", destination, frame, len(h.subscriptions))
+			for _, v := range h.subscriptions[destination] {
+				v.send <- frame
 			}
 		}
 	}

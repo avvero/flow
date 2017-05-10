@@ -8,7 +8,6 @@ import (
 	"strings"
 	"github.com/go-stomp/stomp/frame"
 	"bytes"
-	"github.com/go-stomp/stomp/server/client"
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
@@ -42,7 +41,7 @@ func main() {
 					session.Send(buf.String())
 				case frame.SUBSCRIBE:
 					log.Printf("subscribe on: %s", fr.Header.Get("destination"))
-					subscription := &Subscription{destination: fr.Header.Get("destination"), hub: hub, session: &session, send: make(chan []byte)}
+					subscription := &Subscription{destination: fr.Header.Get("destination"), hub: hub, session: &session, send: make(chan *frame.Frame)}
 					subscription.hub.register <- subscription
 				case frame.DISCONNECT:
 					//TODO
