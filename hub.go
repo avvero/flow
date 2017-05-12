@@ -7,6 +7,7 @@ package main
 import (
 	"log"
 	"sync"
+
 	"github.com/go-stomp/stomp/frame"
 )
 
@@ -78,7 +79,7 @@ func (h *Hub) run() {
 			h.unsubscribe(subscription)
 		case frame := <-h.broadcast:
 			destination := frame.Header.Get("destination")
-			log.Printf("broadcasting on %s the %s for clients %d", destination, frame, len(h.subscriptions))
+			//log.Printf("broadcasting on %s the %s for clients %d", destination, frame, len(h.subscriptions))
 			for _, v := range h.subscriptions[destination] {
 				v.send <- frame
 			}
