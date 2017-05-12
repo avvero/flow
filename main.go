@@ -54,7 +54,7 @@ func main() {
 			}
 			break
 		}
-		log.Println("sockjs session closed")
+		log.Println("Sockjs session closed")
 	}))
 	log.Println("Server started on port: " + *addr)
 	http.ListenAndServe(*addr, nil)
