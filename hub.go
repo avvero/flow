@@ -7,8 +7,7 @@ package main
 import (
 	"log"
 	"sync"
-
-	"github.com/go-stomp/stomp/frame"
+	"github.com/avvero/stomp/frame"
 )
 
 // Hub maintains the set of active clients and broadcasts messages to the

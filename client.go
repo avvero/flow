@@ -9,8 +9,7 @@ import (
 	"net"
 	"os"
 	"fmt"
-	"bufio"
-	"github.com/go-stomp/stomp/frame"
+	"github.com/avvero/stomp/frame"
 )
 
 const (
@@ -31,6 +30,7 @@ func (c *TCPListener) readPump() {
 	}
 	defer ln.Close()
 	fmt.Println("Listening on " + CONN_HOST + ":" + CONN_PORT)
+	bfr := make([]byte, 4096)
 	for {
 		conn, err := ln.Accept()
 		defer conn.Close()
@@ -38,13 +38,14 @@ func (c *TCPListener) readPump() {
 			log.Printf("Accept error: %v", err)
 			os.Exit(1)
 		}
-		go readAndBroadcast(c, conn)
+		readAndBroadcast(c, conn, bfr)
 	}
 }
 
-func readAndBroadcast(c *TCPListener, conn net.Conn)  {
+func readAndBroadcast(c *TCPListener, conn net.Conn, bfr []byte) {
+	cleanBuffer(bfr)
 	var rdr *frame.Reader
-	rdr = frame.NewReader(bufio.NewReader(conn))
+	rdr = frame.NewReaderBuffer(conn, bfr)
 	fr, err := rdr.Read()
 	if err != nil {
 		log.Printf("Read error: %v", err)
@@ -52,4 +53,10 @@ func readAndBroadcast(c *TCPListener, conn net.Conn)  {
 		c.hub.broadcast <- fr
 	}
 	conn.Close()
+}
+
+func cleanBuffer(bfr []byte) {
+	for i, _ := range bfr {
+		bfr[i] = 0
+	}
 }
