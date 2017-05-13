@@ -38,13 +38,18 @@ func (c *TCPListener) readPump() {
 			log.Printf("Accept error: %v", err)
 			os.Exit(1)
 		}
-		go func() {
-			fr, err := frame.NewReader(bufio.NewReader(conn)).Read()
-			if err != nil {
-				log.Printf("Read error: %v", err)
-			} else {
-				c.hub.broadcast <- fr
-			}
-		}()
+		go readAndBroadcast(c, conn)
 	}
+}
+
+func readAndBroadcast(c *TCPListener, conn net.Conn)  {
+	var rdr *frame.Reader
+	rdr = frame.NewReader(bufio.NewReader(conn))
+	fr, err := rdr.Read()
+	if err != nil {
+		log.Printf("Read error: %v", err)
+	} else {
+		c.hub.broadcast <- fr
+	}
+	conn.Close()
 }
