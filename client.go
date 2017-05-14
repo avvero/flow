@@ -38,7 +38,7 @@ func (c *SocketService) readPump() {
 			log.Printf("Accept error: %v", err)
 			os.Exit(1)
 		}
-		handleConnection(c, conn)
+		go handleConnection(c, conn)
 	}
 }
 
