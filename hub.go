@@ -78,6 +78,7 @@ func (h *Hub) run() {
 			h.unsubscribe(subscription)
 		case frame := <-h.broadcast:
 			destination := frame.Header.Get("destination")
+			log.Printf("v.send <- h.broadcast | to " + destination)
 			//log.Printf("broadcasting on %s the %s for clients %d", destination, frame, len(h.subscriptions))
 			for _, v := range h.subscriptions[destination] {
 				v.send <- frame

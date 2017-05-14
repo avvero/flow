@@ -22,7 +22,7 @@ func main() {
 	hub := newHub()
 	go hub.run()
 
-	listener := &TCPListener{hub: hub}
+	listener := &SocketService{hub: hub}
 	go listener.readPump()
 
 	http.Handle("/", http.FileServer(http.Dir("D:/dev/kits/GOPATH/src/github.com/avvero/flow/src/main/resources/static")))
