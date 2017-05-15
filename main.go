@@ -48,7 +48,12 @@ func main() {
 					session.Send(buf.String())
 				case frame.SUBSCRIBE:
 					log.Printf("subscribe on: %s", fr.Header.Get("destination"))
-					subscription := &Subscription{destination: fr.Header.Get("destination"), hub: hub, session: &session, send: make(chan *frame.Frame)}
+					subscription := &Subscription{
+						destination: fr.Header.Get("destination"),
+						id:          fr.Header.Get("id"),
+						hub:         hub,
+						session:     &session,
+						send:        make(chan *frame.Frame)}
 					subscription.hub.register <- subscription
 				case frame.DISCONNECT:
 					//TODO
