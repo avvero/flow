@@ -19,7 +19,8 @@ func (subscription *Subscription) doSend() {
 	for {
 		select {
 		case frm := <-subscription.send:
-			frm.Header.Add("subscription", subscription.id)
+			//frm.Header.Add("subscription", subscription.id)
+			frm.Header.Add("subscription", "sub-0")
 			buf := bytes.NewBufferString("")
 			frame.NewWriter(buf).Write(frm)
 			(*subscription.session).Send(buf.String())
