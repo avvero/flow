@@ -51,7 +51,7 @@ func handleConnection(c *SocketService, conn net.Conn) {
 			log.Printf("Read error: %v", err)
 			return
 		} else if fr != nil {
-			log.Printf("c.hub.broadcast <- %s", fr)
+			//log.Printf("c.hub.broadcast <- %s", fr)
 			c.hub.broadcast <- fr
 		}
 	}

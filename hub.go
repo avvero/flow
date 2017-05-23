@@ -8,6 +8,7 @@ import (
 	"log"
 	"sync"
 	"github.com/avvero/stomp/frame"
+	"bytes"
 )
 
 // Hub maintains the set of active clients and broadcasts messages to the
@@ -54,6 +55,17 @@ func (h *Hub) subscribe(subscription *Subscription) {
 	}
 }
 
+func (h *Hub) registerMarket(destination string) {
+	h.subscriptionsMutex.Lock()
+	defer h.subscriptionsMutex.Unlock()
+
+	log.Printf("new destination : %v", destination)
+	if h.subscriptions[destination] == nil {
+		subscriptions := make(map[string]*Subscription)
+		h.subscriptions[destination] = subscriptions
+	}
+}
+
 func (h *Hub) unsubscribe(subscription *Subscription) {
 	h.subscriptionsMutex.Lock()
 	defer h.subscriptionsMutex.Unlock()
@@ -76,12 +88,22 @@ func (h *Hub) run() {
 			h.subscribe(subscription)
 		case subscription := <-h.unregister:
 			h.unsubscribe(subscription)
-		case frame := <-h.broadcast:
-			destination := frame.Header.Get("destination")
-			log.Printf("v.send <- h.broadcast | to " + destination)
+		case fr := <-h.broadcast:
+			destination := fr.Header.Get("destination")
+			if h.subscriptions[destination] == nil {
+				h.registerMarket(destination)
+			}
+			//log.Printf("v.send <- h.broadcast | to " + destination)
 			//log.Printf("broadcasting on %s the %s for clients %d", destination, frame, len(h.subscriptions))
-			for _, v := range h.subscriptions[destination] {
-				v.send <- frame
+
+			//fr.Header.Add("subscription", subscription.id)
+			fr.Header.Add("subscription", "sub-0")
+			buf := bytes.NewBufferString("")
+			frame.NewWriter(buf).Write(fr)
+			frameString := buf.String()
+
+			for _, subscription := range h.subscriptions[destination] {
+				subscription.send <- frameString
 			}
 		}
 	}

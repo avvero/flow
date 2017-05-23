@@ -1,6 +1,6 @@
 function markersController($scope, page, context, $stateParams) {
-    $scope.markers = context.markers
-    page.setTitle(context.instance.name)
+    $scope.markers = context.Markers
+    page.setTitle(context.Instance.name)
 }
 
 markersController.resolve = {
@@ -9,7 +9,7 @@ markersController.resolve = {
 
         $http({
             method: 'GET',
-            url: 'data/context',
+            url: 'context',
             headers: {'Content-Type': 'application/json;charset=UTF-8'}
         })
             .success(function (data) {

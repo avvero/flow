@@ -8,11 +8,21 @@ import (
 	"strings"
 	"github.com/avvero/stomp/frame"
 	"bytes"
+	"encoding/json"
 )
 
 import (
 	_ "net/http/pprof"
 )
+
+type Instance struct {
+	Name string
+}
+
+type Context struct {
+	Instance Instance
+	Markers []string
+}
 
 var addr = flag.String("addr", ":8080", "http service address")
 
@@ -53,7 +63,7 @@ func main() {
 						id:          fr.Header.Get("id"),
 						hub:         hub,
 						session:     &session,
-						send:        make(chan *frame.Frame)}
+						send:        make(chan string)}
 					subscription.hub.register <- subscription
 				case frame.DISCONNECT:
 					//TODO
@@ -65,6 +75,23 @@ func main() {
 		}
 		log.Println("Sockjs session closed")
 	}))
+	http.HandleFunc("/context", func(w http.ResponseWriter, r *http.Request) {
+		markers := make([]string, len(hub.subscriptions))
+		i := 0
+		for k := range hub.subscriptions {
+			markers[i] = k
+			i++
+		}
+		context := Context{Markers : markers, Instance : Instance {Name: "flow"}}
+
+		js, err := json.Marshal(context)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(js)
+	})
 	log.Println("Server started on port: " + *addr)
 	http.ListenAndServe(*addr, nil)
 }
