@@ -8,42 +8,51 @@ import (
 	"log"
 	"net"
 	"os"
-	"bufio"
-	"github.com/go-stomp/stomp/frame"
+	"fmt"
+	"github.com/avvero/stomp/frame"
 )
 
 const (
 	CONN_HOST = "localhost"
+	CONN_PORT = "4561"
 	CONN_TYPE = "tcp"
 )
 
-type TCPListener struct {
-	tcpPort string
+type SocketService struct {
 	hub *Hub
 }
 
-func (c *TCPListener) readPump() {
-	ln, err := net.Listen(CONN_TYPE, CONN_HOST+":"+c.tcpPort)
+func (c *SocketService) readPump() {
+	ln, err := net.Listen(CONN_TYPE, CONN_HOST+":"+CONN_PORT)
 	if err != nil {
 		log.Printf("Listen error: %v", err)
 		os.Exit(1)
 	}
 	defer ln.Close()
-	log.Println("Tcp server listens on " + CONN_HOST + ":" + c.tcpPort)
+	fmt.Println("Listening on " + CONN_HOST + ":" + CONN_PORT)
 	for {
+		log.Printf("Accept listener")
 		conn, err := ln.Accept()
 		defer conn.Close()
 		if err != nil {
 			log.Printf("Accept error: %v", err)
 			os.Exit(1)
 		}
-		go func() {
-			fr, err := frame.NewReader(bufio.NewReader(conn)).Read()
-			if err != nil {
-				log.Printf("Read error: %v", err)
-			} else {
-				c.hub.broadcast <- fr
-			}
-		}()
+		go handleConnection(c, conn)
+	}
+}
+
+func handleConnection(c *SocketService, conn net.Conn) {
+	defer conn.Close()
+	for {
+		rdr := frame.NewReaderSize(conn, 16)
+		fr, err := rdr.Read()
+		if err != nil {
+			log.Printf("Read error: %v", err)
+			return
+		} else if fr != nil {
+			//log.Printf("c.hub.broadcast <- %s", fr)
+			c.hub.broadcast <- fr
+		}
 	}
 }
