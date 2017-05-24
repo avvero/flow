@@ -15,7 +15,7 @@ RUN java -version
 
 WORKDIR /tmp
 
-RUN git clone https://github.com/avvero/flow.git
+RUN git clone -b flow1 https://github.com/avvero/flow.git
 
 RUN ls
 
