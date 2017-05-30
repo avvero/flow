@@ -15,7 +15,7 @@ type Subscription struct {
 	marker  string
 	id      string
 	session *sockjs.Session
-	send    chan string
+	send    chan *string
 }
 
 func NewSubscription(fr *frame.Frame, session *sockjs.Session) *Subscription {
@@ -23,12 +23,12 @@ func NewSubscription(fr *frame.Frame, session *sockjs.Session) *Subscription {
 		marker: fr.Header.Get("destination"),
 		id:          fr.Header.Get("id"),
 		session:     session,
-		send:        make(chan string)}
+		send:        make(chan *string)}
 	go subscription.doSend()
 	return subscription
 }
 
-func (this *Subscription) notify(s string) {
+func (this *Subscription) notify(s *string) {
 	this.send <- s
 }
 
@@ -40,7 +40,7 @@ func (subscription *Subscription) doSend() {
 	for {
 		select {
 		case frameString := <-subscription.send:
-			(*subscription.session).Send(frameString)
+			(*subscription.session).Send(*frameString)
 		}
 	}
 }

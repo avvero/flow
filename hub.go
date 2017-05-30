@@ -15,14 +15,8 @@ import (
 type Hub struct {
 	subscriptions      map[string]map[string]*Subscription
 	subscriptionsMutex sync.Mutex
-
-	// Messages to broadcastfrom the clients.
 	broadcast          chan *frame.Frame
-
-	// Register requests from the clients.
 	register           chan *Subscription
-
-	// Unregister requests from clients.
 	unregister         chan *Subscription
 }
 
@@ -100,7 +94,7 @@ func (this *Hub) run() {
 			frameString := buf.String()
 
 			for _, subscription := range this.subscriptions[destination] {
-				subscription.notify(frameString)
+				subscription.notify(&frameString)
 			}
 		}
 	}
