@@ -10,8 +10,8 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
     $scope.isSelectMode = false; //
     $scope.pageLogLimit = $scope.VISIBLE_LOGS_QUANTITY;
     $scope.currentMarker = $stateParams.marker
-    $scope.markers = context.markers
-    page.setTitle(context.instance.name + ' #' + $stateParams.marker)
+    $scope.markers = context.Markers
+    page.setTitle(context.Instance.Name + ' #' + $stateParams.marker)
     // События
     $scope.items = [];
     $scope.selected = [];
@@ -309,7 +309,7 @@ flowController.resolve = {
 
         $http({
             method: 'GET',
-            url: 'data/context',
+            url: 'context',
             headers: {'Content-Type': 'application/json;charset=UTF-8'}
         })
             .success(function (data) {

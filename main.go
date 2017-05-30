@@ -21,7 +21,7 @@ type Instance struct {
 
 type Context struct {
 	Instance Instance
-	Markers []string
+	Markers  []string
 }
 
 var httpPort = flag.String("httpPort", "8080", "http server port")
@@ -60,7 +60,7 @@ func main() {
 				case frame.SUBSCRIBE:
 					log.Printf("subscribe on: %s", fr.Header.Get("destination"))
 					subscription := &Subscription{
-						destination: fr.Header.Get("destination"),
+						marker: fr.Header.Get("destination"),
 						id:          fr.Header.Get("id"),
 						hub:         hub,
 						session:     &session,
@@ -83,7 +83,7 @@ func main() {
 			markers[i] = k
 			i++
 		}
-		context := Context{Markers : markers, Instance : Instance {Name: "flow"}}
+		context := Context{Markers : markers, Instance : Instance{Name: "Flow"}}
 
 		js, err := json.Marshal(context)
 		if err != nil {

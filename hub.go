@@ -11,21 +11,19 @@ import (
 	"bytes"
 )
 
-// Hub maintains the set of active clients and broadcasts messages to the
-// clients.
+// Hub maintains the set of active clients and broadcasts messages to the clients.
 type Hub struct {
-	// Registered clients.
 	subscriptions      map[string]map[string]*Subscription
 	subscriptionsMutex sync.Mutex
 
-	// Inbound messages from the clients.
-	broadcast chan *frame.Frame
+	// Messages to broadcastfrom the clients.
+	broadcast          chan *frame.Frame
 
 	// Register requests from the clients.
-	register chan *Subscription
+	register           chan *Subscription
 
 	// Unregister requests from clients.
-	unregister chan *Subscription
+	unregister         chan *Subscription
 }
 
 func newHub() *Hub {
@@ -37,42 +35,46 @@ func newHub() *Hub {
 	}
 }
 
-func (h *Hub) subscribe(subscription *Subscription) {
-	h.subscriptionsMutex.Lock()
-	defer h.subscriptionsMutex.Unlock()
+func (this *Hub) subscribe(subscription *Subscription) {
+	this.subscriptionsMutex.Lock()
+	defer this.subscriptionsMutex.Unlock()
 
 	log.Printf("subscribe client to : %v", subscription)
 
-	subscriptions, ok := h.subscriptions[subscription.destination]
+	markerSubscriptions, ok := this.subscriptions[subscription.marker]
 	if ok == false {
-		subscriptions = make(map[string]*Subscription)
-		h.subscriptions[subscription.destination] = subscriptions
+		markerSubscriptions = this.registerMarker(subscription.marker)
 	}
 	id := (*subscription.session).ID()
-	if _, ok = subscriptions[id]; ok == false {
-		subscriptions[id] = subscription
+	if _, ok = markerSubscriptions[id]; ok == false {
+		markerSubscriptions[id] = subscription
 		go subscription.doSend()
 	}
 }
 
-func (h *Hub) registerMarket(destination string) {
-	h.subscriptionsMutex.Lock()
-	defer h.subscriptionsMutex.Unlock()
-
-	log.Printf("new destination : %v", destination)
-	if h.subscriptions[destination] == nil {
-		subscriptions := make(map[string]*Subscription)
-		h.subscriptions[destination] = subscriptions
+func (this *Hub) registerMarker(marker string) map[string]*Subscription {
+	markerSubscriptions := this.subscriptions[marker]
+	if markerSubscriptions == nil {
+		log.Printf("new marker : %v", marker)
+		markerSubscriptions = make(map[string]*Subscription)
+		this.subscriptions[marker] = markerSubscriptions
 	}
+	return markerSubscriptions
 }
 
-func (h *Hub) unsubscribe(subscription *Subscription) {
-	h.subscriptionsMutex.Lock()
-	defer h.subscriptionsMutex.Unlock()
+func (this *Hub) registerMarkerSync(marker string) map[string]*Subscription {
+	this.subscriptionsMutex.Lock()
+	defer this.subscriptionsMutex.Unlock()
+	return this.registerMarker(marker)
+}
+
+func (this *Hub) unsubscribe(subscription *Subscription) {
+	this.subscriptionsMutex.Lock()
+	defer this.subscriptionsMutex.Unlock()
 
 	log.Printf("unsubscribe client on : %v", subscription)
 
-	if subscriptions, ok := h.subscriptions[subscription.destination]; ok == true {
+	if subscriptions, ok := this.subscriptions[subscription.marker]; ok == true {
 		id := (*subscription.session).ID()
 		if _, ok = subscriptions[id]; ok == true {
 			delete(subscriptions, id)
@@ -81,28 +83,24 @@ func (h *Hub) unsubscribe(subscription *Subscription) {
 	}
 }
 
-func (h *Hub) run() {
+func (this *Hub) run() {
 	for {
 		select {
-		case subscription := <-h.register:
-			h.subscribe(subscription)
-		case subscription := <-h.unregister:
-			h.unsubscribe(subscription)
-		case fr := <-h.broadcast:
+		case subscription := <-this.register:
+			this.subscribe(subscription)
+		case subscription := <-this.unregister:
+			this.unsubscribe(subscription)
+		case fr := <-this.broadcast:
 			destination := fr.Header.Get("destination")
-			if h.subscriptions[destination] == nil {
-				h.registerMarket(destination)
+			if this.subscriptions[destination] == nil {
+				this.registerMarkerSync(destination)
 			}
-			//log.Printf("v.send <- h.broadcast | to " + destination)
-			//log.Printf("broadcasting on %s the %s for clients %d", destination, frame, len(h.subscriptions))
-
-			//fr.Header.Add("subscription", subscription.id)
 			fr.Header.Add("subscription", "sub-0")
 			buf := bytes.NewBufferString("")
 			frame.NewWriter(buf).Write(fr)
 			frameString := buf.String()
 
-			for _, subscription := range h.subscriptions[destination] {
+			for _, subscription := range this.subscriptions[destination] {
 				subscription.send <- frameString
 			}
 		}

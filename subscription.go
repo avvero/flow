@@ -6,11 +6,11 @@ import (
 
 // Client is a middleman between the websocket connection and the hub.
 type Subscription struct {
-	destination string
-	id          string
-	hub         *Hub
-	session     *sockjs.Session
-	send        chan string
+	marker  string
+	id      string
+	hub     *Hub
+	session *sockjs.Session
+	send    chan string
 }
 
 func (subscription *Subscription) doSend() {
