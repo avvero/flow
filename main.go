@@ -10,7 +10,8 @@ import (
 	"bytes"
 )
 
-var addr = flag.String("addr", ":8080", "http service address")
+var httpPort = flag.String("httpPort", "8080", "http server port")
+var tcpPort = flag.String("tcpPort", "4561", "tcp server port")
 
 func main() {
 	flag.Parse()
@@ -18,10 +19,10 @@ func main() {
 	hub := newHub()
 	go hub.run()
 
-	listener := &TCPListener{hub: hub}
+	listener := &TCPListener{hub: hub, tcpPort: *tcpPort}
 	go listener.readPump()
 
-	http.Handle("/", http.FileServer(http.Dir("D:/dev/kits/GOPATH/src/github.com/avvero/flow/src/main/resources/static")))
+	http.Handle("/", http.FileServer(http.Dir("static")))
 	http.Handle("/echo/", sockjs.NewHandler("/echo", sockjs.DefaultOptions, func(session sockjs.Session) {
 		log.Println("new sockjs session established")
 		for {
@@ -56,6 +57,6 @@ func main() {
 		}
 		log.Println("sockjs session closed")
 	}))
-	log.Println("Server started on port: " + *addr)
-	http.ListenAndServe(*addr, nil)
+	log.Println("Http server started on port " + *httpPort)
+	http.ListenAndServe(":" + *httpPort, nil)
 }

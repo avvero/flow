@@ -8,29 +8,28 @@ import (
 	"log"
 	"net"
 	"os"
-	"fmt"
 	"bufio"
 	"github.com/go-stomp/stomp/frame"
 )
 
 const (
 	CONN_HOST = "localhost"
-	CONN_PORT = "4561"
 	CONN_TYPE = "tcp"
 )
 
 type TCPListener struct {
+	tcpPort string
 	hub *Hub
 }
 
 func (c *TCPListener) readPump() {
-	ln, err := net.Listen(CONN_TYPE, CONN_HOST+":"+CONN_PORT)
+	ln, err := net.Listen(CONN_TYPE, CONN_HOST+":"+c.tcpPort)
 	if err != nil {
 		log.Printf("Listen error: %v", err)
 		os.Exit(1)
 	}
 	defer ln.Close()
-	fmt.Println("Listening on " + CONN_HOST + ":" + CONN_PORT)
+	log.Println("Tcp server listens on " + CONN_HOST + ":" + c.tcpPort)
 	for {
 		conn, err := ln.Accept()
 		defer conn.Close()
