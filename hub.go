@@ -48,7 +48,6 @@ func (this *Hub) subscribe(subscription *Subscription) {
 	id := (*subscription.session).ID()
 	if _, ok = markerSubscriptions[id]; ok == false {
 		markerSubscriptions[id] = subscription
-		go subscription.doSend()
 	}
 }
 
@@ -78,7 +77,7 @@ func (this *Hub) unsubscribe(subscription *Subscription) {
 		id := (*subscription.session).ID()
 		if _, ok = subscriptions[id]; ok == true {
 			delete(subscriptions, id)
-			close(subscription.send)
+			subscription.close()
 		}
 	}
 }
@@ -101,7 +100,7 @@ func (this *Hub) run() {
 			frameString := buf.String()
 
 			for _, subscription := range this.subscriptions[destination] {
-				subscription.send <- frameString
+				subscription.notify(frameString)
 			}
 		}
 	}
