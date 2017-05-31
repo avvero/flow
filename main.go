@@ -88,6 +88,41 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(js)
 	})
+	http.HandleFunc("/logs", func(w http.ResponseWriter, r *http.Request) {
+		marker := r.URL.Query().Get("marker")
+		list := hub.db[marker]
+		var logs []interface{}
+		if list == nil {
+			logs = make([]interface{}, 0)
+		} else {
+			logs = make([]interface{}, list.n)
+			logsBytes := find(list, marker)
+			for i, b := range logsBytes {
+				var js map[string]interface{}
+				json.Unmarshal(*b, &js)
+				logs[i] = js
+			}
+		}
+		js, err := json.Marshal(logs)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(js)
+	})
 	log.Println("Http server started on port " + *httpPort)
 	http.ListenAndServe(":" + *httpPort, nil)
+}
+
+func find(list *LinkedList, marker string) []*[]byte {
+	var logsBytes = make([]*[]byte, list.n)
+	next := list.firstElement
+	i := 0
+	for next != nil {
+		logsBytes[i] = next.value
+		next = next.next
+		i ++
+	}
+	return logsBytes
 }

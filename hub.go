@@ -55,7 +55,7 @@ func (this *Hub) registerMarker(marker string) map[string]*Subscription {
 		markerSubscriptions = make(map[string]*Subscription)
 		this.subscriptions[marker] = markerSubscriptions
 
-		this.db[marker] = NewLinkedList()
+		this.db[marker] = NewLinkedList(10)
 	}
 	return markerSubscriptions
 }
@@ -98,7 +98,7 @@ func (this *Hub) run() {
 			frame.NewWriter(buf).Write(fr)
 			frameString := buf.String()
 
-			this.store(&destination, &frameString)
+			this.store(&destination, &fr.Body)
 
 			for _, subscription := range this.subscriptions[destination] {
 				subscription.notify(&frameString)
@@ -107,7 +107,7 @@ func (this *Hub) run() {
 	}
 }
 
-func (this *Hub) store(marker *string, fr *string) {
-	this.db[*marker].add(fr)
+func (this *Hub) store(marker *string, body *[]byte) {
+	this.db[*marker].add(body)
 	log.Printf("size : %v", this.db[*marker].size())
 }
