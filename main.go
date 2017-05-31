@@ -13,6 +13,8 @@ import (
 
 import (
 	_ "net/http/pprof"
+	"net/url"
+	"strconv"
 )
 
 type Instance struct {
@@ -78,7 +80,7 @@ func main() {
 			markers[i] = k
 			i++
 		}
-		context := Context{Markers : markers, Instance : Instance{Name: "Flow"}}
+		context := Context{Markers: markers, Instance: Instance{Name: "Flow"}}
 
 		js, err := json.Marshal(context)
 		if err != nil {
@@ -96,7 +98,8 @@ func main() {
 			logs = make([]interface{}, 0)
 		} else {
 			logs = make([]interface{}, list.n)
-			logsBytes := find(list, marker)
+			params := parseSearchParams(r.URL.Query())
+			logsBytes := search(list, params)
 			for i, b := range logsBytes {
 				var js map[string]interface{}
 				json.Unmarshal(*b, &js)
@@ -115,7 +118,73 @@ func main() {
 	http.ListenAndServe(":" + *httpPort, nil)
 }
 
-func find(list *LinkedList, marker string) []*[]byte {
+type SearchParams struct {
+	length       int
+	start        int
+	showTrace    bool
+	showDebug    bool
+	showInfo     bool
+	showWarn     bool
+	showError    bool
+	messageQuery string
+}
+
+func parseSearchParams(values url.Values) *SearchParams {
+	result := SearchParams{length: 100, start: 0, }
+	length := values.Get("length")
+	if length != "" {
+		r, e := strconv.Atoi(length)
+		if e != nil {
+			result.length = r
+		} else {
+			result.length = 100
+		}
+	}
+	start := values.Get("start")
+	if start != "" {
+		r, e := strconv.Atoi(start)
+		if e != nil {
+			result.start = r
+		} else {
+			result.start = 0
+		}
+	}
+	result.showTrace = parseBoolParam(values.Get("showTrace"), true)
+	result.showDebug = parseBoolParam(values.Get("showDebug"), true)
+	result.showInfo = parseBoolParam(values.Get("showInfo"), true)
+	result.showWarn = parseBoolParam(values.Get("showWarn"), true)
+	result.showError = parseBoolParam(values.Get("showError"), true)
+	result.messageQuery = values.Get("messageQuery")
+
+	return &result
+}
+
+func parseBoolParam(value string, def bool) bool {
+	if value != "" {
+		r, e := strconv.ParseBool(value)
+		if e != nil {
+			return def
+		} else {
+			return r
+		}
+
+	} else {
+		return def
+	}
+}
+
+type LogLevel struct {
+	levelInt int
+	levelStr string
+}
+
+type LogEntry struct {
+	message   string
+	timeStamp int
+	level     LogLevel
+}
+
+func search(list *LinkedList, params *SearchParams) []*[]byte {
 	var logsBytes = make([]*[]byte, list.n)
 	next := list.firstElement
 	i := 0
