@@ -78,7 +78,7 @@ func main() {
 			markers[i] = k
 			i++
 		}
-		context := Context{Markers: markers, Instance: Instance{Name: "Flow"}}
+		context := Context{Markers: markers, Instance: Instance{Name: "Flow2"}}
 
 		js, err := json.Marshal(context)
 		if err != nil {
@@ -88,6 +88,7 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(js)
 	})
+
 	http.HandleFunc("/logs", func(w http.ResponseWriter, r *http.Request) {
 		var result []interface{}
 		marker := r.URL.Query().Get("marker")
