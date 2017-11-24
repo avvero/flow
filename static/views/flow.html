@@ -79,8 +79,11 @@
                             </div>
                         </div>
                     </li>
-                    <li ng-repeat="marker in markers" class="{{currentMarker == marker ? 'active' : ''}}">
+                    <li ng-if="markers.length <= 4" ng-repeat="marker in markers" class="{{currentMarker == marker ? 'active' : ''}}">
                         <a ng-href="#follow/{{marker}}"><i class="fa fa-hashtag"></i><span>{{marker}}</span></a>
+                    </li>
+                    <li ng-if="markers.length > 4">
+                        <a ng-href="#"><i class="fa fa-ellipsis-h"></i><span></span></a>
                     </li>
                     <li class="header">
                         <b>CONTROLS</b>
