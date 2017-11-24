@@ -19,16 +19,16 @@ type Hub struct {
 	register           chan *Subscription
 	unregister         chan *Subscription
 
-	db		   map[string]*LinkedList
+	store Store
 }
 
-func newHub() *Hub {
+func newHub(store Store) *Hub {
 	return &Hub{
 		broadcast:     make(chan *frame.Frame),
 		register:      make(chan *Subscription),
 		unregister:    make(chan *Subscription),
 		subscriptions: make(map[string]map[string]*Subscription),
-		db: make(map[string]*LinkedList),
+		store:         store,
 	}
 }
 
@@ -54,8 +54,6 @@ func (this *Hub) registerMarker(marker string) map[string]*Subscription {
 		log.Printf("new marker : %v", marker)
 		markerSubscriptions = make(map[string]*Subscription)
 		this.subscriptions[marker] = markerSubscriptions
-
-		this.db[marker] = NewLinkedList()
 	}
 	return markerSubscriptions
 }
@@ -98,16 +96,11 @@ func (this *Hub) run() {
 			frame.NewWriter(buf).Write(fr)
 			frameString := buf.String()
 
-			this.store(&destination, &frameString)
+			this.store.save(destination, &fr.Body)
 
 			for _, subscription := range this.subscriptions[destination] {
 				subscription.notify(&frameString)
 			}
 		}
 	}
-}
-
-func (this *Hub) store(marker *string, fr *string) {
-	this.db[*marker].add(fr)
-	log.Printf("size : %v", this.db[*marker].size())
 }

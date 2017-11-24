@@ -30,7 +30,7 @@ var tcpPort = flag.String("tcpPort", "4561", "tcp server port")
 func main() {
 	flag.Parse()
 
-	hub := newHub()
+	hub := newHub(NewInMemoryStore(10))
 	go hub.run()
 
 	listener := &SocketService{hub: hub, tcpPort: tcpPort}
@@ -78,9 +78,33 @@ func main() {
 			markers[i] = k
 			i++
 		}
-		context := Context{Markers: markers, Instance: Instance{Name: "Flow2"}}
+		context := Context{Markers: markers, Instance: Instance{Name: "Flow"}}
 
 		js, err := json.Marshal(context)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(js)
+	})
+	http.HandleFunc("/logs", func(w http.ResponseWriter, r *http.Request) {
+		var result []interface{}
+		marker := r.URL.Query().Get("marker")
+		params := parseSearchParams(r.URL.Query())
+
+		list := hub.store.find(marker, params)
+		if list == nil {
+			result = make([]interface{}, 0)
+		} else {
+			result = make([]interface{}, len(list))
+			for i, b := range list {
+				var js map[string]interface{}
+				json.Unmarshal(*b, &js)
+				result[i] = js
+			}
+		}
+		js, err := json.Marshal(result)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return

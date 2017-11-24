@@ -1,36 +1,47 @@
 package main
 
+import "sync"
+
 type LinkedElement struct {
-	value *string
-	next *LinkedElement
+	value *[]byte
+	next  *LinkedElement
+	prev  *LinkedElement
 }
 
 type LinkedList struct {
+	listMutex    sync.Mutex
+	n            int //size
+	capacity     int
 	firstElement *LinkedElement
-	lastElement *LinkedElement
+	lastElement  *LinkedElement
 }
 
-func (this *LinkedList) add(value *string) {
-	e := &LinkedElement{value: value}
-	if this.firstElement == nil {
-		this.firstElement = e
-		this.lastElement = e
+func (list *LinkedList) add(value *[]byte) {
+	defer list.listMutex.Unlock()
+	list.listMutex.Lock()
+
+	current := &LinkedElement{value: value}
+	if list.capacity < list.n+1 {
+		list.firstElement = list.firstElement.next
+		list.firstElement.prev = nil
+	} else {
+		list.n ++
+	}
+	if list.firstElement == nil {
+		list.firstElement = current
+		list.lastElement = current
 		return
 	}
-	this.lastElement.next = e
-	this.lastElement = e
+	prev := list.lastElement
+	prev.next = current
+	current.prev = prev
+	list.lastElement = current
 }
 
-func (this *LinkedList) size() int {
-	i := 0
-	next := this.firstElement
-	for next != nil {
-		i++
-		next = next.next
-	}
-	return i
+func (list *LinkedList) size() int {
+	return list.n
 }
 
-func NewLinkedList() *LinkedList  {
-	return &LinkedList{}
+func NewLinkedList(capacity int) *LinkedList {
+	return &LinkedList{capacity: capacity}
 }
