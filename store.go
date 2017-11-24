@@ -49,7 +49,7 @@ func (store *InMemoryStore) getCollection(name string) *LinkedList {
 }
 
 func (store *InMemoryStore) find(name string, params *SearchParams) ([]*[]byte) {
-	log.Println("Search for ", *params)
+	log.Println("Store: search for ", *params)
 	elements := make([]*LinkedElement, params.length)
 	collection := store.getCollection(name)
 	current := collection.lastElement

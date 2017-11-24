@@ -36,7 +36,7 @@ func (this *Hub) subscribe(subscription *Subscription) {
 	this.subscriptionsMutex.Lock()
 	defer this.subscriptionsMutex.Unlock()
 
-	log.Printf("subscribe client to : %v", subscription)
+	log.Printf("WS: subscribe client to : %v", subscription)
 
 	markerSubscriptions, ok := this.subscriptions[subscription.marker]
 	if ok == false {
@@ -51,7 +51,7 @@ func (this *Hub) subscribe(subscription *Subscription) {
 func (this *Hub) registerMarker(marker string) map[string]*Subscription {
 	markerSubscriptions := this.subscriptions[marker]
 	if markerSubscriptions == nil {
-		log.Printf("new marker : %v", marker)
+		log.Printf("WS: new marker : %v", marker)
 		markerSubscriptions = make(map[string]*Subscription)
 		this.subscriptions[marker] = markerSubscriptions
 	}
@@ -68,7 +68,7 @@ func (this *Hub) unsubscribe(subscription *Subscription) {
 	this.subscriptionsMutex.Lock()
 	defer this.subscriptionsMutex.Unlock()
 
-	log.Printf("unsubscribe client on : %v", subscription)
+	log.Printf("WS: unsubscribe client on : %v", subscription)
 
 	if subscriptions, ok := this.subscriptions[subscription.marker]; ok == true {
 		id := (*subscription.session).ID()

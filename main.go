@@ -38,16 +38,16 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("static")))
 	http.Handle("/echo/", sockjs.NewHandler("/echo", sockjs.DefaultOptions, func(session sockjs.Session) {
-		log.Println("new sockjs session established")
+		log.Println("WS: new sockjs session established")
 		for {
 			if msg, err := session.Recv(); err == nil {
-				log.Printf("msg: %v", msg)
+				log.Printf("WS: msg: %v", msg)
 				fr, err := frame.NewReader(strings.NewReader(msg)).Read()
 				if err != nil {
-					log.Printf("frame error: %v", err)
+					log.Printf("WS: frame error: %v", err)
 					continue
 				}
-				log.Printf("recived command: %s", fr.Command)
+				log.Printf("WS: recived command: %s", fr.Command)
 
 				var respFrame *frame.Frame
 
@@ -58,18 +58,18 @@ func main() {
 					frame.NewWriter(buf).Write(respFrame)
 					session.Send(buf.String())
 				case frame.SUBSCRIBE:
-					log.Printf("subscribe on: %s", fr.Header.Get("destination"))
+					log.Printf("WS: subscribe on: %s", fr.Header.Get("destination"))
 					subscription := NewSubscription(fr, &session)
 					hub.register <- subscription
 				case frame.DISCONNECT:
 					//TODO
-					log.Printf("DISCONNECT on: %s", fr.Header.Get("destination"))
+					log.Printf("WS: disconnect on: %s", fr.Header.Get("destination"))
 				}
 				continue
 			}
 			break
 		}
-		log.Println("Sockjs session closed")
+		log.Println("WS: sockjs session closed")
 	}))
 	http.HandleFunc("/context", func(w http.ResponseWriter, r *http.Request) {
 		markers := make([]string, len(hub.subscriptions))

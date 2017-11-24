@@ -62,7 +62,7 @@ type LogEntry struct {
 }
 
 func search(list *LinkedList, params *SearchParams) []*[]byte {
-	log.Println("Search for ", *params)
+	log.Println("Store: search for ", *params)
 	var logsBytes = make([]*[]byte, list.n)
 	next := list.firstElement
 	i := 0

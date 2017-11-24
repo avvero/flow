@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	CONN_HOST = "localhost"
+	CONN_HOST = "0.0.0.0"
 	CONN_TYPE = "tcp"
 )
 
@@ -24,19 +24,19 @@ type SocketService struct {
 func (c *SocketService) readPump() {
 	ln, err := net.Listen(CONN_TYPE, CONN_HOST + ":" + *c.tcpPort)
 	if err != nil {
-		log.Printf("Listen error: %v", err)
+		log.Printf("Socket: listen error: %v", err)
 		os.Exit(1)
 	}
 	defer ln.Close()
-	log.Println("Tcp server listens on " + CONN_HOST + ":" + *c.tcpPort)
+	log.Println("Socket: tcp server listens on " + CONN_HOST + ":" + *c.tcpPort)
 	for {
-		log.Println("Accepting listener")
+		log.Println("Socket: accepting listener")
 		conn, err := ln.Accept()
-		defer conn.Close()
 		if err != nil {
-			log.Printf("Accept error: %v", err)
+			log.Printf("Socket: accept error: %v", err)
 			os.Exit(1)
 		}
+		log.Printf("Socket: connection %v established", conn)
 		go handleConnection(c, conn)
 	}
 }
@@ -47,7 +47,8 @@ func handleConnection(c *SocketService, conn net.Conn) {
 		rdr := frame.NewReaderSize(conn, 16)
 		fr, err := rdr.Read()
 		if err != nil {
-			log.Printf("Read error: %v", err)
+			log.Printf("Socket: read error: %v", err)
+			log.Printf("Socket: connection %v will be closed immediately", conn)
 			return
 		} else if fr != nil {
 			//log.Printf("c.hub.broadcast <- %s", fr)
