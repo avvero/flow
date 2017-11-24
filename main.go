@@ -78,7 +78,7 @@ func main() {
 			markers[i] = k
 			i++
 		}
-		context := Context{Markers : markers, Instance : Instance{Name: "Flow"}}
+		context := Context{Markers: markers, Instance: Instance{Name: "Flow2"}}
 
 		js, err := json.Marshal(context)
 		if err != nil {
