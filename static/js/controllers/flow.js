@@ -255,6 +255,9 @@ function flowController($scope, $stompie, $timeout, $stateParams, localStorageSe
             }
             $scope.caret.tension = cTension
             $scope.caret.position = cPosition
+            if (!$scope.isStopped) {
+                $scope.isStopped = true
+            }
         }
     }
     $scope.getShift = function (tension) {
