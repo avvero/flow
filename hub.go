@@ -96,7 +96,7 @@ func (this *Hub) run() {
 			frame.NewWriter(buf).Write(fr)
 			frameString := buf.String()
 
-			this.store.save(destination, &fr.Body)
+			//this.store.save(destination, &fr.Body)
 
 			for _, subscription := range this.subscriptions[destination] {
 				subscription.notify(&frameString)
