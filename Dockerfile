@@ -1,7 +1,9 @@
 FROM golang:latest
-LABEL maintainer avvero
+MAINTAINER avvero@mail.ru
 
 ADD . /app
 WORKDIR /app
+RUN go get gopkg.in/igm/sockjs-go.v2/sockjs
+RUN go get github.com/avvero/stomp/frame
 RUN go build -o main .
-CMD ["/app/main"]
+CMD ["/app/main", "-httpPort=8080", "-tcpPort=4561"]
