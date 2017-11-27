@@ -2,7 +2,7 @@ package main
 
 import (
 	"gopkg.in/igm/sockjs-go.v2/sockjs"
-	"github.com/avvero/stomp/frame"
+	"github.com/go-stomp/stomp/frame"
 )
 
 type Observer interface {

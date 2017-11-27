@@ -7,7 +7,7 @@ package main
 import (
 	"log"
 	"sync"
-	"github.com/avvero/stomp/frame"
+	"github.com/go-stomp/stomp/frame"
 	"bytes"
 )
 

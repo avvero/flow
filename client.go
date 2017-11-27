@@ -8,7 +8,7 @@ import (
 	"log"
 	"net"
 	"os"
-	"github.com/avvero/stomp/frame"
+	"github.com/go-stomp/stomp/frame"
 )
 
 const (
@@ -43,8 +43,8 @@ func (c *SocketService) readPump() {
 
 func handleConnection(c *SocketService, conn net.Conn) {
 	defer conn.Close()
+	rdr := frame.NewReader(conn)
 	for {
-		rdr := frame.NewReaderSize(conn, 16)
 		fr, err := rdr.Read()
 		if err != nil {
 			log.Printf("Socket: read error: %v", err)
