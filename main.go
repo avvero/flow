@@ -6,7 +6,7 @@ import (
 	"gopkg.in/igm/sockjs-go.v2/sockjs"
 	"log"
 	"strings"
-	"github.com/avvero/stomp/frame"
+	"github.com/go-stomp/stomp/frame"
 	"bytes"
 	"encoding/json"
 )
