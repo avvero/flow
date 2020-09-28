@@ -12,5 +12,10 @@ See issues
 ```
 -Dspring.profiles.active=production -Dspring.config.location=file:/application.yml
 ```
+### build 
+```bash
+docker build -t flow .
+docker run -d -p 8080:8080 -p 4561:4561 flow
+```
 
 ### License: MIT
